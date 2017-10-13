@@ -22,7 +22,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_1bit() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_1bit.bmp";
+        String file = "C:\\Users\\ユーザ名\\Desktop\\java_1bit.bmp"; // 出力先
         int width = 3;
         int height = 3;
         byte[] img01 = { (byte) 0xa0, 0x00, 0x00, 0x00 };
@@ -50,7 +50,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_4bit() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_4bit.bmp";
+        String file = "C:\\Users\\ユーザ名\\Desktop\\java_4bit.bmp"; // 出力先
         int width = 3;
         int height = 3;
         byte[] img01 = { 0x10, 0x10, 0x00, 0x00 };
@@ -78,7 +78,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_8bit() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_8bit.bmp";
+        String file = "C:\\Users\\ユーザ名\\Desktop\\java_8bit.bmp"; // 出力先
         int width = 3;
         int height = 3;
         byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
@@ -106,7 +106,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_24bit() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_24bit.bmp";
+        String file = "C:\\Users\\ユーザ名\\Desktop\\java_24bit.bmp"; // 出力先
         int width = 3;
         int height = 3;
         // @formatter:off
@@ -150,7 +150,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_32bit() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_32bit.bmp";
+        String file = "C:\\Users\\ユーザ名\\Desktop\\java_32bit.bmp"; // 出力先
         int width = 3;
         int height = 3;
         // @formatter:off
@@ -192,7 +192,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_8bit_BI_RLE8() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_8bit_BI_RLE8.bmp";
+        String file = "C:\\Users\\ユーザ名\\Desktop\\java_8bit_BI_RLE8.bmp"; // 出力先
         int width = 13;
         int height = 13;
         // @formatter:off
