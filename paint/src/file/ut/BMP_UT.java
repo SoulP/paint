@@ -109,7 +109,7 @@ public class BMP_UT {
         String file = "C:\\Users\\ユーザ名\\Desktop\\java_24bit.bmp";
         int width = 3;
         int height = 3;
-        //@formatter:off
+        // @formatter:off
         byte[] img01 = {
                     (byte) 0xff, (byte) 0xff, 0x00,
                     (byte) 0xff, 0x00, (byte) 0xff,
@@ -128,7 +128,7 @@ public class BMP_UT {
                     (byte) 0xff, (byte) 0xff, 0x00,
                     0x00, 0x00, 0x00
                 };
-        //@formatter:on
+        // @formatter:on
 
         List<byte[]> image = new ArrayList<>();
         image.add(img01);
@@ -153,7 +153,7 @@ public class BMP_UT {
         String file = "C:\\Users\\ユーザ名\\Desktop\\java_32bit.bmp";
         int width = 3;
         int height = 3;
-        //@formatter:off
+        // @formatter:off
         byte[] img01 = {
                     (byte) 0xff, (byte) 0xff, 0x00, 0x00,
                     (byte) 0xff, 0x00, (byte) 0xff, 0x00,
@@ -169,7 +169,7 @@ public class BMP_UT {
                     (byte) 0xff, 0x00, (byte) 0xff, 0x00,
                     (byte) 0xff, (byte) 0xff, 0x00, 0x00
                 };
-        //@formatter:on
+        // @formatter:on
 
         List<byte[]> image = new ArrayList<>();
         image.add(img01);
@@ -195,7 +195,7 @@ public class BMP_UT {
         String file = "C:\\Users\\ユーザ名\\Desktop\\java_8bit_BI_RLE8.bmp";
         int width = 13;
         int height = 13;
-        //@formatter:off
+        // @formatter:off
         byte[][] img = {
                 { 0x0d, 0x28, 0x00, 0x00 },
                 { 0x03, 0x28, 0x0a, 0x00, 0x00, 0x00 },
@@ -211,7 +211,7 @@ public class BMP_UT {
                 { 0x02, 0x29, 0x01, 0x2a, 0x07, 0x29, 0x01, 0x2a, 0x02, 0x29, 0x00, 0x00 },
                 { 0x0d, 0x29, 0x00, 0x01 }
             };
-        //@formatter:on
+        // @formatter:on
 
         Bmp bmp = new Bmp();
         bmp.setWidth(width); // 幅
