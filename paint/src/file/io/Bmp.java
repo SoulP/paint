@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import file.format.BMPheader;
 
@@ -18,30 +16,18 @@ import file.format.BMPheader;
  * @version 1.0 2017/10/12 Bmp作成
  */
 public class Bmp extends BMPheader {
-    private int                                       width;                                                          // 画像の幅 (ピクセル)
-    private int                                       height;                                                         // 画像の高さ (ピクセル)
-    private int                                       fileSize;                                                       // ファイルサイズ (byte)
-    private short                                     bitCount;                                                       // 1画素あたりのデータサイズ (bit)
-    private int                                       compression;                                                    // 圧縮形式
-    private int                                       imageSize;                                                      // 画像データ部のサイズ (byte)
-    private int                                       pixPerMeterX;                                                   // 横方向解像度 (1mあたりの画素数)
-    private int                                       pixPerMeterY;                                                   // 縦方向解像度 (1mあたりの画素数)
-    private int                                       clrUsed;                                                        // 格納されているパレット数 (使用色数)
-    private int                                       cirImportant;                                                   // 重要なパレットのインデックス
-    List<byte[]>                                      colors;                                                         // カラーパレット
-    List<byte[]>                                      image;                                                          // イメージ
-
-    private final Function<byte[], byte[]>            endian   = e -> {
-                                                                   byte[] b = new byte[e.length];
-                                                                   for (int i = 0; i < e.length; i++)
-                                                                       b[i] = e[e.length - 1 - i];
-                                                                   return b;
-                                                               };
-
-    private final BiFunction<byte[], Integer, byte[]> inputInt = (var, val) -> {
-                                                                   return endian.apply(ByteBuffer.allocate(var.length)
-                                                                           .putInt(val).array());
-                                                               };
+    private int   width;        // 画像の幅 (ピクセル)
+    private int   height;       // 画像の高さ (ピクセル)
+    private int   fileSize;     // ファイルサイズ (byte)
+    private short bitCount;     // 1画素あたりのデータサイズ (bit)
+    private int   compression;  // 圧縮形式
+    private int   imageSize;    // 画像データ部のサイズ (byte)
+    private int   pixPerMeterX; // 横方向解像度 (1mあたりの画素数)
+    private int   pixPerMeterY; // 縦方向解像度 (1mあたりの画素数)
+    private int   clrUsed;      // 格納されているパレット数 (使用色数)
+    private int   cirImportant; // 重要なパレットのインデックス
+    List<byte[]>  colors;       // カラーパレット
+    List<byte[]>  image;        // イメージ
 
     /**
      * <b>BMP</b>
@@ -58,8 +44,8 @@ public class Bmp extends BMPheader {
         setPixPerMeterY(0);
         clearColors();
         setCirImportant(0);
-        biImageSize = inputInt.apply(biImageSize, imageSize);
-        bfSize = inputInt.apply(bfSize, fileSize);
+        biImageSize = Tools.INPUT_INT.apply(biImageSize, imageSize);
+        bfSize = Tools.INPUT_INT.apply(bfSize, fileSize);
     }
 
     /**
@@ -75,7 +61,7 @@ public class Bmp extends BMPheader {
      */
     public void setWidth(int width) {
         this.width = width;
-        bcWidth = inputInt.apply(bcWidth, width);
+        bcWidth = Tools.INPUT_INT.apply(bcWidth, width);
     }
 
     /**
@@ -97,7 +83,7 @@ public class Bmp extends BMPheader {
      */
     public void setHeight(int height) {
         this.height = height;
-        bcHeight = inputInt.apply(bcHeight, height);
+        bcHeight = Tools.INPUT_INT.apply(bcHeight, height);
     }
 
     /**
@@ -118,7 +104,7 @@ public class Bmp extends BMPheader {
      */
     public void setBitCount(int bitCount) {
         this.bitCount = (short) bitCount;
-        bcBitCount = endian.apply(ByteBuffer.allocate(2).putShort(this.bitCount).array());
+        bcBitCount = Tools.ENDIAN.apply(ByteBuffer.allocate(2).putShort(this.bitCount).array());
     }
 
     /**
@@ -150,7 +136,7 @@ public class Bmp extends BMPheader {
      */
     public void setCompression(int compression) {
         this.compression = compression;
-        biCompression = inputInt.apply(biCompression, compression);
+        biCompression = Tools.INPUT_INT.apply(biCompression, compression);
     }
 
     /**
@@ -166,7 +152,7 @@ public class Bmp extends BMPheader {
      */
     public void setPixPerMeterX(int pixPerMeterX) {
         this.pixPerMeterX = pixPerMeterX;
-        biPixPerMeterX = inputInt.apply(biPixPerMeterX, pixPerMeterX);
+        biPixPerMeterX = Tools.INPUT_INT.apply(biPixPerMeterX, pixPerMeterX);
     }
 
     /**
@@ -182,7 +168,7 @@ public class Bmp extends BMPheader {
      */
     public void setPixPerMeterY(int pixPerMeterY) {
         this.pixPerMeterY = pixPerMeterY;
-        biPixPerMeterY = inputInt.apply(biPixPerMeterY, pixPerMeterY);
+        biPixPerMeterY = Tools.INPUT_INT.apply(biPixPerMeterY, pixPerMeterY);
     }
 
     /**
@@ -277,7 +263,7 @@ public class Bmp extends BMPheader {
      */
     public void output(String file) {
         int offset = FILE_HEADER_SIZE + INFO_HEADER_SIZE + colors.size() * 4;
-        bfOffBits = inputInt.apply(bfOffBits, offset);
+        bfOffBits = Tools.INPUT_INT.apply(bfOffBits, offset);
 
         FileOutputStream out = null;
         try {
@@ -323,7 +309,7 @@ public class Bmp extends BMPheader {
 
     private void updateFileSize() {
         fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE + imageSize + colors.size() * 4;
-        bfSize = inputInt.apply(bfSize, fileSize);
+        bfSize = Tools.INPUT_INT.apply(bfSize, fileSize);
     }
 
     private void updateImageSize(int compression) {
@@ -345,11 +331,11 @@ public class Bmp extends BMPheader {
                 imageSize = 0;
                 break;
         }
-        biImageSize = inputInt.apply(biImageSize, imageSize);
+        biImageSize = Tools.INPUT_INT.apply(biImageSize, imageSize);
     }
 
     private void updateClrUsed() {
         clrUsed = colors.size();
-        biClrUsed = inputInt.apply(biClrUsed, clrUsed);
+        biClrUsed = Tools.INPUT_INT.apply(biClrUsed, clrUsed);
     }
 }

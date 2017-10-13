@@ -20,6 +20,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_8bits_01() {
+        String file = "C:\\Users\\ユーザー名\\Desktop\\java_8bits_01.bmp";
         int width = 3;
         int height = 3;
         byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
@@ -37,6 +38,6 @@ public class BMP_UT {
         bmp.addColor(255, 0, 255);
         bmp.addColor(0, 255, 255);
         bmp.setImage(image);
-        bmp.output("C:\\Users\\IBM_ADMIN\\Desktop\\java_8bits_01.bmp");
+        bmp.output(file);
     }
 }
