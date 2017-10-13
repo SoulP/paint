@@ -13,15 +13,20 @@ import java.util.function.Function;
  * @version 1.0 2017/10/13 Tools作成
  */
 public interface Tools {
-    Function<byte[], byte[]>            ENDIAN    = e -> {
-                                                      byte[] b = new byte[e.length];
-                                                      for (int i = 0; i < e.length; i++)
-                                                          b[i] = e[e.length - 1 - i];
-                                                      return b;
-                                                  };
+    Function<byte[], byte[]>            ENDIAN      = e -> {
+                                                        byte[] b = new byte[e.length];
+                                                        for (int i = 0; i < e.length; i++)
+                                                            b[i] = e[e.length - 1 - i];
+                                                        return b;
+                                                    };
 
-    BiFunction<byte[], Integer, byte[]> INPUT_INT = (var, val) -> {
-                                                      return ENDIAN.apply(
-                                                              ByteBuffer.allocate(var.length).putInt(val).array());
-                                                  };
+    BiFunction<byte[], Short, byte[]>   INPUT_SHORT = (var, val) -> {
+                                                        return ENDIAN.apply(
+                                                                ByteBuffer.allocate(var.length).putShort(val).array());
+                                                    };
+
+    BiFunction<byte[], Integer, byte[]> INPUT_INT   = (var, val) -> {
+                                                        return ENDIAN.apply(
+                                                                ByteBuffer.allocate(var.length).putInt(val).array());
+                                                    };
 }
