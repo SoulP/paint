@@ -25,6 +25,8 @@ public class BMP_UT {
         String file = "C:\\Users\\ユーザ名\\Desktop\\java_1bit.bmp"; // 出力先
         int width = 3;
         int height = 3;
+
+        // イメージ情報
         byte[] img01 = { (byte) 0xa0, 0x00, 0x00, 0x00 };
         byte[] img02 = { 0x40, 0x00, 0x00, 0x00 };
         byte[] img03 = { (byte) 0xa0, 0x00, 0x00, 0x00 };
@@ -81,6 +83,8 @@ public class BMP_UT {
         String file = "C:\\Users\\ユーザ名\\Desktop\\java_8bit.bmp"; // 出力先
         int width = 3;
         int height = 3;
+
+        // イメージ情報
         byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
         byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };
         byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };
@@ -110,6 +114,7 @@ public class BMP_UT {
         int width = 3;
         int height = 3;
         // @formatter:off
+        // イメージ情報
         byte[] img01 = {
                     (byte) 0xff, (byte) 0xff, 0x00,
                     (byte) 0xff, 0x00, (byte) 0xff,
@@ -154,6 +159,7 @@ public class BMP_UT {
         int width = 3;
         int height = 3;
         // @formatter:off
+        // イメージ情報
         byte[] img01 = {
                     (byte) 0xff, (byte) 0xff, 0x00, 0x00,
                     (byte) 0xff, 0x00, (byte) 0xff, 0x00,
@@ -196,6 +202,7 @@ public class BMP_UT {
         int width = 13;
         int height = 13;
         // @formatter:off
+        // イメージ情報
         byte[][] img = {
                 { 0x0d, 0x28, 0x00, 0x00 },
                 { 0x03, 0x28, 0x0a, 0x00, 0x00, 0x00 },
