@@ -2,7 +2,7 @@ package file.format;
 
 /**
  * <b>BMPファイルフォーマット</b><br>
- * date: 2017/10/12 last_date: 2017/10/12
+ * date: 2017/10/12 last_date: 2017/10/13
  * 
  * @author ソウルP
  * @version 1.0 2017/10/12 BMPheader作成
@@ -29,12 +29,12 @@ public abstract class BMPheader {
     // 1 - BI_RLE8 (RunLength 8 bits/pixel)
     // 2 - BI_RLE4 (RunLength 4 bits/pixel)
     // 3 - BI_BITFIELDS (Bitfields)
-    protected byte[]              biSizeImage      = new byte[4];                // 画像データ部のサイズ (byte)
+    protected byte[]              biImageSize      = new byte[4];                // 画像データ部のサイズ (byte)
     // 0 の場合もある
     // ※biCompression が 0 以外の場合、 ここの値を 0 にすることは出来ない
-    protected byte[]              biXPixPerMeter   = new byte[4];                // 横方向解像度 (1mあたりの画素数)
+    protected byte[]              biPixPerMeterX   = new byte[4];                // 横方向解像度 (1mあたりの画素数)
     // 0 の場合もある
-    protected byte[]              biYPixPerMeter   = new byte[4];                // 縦方向解像度 (1mあたりの画素数)
+    protected byte[]              biPixPerMeterY   = new byte[4];                // 縦方向解像度 (1mあたりの画素数)
     // 0 の場合もある
     protected byte[]              biClrUsed        = new byte[4];                // 格納されているパレット数 (使用色数)
     // 0 の場合もある

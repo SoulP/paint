@@ -1,94 +1,103 @@
 package file.io;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import file.format.BMPheader;
 
 /**
  * <b>BMP入出力</b><br>
- * date: 2017/10/12 last_date: 2017/10/12
+ * date: 2017/10/12 last_date: 2017/10/13
  * 
  * @author ソウルP
  * @version 1.0 2017/10/12 Bmp作成
  */
 public class Bmp extends BMPheader {
-    private int                               width;                                                            // 画像の幅 (ピクセル)
-    private int                               height;                                                           // 画像の高さ (ピクセル)
-    private int                               fileSize;                                                         // ファイルサイズ (byte)
-    private short                             bitCount;                                                         // 1画素あたりのデータサイズ (bit)
-    private int                               compression;                                                      // 圧縮形式
-    private int                               imageSize;                                                        // 画像データ部のサイズ (byte)
-    private int                               pixPerMeterX;                                                     // 横方向解像度 (1mあたりの画素数)
-    private int                               pixPerMeterY;                                                     // 縦方向解像度 (1mあたりの画素数)
-    private int                               clrUsed;                                                          // 格納されているパレット数 (使用色数)
-    private int                               cirImportant;                                                     // 重要なパレットのインデックス
-    List<byte[]>                              colors;                                                           // カラーパレット
-    List<byte[]>                              image;                                                            // イメージ (横の配列)
+    private int                                       width;                                                          // 画像の幅 (ピクセル)
+    private int                                       height;                                                         // 画像の高さ (ピクセル)
+    private int                                       fileSize;                                                       // ファイルサイズ (byte)
+    private short                                     bitCount;                                                       // 1画素あたりのデータサイズ (bit)
+    private int                                       compression;                                                    // 圧縮形式
+    private int                                       imageSize;                                                      // 画像データ部のサイズ (byte)
+    private int                                       pixPerMeterX;                                                   // 横方向解像度 (1mあたりの画素数)
+    private int                                       pixPerMeterY;                                                   // 縦方向解像度 (1mあたりの画素数)
+    private int                                       clrUsed;                                                        // 格納されているパレット数 (使用色数)
+    private int                                       cirImportant;                                                   // 重要なパレットのインデックス
+    List<byte[]>                                      colors;                                                         // カラーパレット
+    List<byte[]>                                      image;                                                          // イメージ
 
-    private final BiConsumer<byte[], Integer> inputInt   = (var, val) -> {
-                                                             var = ByteBuffer.allocate(var.length).putInt(val)
-                                                                     .order(ByteOrder.LITTLE_ENDIAN).array();
-                                                         };
-    private final BiConsumer<byte[], Short>   inputShort = (var, val) -> {
-                                                             var = ByteBuffer.allocate(var.length).putShort(val)
-                                                                     .order(ByteOrder.LITTLE_ENDIAN).array();
-                                                         };
+    private final Function<byte[], byte[]>            endian   = e -> {
+                                                                   byte[] b = new byte[e.length];
+                                                                   for (int i = 0; i < e.length; i++)
+                                                                       b[i] = e[e.length - 1 - i];
+                                                                   return b;
+                                                               };
+
+    private final BiFunction<byte[], Integer, byte[]> inputInt = (var, val) -> {
+                                                                   return endian.apply(ByteBuffer.allocate(var.length)
+                                                                           .putInt(val).array());
+                                                               };
 
     /**
      * <b>BMP</b>
      */
     public Bmp() {
-        cirImportant = clrUsed = pixPerMeterY = pixPerMeterX = imageSize = compression = fileSize = height = width = bitCount = 0;
         colors = new ArrayList<>();
         image = new ArrayList<>();
+        imageSize = fileSize = 0;
+        setWidth(0);
+        setHeight(0);
+        setBitCount((short) 0);
+        setCompression(0);
+        setPixPerMeterX(0);
+        setPixPerMeterY(0);
+        clearColors();
+        setCirImportant(0);
+        biImageSize = inputInt.apply(biImageSize, imageSize);
+        bfSize = inputInt.apply(bfSize, fileSize);
     }
 
     /**
-     * <b>出力</b>
-     * 
      * @return 画像の幅 (ピクセル)
      */
-    public final int getWitdh() {
+    public int getWitdh() {
         return width;
     }
 
     /**
-     * <b>入力</b>
-     * 
      * @param width
      *            画像の幅 (ピクセル)
      */
-    public final void setWidth(int width) {
+    public void setWidth(int width) {
         this.width = width;
-        inputInt.accept(bcWidth, width);
+        bcWidth = inputInt.apply(bcWidth, width);
     }
 
     /**
-     * <b>出力</b><br>
      * bcHeight の値が正数なら，画像データは左下から右上へ<br>
      * bcHeight の値が負数なら，画像データは左上から右下へ
      * 
      * @return 画像の高さ (ピクセル)
      */
-    public final int getHeight() {
+    public int getHeight() {
         return height;
     }
 
     /**
-     * <b>入力</b><br>
      * bcHeight の値が正数なら，画像データは左下から右上へ<br>
      * bcHeight の値が負数なら，画像データは左上から右下へ
      * 
      * @param height
      *            画像の高さ (ピクセル)
      */
-    public final void setHeight(int height) {
+    public void setHeight(int height) {
         this.height = height;
-        inputInt.accept(bcHeight, height);
+        bcHeight = inputInt.apply(bcHeight, height);
     }
 
     /**
@@ -97,24 +106,22 @@ public class Bmp extends BMPheader {
      * 
      * @return 1画素あたりのデータサイズ (bit)
      */
-    public final short getBitCount() {
+    public short getBitCount() {
         return bitCount;
     }
 
     /**
-     * <b>入力</b><br>
      * 例）256 色ビットマップ ＝ 8
      * 
      * @param bitCount
      *            1画素あたりのデータサイズ (bit)
      */
-    public final void setBitCount(short bitCount) {
-        this.bitCount = bitCount;
-        inputShort.accept(bcBitCount, bitCount);
+    public void setBitCount(int bitCount) {
+        this.bitCount = (short) bitCount;
+        bcBitCount = endian.apply(ByteBuffer.allocate(2).putShort(this.bitCount).array());
     }
 
     /**
-     * <b>出力</b><br>
      * <ul>
      * 圧縮形式
      * <li>0 - BI_RGB (無圧縮)</li>
@@ -125,12 +132,11 @@ public class Bmp extends BMPheader {
      * 
      * @return 圧縮形式
      */
-    public final int getCompression() {
+    public int getCompression() {
         return compression;
     }
 
     /**
-     * <b>入力</b><br>
      * <ul>
      * 圧縮形式
      * <li>0 - BI_RGB (無圧縮)</li>
@@ -142,17 +148,185 @@ public class Bmp extends BMPheader {
      * @param compression
      *            圧縮形式
      */
-    public final void setCompression(int compression) {
+    public void setCompression(int compression) {
         this.compression = compression;
-        inputInt.accept(biCompression, compression);
+        biCompression = inputInt.apply(biCompression, compression);
     }
 
-    private final void updateFileSize() {
-        fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE + imageSize;
-        inputInt.accept(bfSize, fileSize);
+    /**
+     * @return 横方向解像度 (1mあたりの画素数)
+     */
+    public int getPixPerMeterX() {
+        return pixPerMeterX;
     }
 
-    private final void updateImageSize(int compression) {
+    /**
+     * @param pixPerMeterX
+     *            横方向解像度 (1mあたりの画素数)
+     */
+    public void setPixPerMeterX(int pixPerMeterX) {
+        this.pixPerMeterX = pixPerMeterX;
+        biPixPerMeterX = inputInt.apply(biPixPerMeterX, pixPerMeterX);
+    }
+
+    /**
+     * @return 縦方向解像度 (1mあたりの画素数)
+     */
+    public int getPixPerMeterY() {
+        return pixPerMeterY;
+    }
+
+    /**
+     * @param pixPerMeterY
+     *            縦方向解像度 (1mあたりの画素数)
+     */
+    public void setPixPerMeterY(int pixPerMeterY) {
+        this.pixPerMeterY = pixPerMeterY;
+        biPixPerMeterY = inputInt.apply(biPixPerMeterY, pixPerMeterY);
+    }
+
+    /**
+     * @return 重要なパレットのインデックス
+     */
+    public int getCirImportant() {
+        return cirImportant;
+    }
+
+    /**
+     * @param cirImportant
+     *            重要なパレットのインデックス
+     */
+    public void setCirImportant(int cirImportant) {
+        this.cirImportant = cirImportant;
+    }
+
+    /**
+     * @return カラーパレット
+     */
+    public List<byte[]> getColors() {
+        return colors;
+    }
+
+    /**
+     * @param colors
+     *            カラーパレット
+     */
+    public void setColors(List<byte[]> colors) {
+        this.colors = colors;
+        updateClrUsed();
+    }
+
+    /**
+     * <b>カラーパレット 全消去</b>
+     */
+    public void clearColors() {
+        colors.clear();
+        updateClrUsed();
+    }
+
+    /**
+     * <b>カラーパレットに色追加</b>
+     * 
+     * @param r
+     *            赤 0 - 255
+     * @param g
+     *            緑 0 - 255
+     * @param b
+     *            青 0 - 255
+     */
+    public void addColor(int r, int g, int b) {
+        byte[] color = { (byte) b, (byte) g, (byte) r, 0x00 };
+        colors.add(color);
+        updateClrUsed();
+    }
+
+    /**
+     * byte[]が横、Listが縦
+     * 
+     * @return イメージ
+     */
+    public List<byte[]> getImage() {
+        return image;
+    }
+
+    /**
+     * @param image
+     *            イメージ
+     */
+    public void setImage(List<byte[]> image) {
+        this.image = image;
+        updateImageSize(compression);
+        updateFileSize();
+    }
+
+    /**
+     * <b>入力</b>
+     * 
+     * @param file
+     *            ファイル先
+     */
+    public void input(String file) {
+
+    }
+
+    /**
+     * <b>出力</b>
+     * 
+     * @param file
+     *            ファイル先
+     */
+    public void output(String file) {
+        int offset = FILE_HEADER_SIZE + INFO_HEADER_SIZE + colors.size() * 4;
+        bfOffBits = inputInt.apply(bfOffBits, offset);
+
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(file);
+            // ファイルヘッダ
+            out.write(BF_TYPE);
+            out.write(bfSize);
+            out.write(BF_RESERVERD_1);
+            out.write(BF_RESERVERD_2);
+            out.write(bfOffBits);
+            // 情報ヘッダ
+            out.write(BC_SIZE);
+            out.write(bcWidth);
+            out.write(bcHeight);
+            out.write(BC_PLANES);
+            out.write(bcBitCount);
+            out.write(biCompression);
+            out.write(biImageSize);
+            out.write(biPixPerMeterX);
+            out.write(biPixPerMeterY);
+            out.write(biClrUsed);
+            out.write(biCirImportant);
+            // カラーパレット
+            if (!colors.isEmpty()) for (byte[] c : colors)
+                out.write(c);
+            // イメージ
+            for (byte[] img : image)
+                out.write(img);
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    out = null;
+                }
+            }
+        }
+    }
+
+    private void updateFileSize() {
+        fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE + imageSize + colors.size() * 4;
+        bfSize = inputInt.apply(bfSize, fileSize);
+    }
+
+    private void updateImageSize(int compression) {
         int tempW;
         switch (compression) {
             case 0:
@@ -171,6 +345,11 @@ public class Bmp extends BMPheader {
                 imageSize = 0;
                 break;
         }
-        inputInt.accept(biSizeImage, imageSize);
+        biImageSize = inputInt.apply(biImageSize, imageSize);
+    }
+
+    private void updateClrUsed() {
+        clrUsed = colors.size();
+        biClrUsed = inputInt.apply(biClrUsed, clrUsed);
     }
 }
