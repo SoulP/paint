@@ -2,7 +2,6 @@ package file.io;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +103,7 @@ public class Bmp extends BMPheader {
      */
     public void setBitCount(int bitCount) {
         this.bitCount = (short) bitCount;
-        bcBitCount = Tools.ENDIAN.apply(ByteBuffer.allocate(2).putShort(this.bitCount).array());
+        bcBitCount = Tools.INPUT_SHORT.apply(bcBitCount, this.bitCount);
     }
 
     /**
