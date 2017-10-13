@@ -37,8 +37,8 @@ public class BMP_UT {
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
         bmp.setBitCount(1); // ビットの深さ
-        bmp.addColor(255, 0, 255); // 色 - 紫
-        bmp.addColor(0, 255, 255); // 色 - アクア
+        bmp.addColor(255, 0, 255); // 紫色
+        bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
         bmp.output(file); // 出力
     }
@@ -65,8 +65,8 @@ public class BMP_UT {
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
         bmp.setBitCount(4); // ビットの深さ
-        bmp.addColor(255, 0, 255); // 色 - 紫
-        bmp.addColor(0, 255, 255); // 色 - アクア
+        bmp.addColor(255, 0, 255); // 紫色
+        bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
         bmp.output(file); // 出力
     }
@@ -93,8 +93,8 @@ public class BMP_UT {
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
         bmp.setBitCount(8); // ビットの深さ
-        bmp.addColor(255, 0, 255); // 色 - 紫
-        bmp.addColor(0, 255, 255); // 色 - アクア
+        bmp.addColor(255, 0, 255); // 紫色
+        bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
         bmp.output(file); // 出力
     }
@@ -109,12 +109,27 @@ public class BMP_UT {
         String file = "C:\\Users\\ユーザ名\\Desktop\\java_24bit.bmp";
         int width = 3;
         int height = 3;
-        byte[] img01 = { (byte) 0xff, (byte) 0xff, 0x00, (byte) 0xff, 0x00, (byte) 0xff, (byte) 0xff, (byte) 0xff, 0x00,
-                0x00, 0x00, 0x00 };
-        byte[] img02 = { (byte) 0xff, 0x00, (byte) 0xff, (byte) 0xff, (byte) 0xff, 0x00, (byte) 0xff, 0x00, (byte) 0xff,
-                0x00, 0x00, 0x00 };
-        byte[] img03 = { (byte) 0xff, (byte) 0xff, 0x00, (byte) 0xff, 0x00, (byte) 0xff, (byte) 0xff, (byte) 0xff, 0x00,
-                0x00, 0x00, 0x00 };
+        //@formatter:off
+        byte[] img01 = {
+                    (byte) 0xff, (byte) 0xff, 0x00,
+                    (byte) 0xff, 0x00, (byte) 0xff,
+                    (byte) 0xff, (byte) 0xff, 0x00,
+                    0x00, 0x00, 0x00
+                };
+        byte[] img02 = {
+                    (byte) 0xff, 0x00, (byte) 0xff,
+                    (byte) 0xff, (byte) 0xff, 0x00,
+                    (byte) 0xff, 0x00, (byte) 0xff,
+                    0x00, 0x00, 0x00
+                };
+        byte[] img03 = {
+                    (byte) 0xff, (byte) 0xff, 0x00,
+                    (byte) 0xff, 0x00, (byte) 0xff,
+                    (byte) 0xff, (byte) 0xff, 0x00,
+                    0x00, 0x00, 0x00
+                };
+        //@formatter:on
+
         List<byte[]> image = new ArrayList<>();
         image.add(img01);
         image.add(img02);
@@ -138,12 +153,24 @@ public class BMP_UT {
         String file = "C:\\Users\\ユーザ名\\Desktop\\java_32bit.bmp";
         int width = 3;
         int height = 3;
-        byte[] img01 = { (byte) 0xff, (byte) 0xff, 0x00, 0x00, (byte) 0xff, 0x00, (byte) 0xff, 0x00, (byte) 0xff,
-                (byte) 0xff, 0x00, 0x00 };
-        byte[] img02 = { (byte) 0xff, 0x00, (byte) 0xff, 0x00, (byte) 0xff, (byte) 0xff, 0x00, 0x00, (byte) 0xff, 0x00,
-                (byte) 0xff, 0x00 };
-        byte[] img03 = { (byte) 0xff, (byte) 0xff, 0x00, 0x00, (byte) 0xff, 0x00, (byte) 0xff, 0x00, (byte) 0xff,
-                (byte) 0xff, 0x00, 0x00 };
+        //@formatter:off
+        byte[] img01 = {
+                    (byte) 0xff, (byte) 0xff, 0x00, 0x00,
+                    (byte) 0xff, 0x00, (byte) 0xff, 0x00,
+                    (byte) 0xff, (byte) 0xff, 0x00, 0x00
+                };
+        byte[] img02 = {
+                    (byte) 0xff, 0x00, (byte) 0xff, 0x00,
+                    (byte) 0xff, (byte) 0xff, 0x00, 0x00,
+                    (byte) 0xff, 0x00, (byte) 0xff, 0x00
+                };
+        byte[] img03 = {
+                    (byte) 0xff, (byte) 0xff, 0x00, 0x00,
+                    (byte) 0xff, 0x00, (byte) 0xff, 0x00,
+                    (byte) 0xff, (byte) 0xff, 0x00, 0x00
+                };
+        //@formatter:on
+
         List<byte[]> image = new ArrayList<>();
         image.add(img01);
         image.add(img02);
@@ -154,6 +181,53 @@ public class BMP_UT {
         bmp.setHeight(height); // 高さ
         bmp.setBitCount(32); // ビットの深さ
         bmp.setImage(image);// イメージ
+        bmp.output(file); // 出力
+    }
+
+    /**
+     * <b>BMP 出力</b><br>
+     * 8bit<br>
+     * 圧縮形式: BI_RLE8<br>
+     * 成功テスト
+     */
+    @Test
+    public void bmpOutput_8bit_BI_RLE8() {
+        String file = "C:\\Users\\ユーザ名\\Desktop\\java_8bit_BI_RLE8.bmp";
+        int width = 13;
+        int height = 13;
+        //@formatter:off
+        byte[][] img = {
+                { 0x0d, 0x28, 0x00, 0x00 },
+                { 0x03, 0x28, 0x0a, 0x00, 0x00, 0x00 },
+                { 0x08, 0x00, 0x05, 0x27, 0x00, 0x00 },
+                { 0x0d, 0x27, 0x00, 0x00 },
+                { 0x00, 0x0d, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x00, 0x00, 0x00 },
+                { 0x00, 0x0d, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x00, 0x00, 0x00 },
+                { 0x00, 0x0d, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x00, 0x00, 0x00 },
+                { 0x0d, 0x2a, 0x00, 0x00 },
+                { 0x0d, 0x29, 0x00, 0x00 },
+                { 0x06, 0x29, 0x01, 0x2a, 0x06, 0x29, 0x00, 0x00 },
+                { 0x0d, 0x29, 0x00, 0x00 },
+                { 0x02, 0x29, 0x01, 0x2a, 0x07, 0x29, 0x01, 0x2a, 0x02, 0x29, 0x00, 0x00 },
+                { 0x0d, 0x29, 0x00, 0x01 }
+            };
+        //@formatter:on
+
+        Bmp bmp = new Bmp();
+        bmp.setWidth(width); // 幅
+        bmp.setHeight(height); // 高さ
+        bmp.setBitCount(8); // ビットの深さ
+        bmp.setCompression(1); // 圧縮形式
+        for (int i = 255; i >= 27; i -= 19) {
+            bmp.addColor(i, 0, 0); // 赤色
+            bmp.addColor(0, i, 0); // 緑色
+            bmp.addColor(0, 0, i); // 青色
+        }
+        bmp.addColor(255, 255, 0); // 黄色
+        bmp.addColor(0, 255, 255); // アクア色
+        bmp.addColor(0, 0, 0); // 黒色
+        bmp.addColor(255, 255, 255); // 白色
+        bmp.setImage(img);// イメージ
         bmp.output(file); // 出力
     }
 }

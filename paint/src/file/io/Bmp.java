@@ -43,7 +43,7 @@ public class Bmp extends BMPheader {
         setPixPerMeterY(0);
         clearColors();
         setCirImportant(0);
-        biImageSize = Tools.INPUT_INT.apply(biImageSize, imageSize);
+        biSizeImage = Tools.INPUT_INT.apply(biSizeImage, imageSize);
         bfSize = Tools.INPUT_INT.apply(bfSize, fileSize);
     }
 
@@ -151,7 +151,7 @@ public class Bmp extends BMPheader {
      */
     public void setPixPerMeterX(int pixPerMeterX) {
         this.pixPerMeterX = pixPerMeterX;
-        biPixPerMeterX = Tools.INPUT_INT.apply(biPixPerMeterX, pixPerMeterX);
+        biXPelsPerMeter = Tools.INPUT_INT.apply(biXPelsPerMeter, pixPerMeterX);
     }
 
     /**
@@ -167,7 +167,7 @@ public class Bmp extends BMPheader {
      */
     public void setPixPerMeterY(int pixPerMeterY) {
         this.pixPerMeterY = pixPerMeterY;
-        biPixPerMeterY = Tools.INPUT_INT.apply(biPixPerMeterY, pixPerMeterY);
+        biYPelsPerMeter = Tools.INPUT_INT.apply(biYPelsPerMeter, pixPerMeterY);
     }
 
     /**
@@ -245,6 +245,18 @@ public class Bmp extends BMPheader {
     }
 
     /**
+     * @param image
+     *            イメージ
+     */
+    public void setImage(byte[][] image) {
+        this.image.clear();
+        for (byte[] i : image)
+            this.image.add(i);
+        updateImageSize(compression);
+        updateFileSize();
+    }
+
+    /**
      * <b>入力</b>
      * 
      * @param file
@@ -280,9 +292,9 @@ public class Bmp extends BMPheader {
             out.write(BC_PLANES);
             out.write(bcBitCount);
             out.write(biCompression);
-            out.write(biImageSize);
-            out.write(biPixPerMeterX);
-            out.write(biPixPerMeterY);
+            out.write(biSizeImage);
+            out.write(biXPelsPerMeter);
+            out.write(biYPelsPerMeter);
             out.write(biClrUsed);
             out.write(biCirImportant);
             // カラーパレット
@@ -330,7 +342,7 @@ public class Bmp extends BMPheader {
                 imageSize = 0;
                 break;
         }
-        biImageSize = Tools.INPUT_INT.apply(biImageSize, imageSize);
+        biSizeImage = Tools.INPUT_INT.apply(biSizeImage, imageSize);
     }
 
     private void updateClrUsed() {
