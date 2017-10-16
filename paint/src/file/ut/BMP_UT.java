@@ -280,4 +280,16 @@ public class BMP_UT {
         bmp.setImage(img);// イメージ
         bmp.output(file); // 出力
     }
+
+    /**
+     * <b>BMP 入力</b><br>
+     * 成功テスト
+     */
+    @Test
+    public void bmpInput() {
+        String file = "C:\\Users\\IBM_ADMIN\\Desktop\\java_4bit_BI_RLE4.bmp";
+        
+        Bmp bmp = new Bmp();
+        bmp.input(file);
+    }
 }
