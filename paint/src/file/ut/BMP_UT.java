@@ -365,8 +365,10 @@ public class BMP_UT {
         System.out.println();
         System.out.println("【カラーパレット】");
         bmp.getColors().forEach(color -> {
-            System.out.println("R = " + Byte.toUnsignedInt(color[2]) + ", G = " + Byte.toUnsignedInt(color[1])
-                    + ", B = " + Byte.toUnsignedInt(color[0]));
+            System.out.print("R = " + String.format("%3s", Byte.toUnsignedInt(color[2])) + ", ");
+            System.out.print("G = " + String.format("%3s", Byte.toUnsignedInt(color[1])) + ", ");
+            System.out.print("B = " + String.format("%3s", Byte.toUnsignedInt(color[0])));
+            System.out.println();
         });
         System.out.println();
         System.out.println("【イメージ】");
