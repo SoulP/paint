@@ -11,7 +11,7 @@ import file.format.BMPheader;
 
 /**
  * <b>BMP入出力</b><br>
- * date: 2017/10/12 last_date: 2017/10/16
+ * date: 2017/10/12 last_date: 2017/10/17
  * 
  * @author ソウルP
  * @version 1.0 2017/10/12 Bmp作成
@@ -22,11 +22,11 @@ public class Bmp extends BMPheader {
     private int         height;                                                              // 画像の高さ (ピクセル)
     private short       bitCount;                                                            // 1画素あたりのデータサイズ (bit)
     private int         compression;                                                         // 圧縮形式
-    private int         imageSize;                                                           // 画像データ部のサイズ (byte)
-    private int         pixPerMeterX;                                                        // 横方向解像度 (1mあたりの画素数)
-    private int         pixPerMeterY;                                                        // 縦方向解像度 (1mあたりの画素数)
-    private int         clrUsed;                                                             // 格納されているパレット数 (使用色数)
-    private int         cirImportant;                                                        // 重要なパレットのインデックス
+    private int         imageSize;                                                           // 画像データサイズ (byte)
+    private int         pixPerMeterX;                                                        // 水平方向の解像度
+    private int         pixPerMeterY;                                                        // 垂直方向の解像度
+    private int         clrUsed;                                                             // 使用する色数
+    private int         cirImportant;                                                        // 重要な色数
     List<byte[]>        colors;                                                              // カラーパレット
     List<byte[]>        image;                                                               // イメージ
     private int         infoHeaderSize   = INFO_HEADER_SIZE;                                 // 情報ヘッダサイズ
@@ -43,9 +43,16 @@ public class Bmp extends BMPheader {
     }
 
     /**
+     * @return ファイルサイズ (byte)
+     */
+    public int getFileSize() {
+        return fileSize;
+    }
+
+    /**
      * @return 画像の幅 (ピクセル)
      */
-    public int getWitdh() {
+    public int getWidth() {
         return width;
     }
 
@@ -134,7 +141,15 @@ public class Bmp extends BMPheader {
     }
 
     /**
-     * @return 横方向解像度 (1mあたりの画素数)
+     * @return 画像データサイズ
+     */
+    public int getImageSize() {
+        updateImageSize();
+        return imageSize;
+    }
+
+    /**
+     * @return 水平方向の解像度
      */
     public int getPixPerMeterX() {
         return pixPerMeterX;
@@ -142,7 +157,7 @@ public class Bmp extends BMPheader {
 
     /**
      * @param pixPerMeterX
-     *            横方向解像度 (1mあたりの画素数)
+     *            垂直方向の解像度
      */
     public void setPixPerMeterX(int pixPerMeterX) {
         this.pixPerMeterX = pixPerMeterX;
@@ -235,7 +250,7 @@ public class Bmp extends BMPheader {
      */
     public void setImage(List<byte[]> image) {
         this.image = image;
-        updateImageSize(compression);
+        updateImageSize();
         updateFileSize();
     }
 
@@ -247,7 +262,7 @@ public class Bmp extends BMPheader {
         this.image.clear();
         for (byte[] i : image)
             this.image.add(i);
-        updateImageSize(compression);
+        updateImageSize();
         updateFileSize();
     }
 
@@ -256,8 +271,9 @@ public class Bmp extends BMPheader {
      * 
      * @param file
      *            ファイル先
+     * @throws IOException
      */
-    public void input(String file) {
+    public void input(String file) throws IOException {
         initialize();
         FileInputStream in = null;
         try {
@@ -273,7 +289,6 @@ public class Bmp extends BMPheader {
             offset += BF_RESERVERD_1.length;
             offset += BF_RESERVERD_2.length;
             int imageOffset = Tools.bytes2int(Tools.subbytes(data, offset, offset += 4));
-            offset += BC_SIZE.length;
             byte[] bcSize = Tools.subbytes(data, offset, offset += 4);
             infoHeaderSize = Tools.bytes2int(bcSize);
             if (infoHeaderSize == 12) {
@@ -301,7 +316,8 @@ public class Bmp extends BMPheader {
                 clrUsed = Tools.bytes2int(biClrUsed);
                 setCirImportant(Tools.bytes2int(Tools.subbytes(data, offset, offset += 4)));
                 if (clrUsed > 0) {
-                    for (int i = 0; i < clrUsed; i++) {
+                    int colorSize = clrUsed;
+                    for (int i = 0; i < colorSize; i++) {
                         int color = i * 4 + offset;
                         int r = Byte.toUnsignedInt(data[color + 2]);
                         int g = Byte.toUnsignedInt(data[color + 1]);
@@ -310,7 +326,27 @@ public class Bmp extends BMPheader {
                     }
                 }
             }
-            if (compression == 0) {
+
+            if (compression == 1 || compression == 2) {
+                List<Byte> bytes = new ArrayList<>();
+                byte[] byteArray;
+                int endOffset = imageOffset + imageSize;
+                for (int i = imageOffset; i < endOffset; i += 2) {
+                    byte b = data[i];
+                    byte bb = data[i + 1];
+                    bytes.add(b);
+                    bytes.add(bb);
+
+                    if (b == 0x00 & (bb == 0x00 || bb == 0x01)) {
+                        byteArray = new byte[bytes.size()];
+                        for (int a = 0; a < byteArray.length; a++)
+                            byteArray[a] = bytes.get(a);
+                        bytes.clear();
+                        image.add(byteArray);
+                        if (bb == 0x01) break;
+                    }
+                }
+            } else {
                 int tempW = 0;
                 if (bitCount == 1) tempW = (width % 32 == 0) ? width : (32 - width % 32 + width) / 8;
                 if (bitCount == 4) tempW = (width % 8 == 0) ? width : (8 - width % 8 + width) / 2;
@@ -318,7 +354,6 @@ public class Bmp extends BMPheader {
                 if (bitCount == 24) tempW = (width * 3 % 4 == 0) ? width : 4 - width * 3 % 4 + width * 3;
                 if (bitCount == 32) tempW = width * 4;
                 if (tempW <= 0) throw new IOException(ERROR_BITCOUNT);
-
                 for (int i = imageOffset; i < fileSize; i += tempW) {
                     byte[] img = new byte[tempW];
                     for (int w = 0; w < tempW; w++) {
@@ -327,11 +362,6 @@ public class Bmp extends BMPheader {
                     image.add(img);
                 }
             }
-            if(compression == 1) {
-                
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             if (in != null) {
                 try {
@@ -348,8 +378,9 @@ public class Bmp extends BMPheader {
      * 
      * @param file
      *            ファイル先
+     * @throws IOException
      */
-    public void output(String file) {
+    public void output(String file) throws IOException {
         int offset = FILE_HEADER_SIZE + INFO_HEADER_SIZE + colors.size() * 4;
         bfOffBits = Tools.int2bytes(offset);
 
@@ -381,8 +412,6 @@ public class Bmp extends BMPheader {
             for (byte[] img : image)
                 out.write(img);
             out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             if (out != null) {
                 try {
@@ -415,7 +444,7 @@ public class Bmp extends BMPheader {
         bfSize = Tools.int2bytes(fileSize);
     }
 
-    private void updateImageSize(int compression) {
+    private void updateImageSize() {
         int tempW = 0;
         switch (compression) {
             case 0:

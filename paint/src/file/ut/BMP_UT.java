@@ -1,5 +1,8 @@
 package file.ut;
 
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +12,7 @@ import file.io.Bmp;
 
 /**
  * <b>BMPの単体テスト</b><br>
- * date: 2017/10/13 last_date 2017/10/13
+ * date: 2017/10/13 last_date 2017/10/17
  * 
  * @author ソウルP
  */
@@ -42,7 +45,11 @@ public class BMP_UT {
         bmp.addColor(255, 0, 255); // 紫色
         bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
-        bmp.output(file); // 出力
+        try {
+            bmp.output(file);// 出力
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
     }
 
     /**
@@ -70,7 +77,11 @@ public class BMP_UT {
         bmp.addColor(255, 0, 255); // 紫色
         bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
-        bmp.output(file); // 出力
+        try {
+            bmp.output(file);// 出力
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
     }
 
     /**
@@ -100,7 +111,11 @@ public class BMP_UT {
         bmp.addColor(255, 0, 255); // 紫色
         bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
-        bmp.output(file); // 出力
+        try {
+            bmp.output(file);// 出力
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
     }
 
     /**
@@ -145,7 +160,11 @@ public class BMP_UT {
         bmp.setHeight(height); // 高さ
         bmp.setBitCount(24); // ビットの深さ
         bmp.setImage(image);// イメージ
-        bmp.output(file); // 出力
+        try {
+            bmp.output(file);// 出力
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
     }
 
     /**
@@ -187,7 +206,11 @@ public class BMP_UT {
         bmp.setHeight(height); // 高さ
         bmp.setBitCount(32); // ビットの深さ
         bmp.setImage(image);// イメージ
-        bmp.output(file); // 出力
+        try {
+            bmp.output(file);// 出力
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
     }
 
     /**
@@ -235,7 +258,11 @@ public class BMP_UT {
         bmp.addColor(0, 0, 0); // 黒色
         bmp.addColor(255, 255, 255); // 白色
         bmp.setImage(img);// イメージ
-        bmp.output(file); // 出力
+        try {
+            bmp.output(file);// 出力
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
     }
 
     /**
@@ -278,7 +305,11 @@ public class BMP_UT {
             bmp.addColor(0, i, i); // アクア色
         }
         bmp.setImage(img);// イメージ
-        bmp.output(file); // 出力
+        try {
+            bmp.output(file);// 出力
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
     }
 
     /**
@@ -287,9 +318,62 @@ public class BMP_UT {
      */
     @Test
     public void bmpInput() {
-        String file = "C:\\Users\\IBM_ADMIN\\Desktop\\java_4bit_BI_RLE4.bmp";
-        
+        String file = "C:\\Users\\ユーザ名\\Desktop\\java_4bit_BI_RLE4.bmp";
+        String comp = "";
+
         Bmp bmp = new Bmp();
-        bmp.input(file);
+        try {
+            bmp.input(file);
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+
+        System.out.println(file);
+        System.out.println("ファイルサイズ: " + bmp.getFileSize());
+        System.out.println("幅: " + bmp.getWidth());
+        System.out.println("高さ: " + bmp.getHeight());
+        System.out.println("ビットの深さ: " + bmp.getBitCount() + "bit");
+        switch (bmp.getCompression()) {
+            case 0:
+                comp = "BI_RGB (無圧縮)";
+                break;
+            case 1:
+                comp = "BI_RLE8 (RunLength 8 bits/pixel)";
+                break;
+            case 2:
+                comp = "BI_RLE4 (RunLength 4 bits/pixel)";
+                break;
+            case 3:
+                comp = "BI_BITFIELDS (Bitfields)";
+                break;
+            case 4:
+                comp = "BI_JPEG";
+                break;
+            case 5:
+                comp = "BI_PNG";
+                break;
+            default:
+                comp = "不明";
+                break;
+        }
+        System.out.println("圧縮形式: " + comp);
+        System.out.println("画像データサイズ: " + bmp.getImageSize());
+        System.out.println("水平方向の解像度: " + bmp.getPixPerMeterX());
+        System.out.println("垂直方向の解像度: " + bmp.getPixPerMeterY());
+        System.out.println("使用する色数: " + bmp.getColors().size());
+        System.out.println("重要な色数: " + bmp.getCirImportant());
+        System.out.println();
+        System.out.println("【カラーパレット】");
+        bmp.getColors().forEach(color -> {
+            System.out.println("R = " + Byte.toUnsignedInt(color[2]) + ", G = " + Byte.toUnsignedInt(color[1])
+                    + ", B = " + Byte.toUnsignedInt(color[0]));
+        });
+        System.out.println();
+        System.out.println("【イメージ】");
+        bmp.getImage().forEach(bA -> {
+            for (byte b : bA)
+                System.out.print(String.format("%02X ", b));
+            System.out.println();
+        });
     }
 }
