@@ -156,6 +156,7 @@ public abstract class BMPheaderV3 extends BMPheaderV1 {
     protected byte[]           biYPelsPerMeter;          // 垂直方向の解像度 0の場合もある
     protected byte[]           biClrUsed;                // 格納されているパレット数 (使用色数) 0の場合もある
     protected byte[]           biCirImportant;           // 重要なパレットのインデックス 0の場合もある
+
     protected static final int INFO_HEADER_SIZE_V3 = 40; // 情報ヘッダサイズ
 
     /**
