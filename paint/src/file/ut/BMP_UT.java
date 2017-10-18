@@ -335,22 +335,25 @@ public class BMP_UT {
         System.out.println("ビットの深さ: " + bmp.getBitCount() + "bit");
         switch (bmp.getCompression()) {
             case 0:
-                comp = "BI_RGB (無圧縮)";
+                comp = "BI_RGB （非圧縮）";
                 break;
             case 1:
-                comp = "BI_RLE8 (RunLength 8 bits/pixel)";
+                comp = "BI_RLE8 （8ビット/ピクセル）";
                 break;
             case 2:
-                comp = "BI_RLE4 (RunLength 4 bits/pixel)";
+                comp = "BI_RLE4 （4ビット/ピクセル）";
                 break;
             case 3:
-                comp = "BI_BITFIELDS (Bitfields)";
+                comp = "BI_BITFIELDS （ビットフィールド）";
                 break;
             case 4:
                 comp = "BI_JPEG";
                 break;
             case 5:
                 comp = "BI_PNG";
+                break;
+            case 6:
+                comp = "BI_ALPHABITFIELDS （アルファチャンネル付きビットフィールド）";
                 break;
             default:
                 comp = "不明";

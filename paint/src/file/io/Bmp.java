@@ -7,16 +7,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import file.format.BMPheader;
+import file.Tools;
+import file.format.BMPheaderV3;
 
 /**
  * <b>BMP入出力</b><br>
- * date: 2017/10/12 last_date: 2017/10/17
+ * date: 2017/10/12 last_date: 2017/10/18
  * 
  * @author ソウルP
  * @version 1.0 2017/10/12 Bmp作成
+ * @version 1.1 2017/10/18 各情報ヘッダに対応
  */
-public class Bmp extends BMPheader {
+public class Bmp extends BMPheaderV3 {
     private int         fileSize;                                                            // ファイルサイズ (byte)
     private int         width;                                                               // 画像の幅 (ピクセル)
     private int         height;                                                              // 画像の高さ (ピクセル)
@@ -29,7 +31,7 @@ public class Bmp extends BMPheader {
     private int         cirImportant;                                                        // 重要な色数
     List<byte[]>        colors;                                                              // カラーパレット
     List<byte[]>        image;                                                               // イメージ
-    private int         infoHeaderSize   = INFO_HEADER_SIZE;                                 // 情報ヘッダサイズ
+    private int         infoHeaderSize;                                                      // 情報ヘッダサイズ
 
     static final String ERROR_FILE_OR    = "ファイルの破損もしくは、";
     static final String ERROR_IS_NOT_BMP = ERROR_FILE_OR + "拡張子がBMPではありません。";
@@ -111,10 +113,15 @@ public class Bmp extends BMPheader {
     /**
      * <ul>
      * 圧縮形式
-     * <li>0 - BI_RGB (無圧縮)</li>
-     * <li>1 - BI_RLE8 (RunLength 8 bits/pixel)</li>
-     * <li>2 - BI_RLE4 (RunLength 4 bits/pixel)</li>
-     * <li>3 - BI_BITFIELDS (Bitfields)</li>
+     * <li>0 - BI_RGB （非圧縮）</li>
+     * <li>1 - BI_RLE8 （8ビット/ピクセル）</li>
+     * <li>2 - BI_RLE4 （4ビット/ピクセル）</li>
+     * <li>3 - BI_BITFIELDS （ビットフィールド）</li>
+     * <li>4 - BI_JPEG</li>
+     * <li>5 - BI_PNG</li> 上記以外の圧縮形式
+     * <li>3 - HUFFMAN_1D （1ビットハフマン符号化、 OS/2 2.x）</li>
+     * <li>4 - RLE_24 （24ビット/ピクセル、OS/2 2.x）</li>
+     * <li>6 - BI_ALPHABITFIELDS （アルファチャンネル付きビットフィールド、Windows CE 5.0）</li>
      * </ul>
      * 
      * @return 圧縮形式
@@ -126,10 +133,15 @@ public class Bmp extends BMPheader {
     /**
      * <ul>
      * 圧縮形式
-     * <li>0 - BI_RGB (無圧縮)</li>
-     * <li>1 - BI_RLE8 (RunLength 8 bits/pixel)</li>
-     * <li>2 - BI_RLE4 (RunLength 4 bits/pixel)</li>
-     * <li>3 - BI_BITFIELDS (Bitfields)</li>
+     * <li>0 - BI_RGB （非圧縮）</li>
+     * <li>1 - BI_RLE8 （8ビット/ピクセル）</li>
+     * <li>2 - BI_RLE4 （4ビット/ピクセル）</li>
+     * <li>3 - BI_BITFIELDS （ビットフィールド）</li>
+     * <li>4 - BI_JPEG</li>
+     * <li>5 - BI_PNG</li> 上記以外の圧縮形式
+     * <li>3 - HUFFMAN_1D （1ビットハフマン符号化、 OS/2 2.x）</li>
+     * <li>4 - RLE_24 （24ビット/ピクセル、OS/2 2.x）</li>
+     * <li>6 - BI_ALPHABITFIELDS （アルファチャンネル付きビットフィールド、Windows CE 5.0）</li>
      * </ul>
      * 
      * @param compression
@@ -283,11 +295,11 @@ public class Bmp extends BMPheader {
             in.read(data);
 
             int offset = 0;
-            byte[] bm = Tools.subbytes(data, offset, offset += BF_TYPE.length);
-            if (!Arrays.equals(bm, BF_TYPE)) throw new IOException(ERROR_IS_NOT_BMP);
+            byte[] bm = Tools.subbytes(data, offset, offset += bfType.length);
+            if (!Arrays.equals(bm, bfType)) throw new IOException(ERROR_IS_NOT_BMP);
             offset += bfSize.length;
-            offset += BF_RESERVERD_1.length;
-            offset += BF_RESERVERD_2.length;
+            offset += BF_RESERVED_1.length;
+            offset += BF_RESERVED_2.length;
             int imageOffset = Tools.bytes2int(Tools.subbytes(data, offset, offset += 4));
             byte[] bcSize = Tools.subbytes(data, offset, offset += 4);
             infoHeaderSize = Tools.bytes2int(bcSize);
@@ -381,20 +393,20 @@ public class Bmp extends BMPheader {
      * @throws IOException
      */
     public void output(String file) throws IOException {
-        int offset = FILE_HEADER_SIZE + INFO_HEADER_SIZE + colors.size() * 4;
+        int offset = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V3 + colors.size() * 4;
         bfOffBits = Tools.int2bytes(offset);
 
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(file);
             // ファイルヘッダ
-            out.write(BF_TYPE);
+            out.write(bfType);
             out.write(bfSize);
-            out.write(BF_RESERVERD_1);
-            out.write(BF_RESERVERD_2);
+            out.write(BF_RESERVED_1);
+            out.write(BF_RESERVED_2);
             out.write(bfOffBits);
             // 情報ヘッダ
-            out.write(BC_SIZE);
+            out.write(bcSize);
             out.write(bcWidth);
             out.write(bcHeight);
             out.write(BC_PLANES);
@@ -440,7 +452,7 @@ public class Bmp extends BMPheader {
     }
 
     private void updateFileSize() {
-        fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE + imageSize + colors.size() * 4;
+        fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V3 + imageSize + colors.size() * 4;
         bfSize = Tools.int2bytes(fileSize);
     }
 
