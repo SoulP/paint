@@ -5,10 +5,11 @@ import java.nio.ByteBuffer;
 /**
  * <b>ツール</b><br>
  * 変換など<br>
- * date: 2017/10/13 last_date: 2017/10/16
+ * date: 2017/10/13 last_date: 2017/10/19
  * 
  * @author ソウルP
  * @version 1.0 2017/10/13 Tools作成
+ * @version 1.1 2017/10/19 byte[] と Byte[] の変換追加
  */
 public interface Tools {
     /**
@@ -166,5 +167,33 @@ public interface Tools {
         for (int i = beginIndex; i < endIndex; i++)
             b[count++] = bytes[i];
         return b;
+    }
+
+    /**
+     * Byte[] から byte[] に変換
+     * 
+     * @param bytes
+     *            Byte[]
+     * @return byte[]
+     */
+    public static byte[] bytes2primBytes(Byte[] bytes) {
+        byte[] primBytes = new byte[bytes.length];
+        for (int i = 0; i < primBytes.length; i++)
+            primBytes[i] = bytes[i];
+        return primBytes;
+    }
+
+    /**
+     * byte[] から Byte[] に変換
+     * 
+     * @param primBytes
+     *            byte[]
+     * @return Byte[]
+     */
+    public static Byte[] primBytes2Bytes(byte[] primBytes) {
+        Byte[] bytes = new Byte[primBytes.length];
+        for (int i = 0; i < bytes.length; i++)
+            bytes[i] = primBytes[i];
+        return bytes;
     }
 }

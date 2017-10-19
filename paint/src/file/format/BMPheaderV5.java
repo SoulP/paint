@@ -5,8 +5,8 @@ import java.nio.ByteBuffer;
 import file.Tools;
 
 /**
- * <b>BMP Windows V4</b><br>
- * date: 2017/10/18 last_date: 2017/10/19<br>
+ * <b>BMP Windows V5</b><br>
+ * date: 2017/10/19 last_date: 2017/10/19<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -68,7 +68,7 @@ import file.Tools;
  * <td>0x000E</td>
  * <td>4 バイト</td>
  * <td>ヘッダサイズ</td>
- * <td>108</td>
+ * <td>124</td>
  * <td>bcSize</td>
  * </tr>
  * <tr>
@@ -176,7 +176,11 @@ import file.Tools;
  * <td>0x0046</td>
  * <td>4 バイト</td>
  * <td>色空間</td>
- * <td>0 -ヘッダ内で定義</td>
+ * <td>0 -ヘッダ内で定義<br>
+ * 0x73524742 - sRGB<br>
+ * 0x57696E20 - Win <br>
+ * 0x4C494E4B - LINK<br>
+ * 0x4D424544 - MBED</td>
  * <td>bV4CSType</td>
  * </tr>
  * <tr>
@@ -206,24 +210,46 @@ import file.Tools;
  * <td>青成分のガンマ値</td>
  * <td>bV4GammaBlue</td>
  * </tr>
+ * <tr>
+ * <td>0x007A</td>
+ * <td>4 バイト</td>
+ * <td>レンダリングの意図</td>
+ * <td>1, 2, 4, 8</td>
+ * <td>bV5Intent</td>
+ * </tr>
+ * <tr>
+ * <td>0x007E</td>
+ * <td>4 バイト</td>
+ * <td>プロファイルデータのオフセット</td>
+ * <td>情報ヘッダの先頭アドレスからプロファイルデータの先頭アドレスまでのオフセット（単位はバイト）</td>
+ * <td>bV5ProfileData</td>
+ * </tr>
+ * <tr>
+ * <td>0x0082</td>
+ * <td>4 バイト</td>
+ * <td>プロファイルデータのサイズ</td>
+ * <td>単位はバイト</td>
+ * <td>bV5ProfileSize</td>
+ * </tr>
+ * <td>0x0086</td>
+ * <td>4 バイト</td>
+ * <td>予約領域</td>
+ * <td>常に0</td>
+ * <td>BV5_RESERVED</td>
+ * </tr>
  * </table>
  * 
  * @author ソウルP
- * @version 1.0 2017/10/18 BMPheaderV4作成
+ * @version 1.0 2017/10/19 BMPheaderV5作成
  */
-public class BMPheaderV4 extends BMPheaderV3 {
+public class BMPheaderV5 extends BMPheaderV4 {
     // 情報ヘッダ
-    protected byte[]    bV4RedMask;           // 赤成分のカラーマスク
-    protected byte[]    bV4GreenMask;         // 緑成分のカラーマスク
-    protected byte[]    bV4BlueMask;          // 青成分のカラーマスク
-    protected byte[]    bV4AlphaMask;         // α成分のカラーマスク
-    protected byte[]    bV4CSType;            // 色空間
-    protected byte[]    bV4Endpoints;         // CIEXYZTRIPLE構造体
-    protected byte[]    bV4GammaRed;          // 赤成分のガンマ値
-    protected byte[]    bV4GammaGreen;        // 緑成分のガンマ値
-    protected byte[]    bV4GammaBlue;         // 青成分のガンマ値
+    protected byte[]              bV5Intent;                                   // レンダリングの意図
+    protected byte[]              bV5ProfileData;                              // プロファイルデータのオフセット
+    protected byte[]              bV5ProfileSize;                              // プロファイルデータのサイズ
+    protected static final byte[] BV5_RESERVED   = { 0x00, 0x00, 0x00, 0x00 }; // 予約領域
 
-    protected final int infoHeaderSize = 108; // 情報ヘッダサイズ
+    protected final int           infoHeaderSize = 124;                        // 情報ヘッダサイズ
 
     /**
      * <b>初期化</b>
@@ -232,160 +258,47 @@ public class BMPheaderV4 extends BMPheaderV3 {
     public void clear() {
         super.clear();
         setInfoHeaderSize(infoHeaderSize);
-        bV4RedMask = Tools.int2bytes(0);
-        bV4GreenMask = Tools.int2bytes(0);
-        bV4BlueMask = Tools.int2bytes(0);
-        bV4AlphaMask = Tools.int2bytes(0);
-        bV4CSType = Tools.int2bytes(0);
-        bV4Endpoints = ByteBuffer.allocate(32).putLong(0).putLong(0).putLong(0).putLong(0).array();
-        bV4GammaRed = Tools.float2bytes(0.0f);
-        bV4GammaGreen = Tools.float2bytes(0.0f);
-        bV4GammaBlue = Tools.float2bytes(0.0f);
+        bV5Intent = Tools.int2bytes(0);
+        bV5ProfileData = Tools.int2bytes(0);
+        bV5ProfileSize = Tools.int2bytes(0);
     }
 
     /**
-     * @return 赤成分のカラーマスク
-     */
-    public int getRedMask() {
-        return Tools.bytes2int(bV4RedMask);
-    }
-
-    /**
-     * @param bV4RedMask
-     *            赤成分のカラーマスク
-     */
-    public void setRedMask(int bV4RedMask) {
-        this.bV4RedMask = Tools.int2bytes(bV4RedMask);
-    }
-
-    /**
-     * @return 緑成分のカラーマスク
-     */
-    public int getGreenMask() {
-        return Tools.bytes2int(bV4GreenMask);
-    }
-
-    /**
-     * @param bV4GreenMask
-     *            緑成分のカラーマスク
-     */
-    public void setGreenMask(int bV4GreenMask) {
-        this.bV4GreenMask = Tools.int2bytes(bV4GreenMask);
-    }
-
-    /**
-     * @return 青成分のカラーマスク
-     */
-    public int getBlueMask() {
-        return Tools.bytes2int(bV4BlueMask);
-    }
-
-    /**
-     * @param bV4BlueMask
-     *            青成分のカラーマスク
-     */
-    public void setBlueMask(int bV4BlueMask) {
-        this.bV4BlueMask = Tools.int2bytes(bV4BlueMask);
-    }
-
-    /**
-     * @return α成分のカラーマスク
-     */
-    public int getAlphaMask() {
-        return Tools.bytes2int(bV4AlphaMask);
-    }
-
-    /**
-     * @param bV4AlphaMask
-     *            α成分のカラーマスク
-     */
-    public void setAlphaMask(int bV4AlphaMask) {
-        this.bV4AlphaMask = Tools.int2bytes(bV4AlphaMask);
-    }
-
-    /**
-     * <ul>
-     * 色空間
-     * <li>0 - ヘッダ内で定義</li>
-     * </ul>
+     * 単位はバイト
      * 
-     * @return 色空間
+     * @return プロファイルデータのオフセット
      */
-    public int getCSType() {
-        return Tools.bytes2int(bV4CSType);
+    public int getProfileData() {
+        return Tools.bytes2int(bV5ProfileData);
     }
 
     /**
-     * <ul>
-     * 色空間
-     * <li>0 - ヘッダ内で定義</li>
-     * </ul>
+     * 単位はバイト
      * 
-     * @param bV4CSType
-     *            色空間
+     * @param bV5ProfileData
+     *            プロファイルデータのオフセット
      */
-    public void setCSType(int bV4CSType) {
-        this.bV4CSType = Tools.int2bytes(bV4CSType);
+    public void setProfileData(int bV5ProfileData) {
+        this.bV5ProfileData = Tools.int2bytes(bV5ProfileData);
     }
 
     /**
-     * @return CIEXYZTRIPLE構造体
+     * 単位はバイト
+     * 
+     * @return プロファイルデータのサイズ
      */
-    public byte[] getEndpoints() {
-        return bV4Endpoints;
+    public int getProfileSize() {
+        return Tools.bytes2int(bV5ProfileSize);
     }
 
     /**
-     * @param bV4Endpoints
-     *            CIEXYZTRIPLE構造体
+     * 単位はバイト
+     * 
+     * @param bV5ProfileSize
+     *            プロファイルデータのサイズ
      */
-    public void setEndpoints(byte[] bV4Endpoints) {
-        this.bV4Endpoints = bV4Endpoints;
-    }
-
-    /**
-     * @return 赤成分のガンマ値
-     */
-    public float getGammaRed() {
-        return Tools.bytes2float(bV4GammaRed);
-    }
-
-    /**
-     * @param bV4GammaRed
-     *            赤成分のガンマ値
-     */
-    public void setGammaRed(float bV4GammaRed) {
-        this.bV4GammaRed = Tools.float2bytes(bV4GammaRed);
-    }
-
-    /**
-     * @return 緑成分のガンマ値
-     */
-    public float getGammaGreen() {
-        return Tools.bytes2float(bV4GammaGreen);
-    }
-
-    /**
-     * @param bV4GammaGreen
-     *            緑成分のガンマ値
-     */
-    public void setGammaGreen(float bV4GammaGreen) {
-        this.bV4GammaGreen = Tools.float2bytes(bV4GammaGreen);
-    }
-
-    /**
-     * @return 青成分のガンマ値
-     */
-    public float getGammaBlue() {
-        return Tools.bytes2float(bV4GammaBlue);
-    }
-
-    /**
-     * @param bV4GammaBlue
-     *            青成分のガンマ値
-     */
-    public void setGammaBlue(float bV4GammaBlue) {
-        this.bV4GammaBlue = Tools.float2bytes(bV4GammaBlue);
+    public void setProfileSize(int bV5ProfileSize) {
+        this.bV5ProfileSize = Tools.int2bytes(bV5ProfileSize);
     }
 
     /**
@@ -397,15 +310,10 @@ public class BMPheaderV4 extends BMPheaderV3 {
     public byte[] getBitmapHeader() {
         ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + infoHeaderSize);
         buff.put(super.getBitmapHeader());
-        buff.put(bV4RedMask);
-        buff.put(bV4GreenMask);
-        buff.put(bV4BlueMask);
-        buff.put(bV4AlphaMask);
-        buff.put(bV4CSType);
-        buff.put(bV4Endpoints);
-        buff.put(bV4GammaRed);
-        buff.put(bV4GammaGreen);
-        buff.put(bV4GammaBlue);
+        buff.put(bV5Intent);
+        buff.put(bV5ProfileData);
+        buff.put(bV5ProfileSize);
+        buff.put(BV5_RESERVED);
         return buff.array();
     }
 }

@@ -1,10 +1,12 @@
 package file.format;
 
+import java.nio.ByteBuffer;
+
 import file.Tools;
 
 /**
- * <b>BMP OS/2 2.x V2</b><br>
- * date: 2017/10/18 last_date: 2017/10/18<br>
+ * <b>BMP - OS/2 V2</b><br>
+ * date: 2017/10/18 last_date: 2017/10/19<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -32,7 +34,7 @@ import file.Tools;
  * <td>4 バイト</td>
  * <td>ヘッダサイズ</td>
  * <td>ファイルヘッダと情報ヘッダの合計サイズを格納する（単位はバイト）</td>
- * <td>bcSize</td>
+ * <td>bV2HeaderSize</td>
  * </tr>
  * <tr>
  * <td>0x0006</td>
@@ -214,22 +216,26 @@ import file.Tools;
  */
 public class BMPheaderV2 extends BMPheaderV3 {
     // ファイルヘッダ
-    protected byte[]              bV2HotspotX;                              // ポインタのホットスポットの x 座標
-    protected byte[]              bV2HotspotY;                              // ポインタのホットスポットの y 座標
+    protected byte[]              bV2HeaderSize;                         // ファイルヘッダと情報ヘッダの合計サイズを格納する (byte)
+    protected byte[]              bV2HotspotX;                           // ホットスポット x
+    protected byte[]              bV2HotspotY;                           // ホットスポット y
 
     // 情報ヘッダ
-    protected byte[]              bV2Resolution;                            // 解像度の単位
-    protected static final byte[] BV2_RESERVED            = { 0x00, 0x00 }; // 予約領域 常に0
-    protected byte[]              bV2Format;                                // 記録方式
-    protected byte[]              bV2Halftone;                              // ハーフトーンの方式
-    protected byte[]              bV2HalftoneParam1;                        // ハーフトーン時のパラメータ1
-    protected byte[]              bV2HalftoneParam2;                        // ハーフトーン時のパラメータ2
-    protected byte[]              bV2Encoding;                              // 符号化方式
-    protected byte[]              bV2Id;                                    // 識別子
+    protected byte[]              bV2Resolution;                         // 解像度の単位
+    protected static final byte[] BV2_RESERVED         = { 0x00, 0x00 }; // 予約領域 常に0
+    protected byte[]              bV2Format;                             // 記録方式
+    protected byte[]              bV2Halftone;                           // ハーフトーンの方式
+    protected byte[]              bV2HalftoneParam1;                     // ハーフトーン時のパラメータ1
+    protected byte[]              bV2HalftoneParam2;                     // ハーフトーン時のパラメータ2
+    protected byte[]              bV2Encoding;                           // 符号化方式
+    protected byte[]              bV2Id;                                 // 識別子
 
-    protected static final int    INFO_HEADER_SIZE_V2_MIN = 16;             // 情報ヘッダサイズ 最小
-    protected static final int    INFO_HEADER_SIZE_V2_MAX = 64;             // 情報ヘッダサイズ 最大
+    protected static final int    INFO_HEADER_SIZE_MIN = 16;             // 情報ヘッダサイズ 最小
+    protected static final int    INFO_HEADER_SIZE_MAX = 64;             // 情報ヘッダサイズ 最大
 
+    /**
+     * <b>BMP - OS/2 V2</b>
+     */
     public BMPheaderV2() {
         clear();
     }
@@ -240,9 +246,10 @@ public class BMPheaderV2 extends BMPheaderV3 {
     @Override
     public void clear() {
         super.clear();
+        bV2HeaderSize = Tools.int2bytes(0);
         bV2HotspotX = Tools.short2bytes((short) 0);
         bV2HotspotY = Tools.short2bytes((short) 0);
-        bcSize = Tools.int2bytes(INFO_HEADER_SIZE_V2_MIN);
+        bcSize = Tools.int2bytes(infoHeaderSize);
         bV2Resolution = Tools.short2bytes((short) 0);
         bV2Format = Tools.short2bytes((short) 0);
         bV2Halftone = Tools.short2bytes((short) 0);
@@ -250,5 +257,257 @@ public class BMPheaderV2 extends BMPheaderV3 {
         bV2HalftoneParam2 = Tools.int2bytes(0);
         bV2Encoding = Tools.int2bytes(0);
         bV2Id = Tools.int2bytes(0);
+    }
+
+    /**
+     * @deprecated V2はファイルサイズ格納する情報はありません。<br>
+     *             その代わり、ヘッダサイズが格納されます。{@link #getHeaderSize()}
+     * @return 0
+     */
+    @Deprecated
+    @Override
+    public final int getFileSize() {
+        return 0;
+    }
+
+    /**
+     * @deprecated V2はファイルサイズ格納する情報はありません。<br>
+     *             その代わり、ヘッダサイズが格納されます。{@link #setHeaderSize(int)}
+     * 
+     * @param bfSize
+     *            ファイルサイズ
+     */
+    @Deprecated
+    @Override
+    public final void setFileSize(int bfSize) {
+    }
+
+    /**
+     * ファイルヘッダと情報ヘッダの合計サイズ
+     * 
+     * @return ヘッダサイズ
+     */
+    public int getHeaderSize() {
+        return Tools.bytes2int(bV2HeaderSize);
+    }
+
+    /**
+     * ファイルヘッダと情報ヘッダの合計サイズ
+     * 
+     * @param bV2HeaderSize
+     *            ヘッダサイズ
+     */
+    public void setHeaderSize(int bV2HeaderSize) {
+        this.bV2HeaderSize = Tools.int2bytes(bV2HeaderSize);
+    }
+
+    /**
+     * ポインタのホットスポットの x 座標
+     * 
+     * @return ホットスポット x
+     */
+    public short getHotspotX() {
+        return Tools.bytes2short(bV2HotspotX);
+    }
+
+    /**
+     * ポインタのホットスポットの x 座標
+     * 
+     * @param bV2HotspotX
+     *            ホットスポット x
+     */
+    public void setHotspotX(short bV2HotspotX) {
+        this.bV2HotspotX = Tools.short2bytes(bV2HotspotX);
+    }
+
+    /**
+     * <ul>
+     * 解像度の単位
+     * <li>0 - ピクセル/m</li>
+     * </ul>
+     * 
+     * @return 解像度の単位
+     */
+    public short getResolution() {
+        return Tools.bytes2short(bV2Resolution);
+    }
+
+    /**
+     * <ul>
+     * 解像度の単位
+     * <li>0 - ピクセル/m</li>
+     * </ul>
+     * 
+     * @param bV2Resolution
+     *            解像度の単位
+     */
+    public void setResolution(short bV2Resolution) {
+        this.bV2Resolution = Tools.short2bytes(bV2Resolution);
+    }
+
+    /**
+     * <ul>
+     * 記録方式
+     * <li>0 - ボトムアップ</li>
+     * </ul>
+     * 
+     * @return 記録方式
+     */
+    public short getFormat() {
+        return Tools.bytes2short(bV2Format);
+    }
+
+    /**
+     * <ul>
+     * 記録方式
+     * <li>0 - ボトムアップ</li>
+     * </ul>
+     * 
+     * @param bV2Format
+     *            記録方式
+     */
+    public void setFormat(short bV2Format) {
+        this.bV2Format = Tools.short2bytes(bV2Format);
+    }
+
+    /**
+     * <ul>
+     * ハーフトーンの方式
+     * <li>0 - ハーフトーンなし</li>
+     * <li>1 - 誤差拡散法</li>
+     * <li>2 - PANDA</li>
+     * <li>3 - Super Circle</li>
+     * </ul>
+     * 
+     * @return ハーフトーンの方式
+     */
+    public short getHalftone() {
+        return Tools.bytes2short(bV2Halftone);
+    }
+
+    /**
+     * <ul>
+     * ハーフトーンの方式
+     * <li>0 - ハーフトーンなし</li>
+     * <li>1 - 誤差拡散法</li>
+     * <li>2 - PANDA</li>
+     * <li>3 - Super Circle</li>
+     * </ul>
+     * 
+     * @param bV2Halftone
+     *            ハーフトーンの方式
+     */
+    public void setHalftone(short bV2Halftone) {
+        this.bV2Halftone = Tools.short2bytes(bV2Halftone);
+    }
+
+    /**
+     * @return ハーフトーン時のパラメータ1
+     */
+    public int getHalftonParam1() {
+        return Tools.bytes2int(bV2HalftoneParam1);
+    }
+
+    /**
+     * @param bV2HalftoneParam1
+     *            ハーフトーン時のパラメータ1
+     */
+    public void setHalftoneParam1(int bV2HalftoneParam1) {
+        this.bV2HalftoneParam1 = Tools.int2bytes(bV2HalftoneParam1);
+    }
+
+    /**
+     * 誤差拡散法の場合は無視される
+     * 
+     * @return ハーフトーン時のパラメータ2
+     */
+    public int getHalftoneParam2() {
+        return Tools.bytes2int(bV2HalftoneParam2);
+    }
+
+    /**
+     * 誤差拡散法の場合は無視される
+     * 
+     * @param bV2HalftoneParam2
+     *            ハーフトーン時のパラメータ2
+     */
+    public void setHalftoneParam2(int bV2HalftoneParam2) {
+        this.bV2HalftoneParam2 = Tools.int2bytes(bV2HalftoneParam2);
+    }
+
+    /**
+     * <ul>
+     * <li>0 - RGB2, RGBQUAD</li>
+     * <li>-1 - パレット方式</li>
+     * </ul>
+     * 
+     * @return 符号化方式
+     */
+    public int getEncoding() {
+        return Tools.bytes2int(bV2Encoding);
+    }
+
+    /**
+     * <ul>
+     * <li>0 - RGB2, RGBQUAD</li>
+     * <li>-1 - パレット方式</li>
+     * </ul>
+     * 
+     * @param bV2Encoding
+     *            符号化方式
+     */
+    public void setEncoding(int bV2Encoding) {
+        this.bV2Encoding = Tools.int2bytes(bV2Encoding);
+    }
+
+    /**
+     * @return 識別子
+     */
+    public int getId() {
+        return Tools.bytes2int(bV2Id);
+    }
+
+    /**
+     * @param bV2Id
+     *            識別子
+     */
+    public void setId(int bV2Id) {
+        this.bV2Id = Tools.int2bytes(bV2Id);
+    }
+
+    /**
+     * ファイルヘッダ と 情報ヘッダ
+     * 
+     * @return ヘッダ情報
+     */
+    @Override
+    public byte[] getBitmapHeader() {
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + getInfoHeaderSize());
+        buff.put(bfType);
+        buff.put(bV2HeaderSize);
+        buff.put(bV2HotspotX);
+        buff.put(bV2HotspotY);
+        buff.put(bfOffBits);
+        buff.put(bcSize);
+        buff.put(bcWidth);
+        buff.put(bcHeight);
+        buff.put(BC_PLANES);
+        buff.put(bcBitCount);
+        if (getInfoHeaderSize() >= 20) buff.put(biCompression); // 16 - 20 (4 バイト)
+        if (getInfoHeaderSize() >= 24) buff.put(biSizeImage); // 20 - 24 (4 バイト)
+        if (getInfoHeaderSize() >= 28) buff.put(biXPelsPerMeter);// 24 - 28 (4 バイト)
+        if (getInfoHeaderSize() >= 32) buff.put(biYPelsPerMeter);// 28 - 32 (4 バイト)
+        if (getInfoHeaderSize() >= 36) buff.put(biClrUsed); // 32 - 36 (4 バイト)
+        if (getInfoHeaderSize() >= 40) buff.put(biCirImportant); // 36 - 40 (4 バイト)
+        if (getInfoHeaderSize() >= 42) buff.put(bV2Resolution); // 40 - 42 (2 バイト)
+        if (getInfoHeaderSize() >= 44) buff.put(BV2_RESERVED); // 42 - 44 (2 バイト)
+        if (getInfoHeaderSize() >= 46) buff.put(bV2Format); // 44 - 46 (2 バイト)
+        if (getInfoHeaderSize() >= 48) buff.put(bV2Halftone); // 46 - 48 (2 バイト)
+        if (getInfoHeaderSize() >= 52) buff.put(bV2HalftoneParam1); // 48 - 52 (4 バイト)
+        if (getInfoHeaderSize() >= 56) buff.put(bV2HalftoneParam2); // 52 - 56 (4 バイト)
+        if (getInfoHeaderSize() >= 60) buff.put(bV2Encoding); // 56 - 60 (4 バイト)
+        if (getInfoHeaderSize() >= 64) buff.put(bV2Id); // 60 - 64 (4 バイト)
+
+        return buff.array();
     }
 }

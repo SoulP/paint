@@ -393,7 +393,7 @@ public class Bmp extends BMPheaderV3 {
      * @throws IOException
      */
     public void output(String file) throws IOException {
-        int offset = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V3 + colors.size() * 4;
+        int offset = FILE_HEADER_SIZE + infoHeaderSize + colors.size() * 4;
         bfOffBits = Tools.int2bytes(offset);
 
         FileOutputStream out = null;
@@ -452,7 +452,7 @@ public class Bmp extends BMPheaderV3 {
     }
 
     private void updateFileSize() {
-        fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V3 + imageSize + colors.size() * 4;
+        fileSize = FILE_HEADER_SIZE + infoHeaderSize + imageSize + colors.size() * 4;
         bfSize = Tools.int2bytes(fileSize);
     }
 
