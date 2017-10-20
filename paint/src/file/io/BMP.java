@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import file.Tools;
-import file.format.BMP_V3;
+import file.format.bmp.BMP_V3;
 
 /**
  * <b>BMP入出力</b><br>

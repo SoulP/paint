@@ -1,4 +1,4 @@
-package file.format;
+package file.format.bmp;
 
 import java.nio.ByteBuffer;
 
