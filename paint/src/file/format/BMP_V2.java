@@ -6,7 +6,7 @@ import file.Tools;
 
 /**
  * <b>BMP - OS/2 V2</b><br>
- * date: 2017/10/18 last_date: 2017/10/19<br>
+ * date: 2017/10/18 last_date: 2017/10/20<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -212,9 +212,9 @@ import file.Tools;
  * </table>
  * 
  * @author ソウルP
- * @version 1.0 2017/10/18 BMPheaderV2作成
+ * @version 1.0 2017/10/18 BMP_V2作成
  */
-public class BMPheaderV2 extends BMPheaderV3 {
+public class BMP_V2 extends BMP_V3 {
     // ファイルヘッダ
     protected byte[]              bV2HeaderSize;                         // ファイルヘッダと情報ヘッダの合計サイズを格納する (byte)
     protected byte[]              bV2HotspotX;                           // ホットスポット x
@@ -236,13 +236,10 @@ public class BMPheaderV2 extends BMPheaderV3 {
     /**
      * <b>BMP - OS/2 V2</b>
      */
-    public BMPheaderV2() {
+    public BMP_V2() {
         clear();
     }
 
-    /**
-     * <b>初期化</b>
-     */
     @Override
     public void clear() {
         super.clear();
@@ -475,11 +472,6 @@ public class BMPheaderV2 extends BMPheaderV3 {
         this.bV2Id = Tools.int2bytes(bV2Id);
     }
 
-    /**
-     * ファイルヘッダ と 情報ヘッダ
-     * 
-     * @return ヘッダ情報
-     */
     @Override
     public byte[] getBitmapHeader() {
         ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + getInfoHeaderSize());

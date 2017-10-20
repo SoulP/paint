@@ -6,7 +6,7 @@ import file.Tools;
 
 /**
  * <b>BMP Windows V5</b><br>
- * date: 2017/10/19 last_date: 2017/10/19<br>
+ * date: 2017/10/19 last_date: 2017/10/20<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -240,9 +240,9 @@ import file.Tools;
  * </table>
  * 
  * @author ソウルP
- * @version 1.0 2017/10/19 BMPheaderV5作成
+ * @version 1.0 2017/10/19 BMP_V5作成
  */
-public class BMPheaderV5 extends BMPheaderV4 {
+public class BMP_V5 extends BMP_V4 {
     // 情報ヘッダ
     protected byte[]              bV5Intent;                                   // レンダリングの意図
     protected byte[]              bV5ProfileData;                              // プロファイルデータのオフセット
@@ -251,9 +251,6 @@ public class BMPheaderV5 extends BMPheaderV4 {
 
     protected final int           infoHeaderSize = 124;                        // 情報ヘッダサイズ
 
-    /**
-     * <b>初期化</b>
-     */
     @Override
     public void clear() {
         super.clear();
@@ -301,11 +298,6 @@ public class BMPheaderV5 extends BMPheaderV4 {
         this.bV5ProfileSize = Tools.int2bytes(bV5ProfileSize);
     }
 
-    /**
-     * ファイルヘッダ と 情報ヘッダ
-     * 
-     * @return ヘッダ情報
-     */
     @Override
     public byte[] getBitmapHeader() {
         ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + infoHeaderSize);

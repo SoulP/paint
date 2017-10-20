@@ -6,7 +6,7 @@ import file.Tools;
 
 /**
  * <b>BMP Windows V4</b><br>
- * date: 2017/10/18 last_date: 2017/10/19<br>
+ * date: 2017/10/18 last_date: 2017/10/20<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -209,9 +209,9 @@ import file.Tools;
  * </table>
  * 
  * @author ソウルP
- * @version 1.0 2017/10/18 BMPheaderV4作成
+ * @version 1.0 2017/10/18 BMP_V4作成
  */
-public class BMPheaderV4 extends BMPheaderV3 {
+public class BMP_V4 extends BMP_V3 {
     // 情報ヘッダ
     protected byte[]    bV4RedMask;           // 赤成分のカラーマスク
     protected byte[]    bV4GreenMask;         // 緑成分のカラーマスク
@@ -225,9 +225,6 @@ public class BMPheaderV4 extends BMPheaderV3 {
 
     protected final int infoHeaderSize = 108; // 情報ヘッダサイズ
 
-    /**
-     * <b>初期化</b>
-     */
     @Override
     public void clear() {
         super.clear();
@@ -388,11 +385,6 @@ public class BMPheaderV4 extends BMPheaderV3 {
         this.bV4GammaBlue = Tools.float2bytes(bV4GammaBlue);
     }
 
-    /**
-     * ファイルヘッダ と 情報ヘッダ
-     * 
-     * @return ヘッダ情報
-     */
     @Override
     public byte[] getBitmapHeader() {
         ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + infoHeaderSize);

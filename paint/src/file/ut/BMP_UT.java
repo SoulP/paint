@@ -8,11 +8,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import file.io.Bmp;
+import file.io.BMP;
 
 /**
  * <b>BMPの単体テスト</b><br>
- * date: 2017/10/13 last_date 2017/10/17
+ * date: 2017/10/13 last_date 2017/10/20
  * 
  * @author ソウルP
  */
@@ -38,10 +38,10 @@ public class BMP_UT {
         image.add(img02);
         image.add(img03);
 
-        Bmp bmp = new Bmp();
+        BMP bmp = new BMP();
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
-        bmp.setBitCount(1); // ビットの深さ
+        bmp.setBitCount((short) 1); // ビットの深さ
         bmp.addColor(255, 0, 255); // 紫色
         bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
@@ -70,10 +70,10 @@ public class BMP_UT {
         image.add(img02);
         image.add(img03);
 
-        Bmp bmp = new Bmp();
+        BMP bmp = new BMP();
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
-        bmp.setBitCount(4); // ビットの深さ
+        bmp.setBitCount((short) 4); // ビットの深さ
         bmp.addColor(255, 0, 255); // 紫色
         bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
@@ -104,10 +104,10 @@ public class BMP_UT {
         image.add(img02);
         image.add(img03);
 
-        Bmp bmp = new Bmp();
+        BMP bmp = new BMP();
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
-        bmp.setBitCount(8); // ビットの深さ
+        bmp.setBitCount((short) 8); // ビットの深さ
         bmp.addColor(255, 0, 255); // 紫色
         bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
@@ -155,10 +155,10 @@ public class BMP_UT {
         image.add(img02);
         image.add(img03);
 
-        Bmp bmp = new Bmp();
+        BMP bmp = new BMP();
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
-        bmp.setBitCount(24); // ビットの深さ
+        bmp.setBitCount((short) 24); // ビットの深さ
         bmp.setImage(image);// イメージ
         try {
             bmp.output(file);// 出力
@@ -201,10 +201,10 @@ public class BMP_UT {
         image.add(img02);
         image.add(img03);
 
-        Bmp bmp = new Bmp();
+        BMP bmp = new BMP();
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
-        bmp.setBitCount(32); // ビットの深さ
+        bmp.setBitCount((short) 32); // ビットの深さ
         bmp.setImage(image);// イメージ
         try {
             bmp.output(file);// 出力
@@ -243,10 +243,10 @@ public class BMP_UT {
             };
         // @formatter:on
 
-        Bmp bmp = new Bmp();
+        BMP bmp = new BMP();
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
-        bmp.setBitCount(8); // ビットの深さ
+        bmp.setBitCount((short) 8); // ビットの深さ
         bmp.setCompression(1); // 圧縮形式
         for (int i = 255; i >= 27; i -= 19) {
             bmp.addColor(i, 0, 0); // 赤色
@@ -296,10 +296,10 @@ public class BMP_UT {
         };
         // @formatter:on
 
-        Bmp bmp = new Bmp();
+        BMP bmp = new BMP();
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
-        bmp.setBitCount(4); // ビットの深さ
+        bmp.setBitCount((short) 4); // ビットの深さ
         bmp.setCompression(2); // 圧縮形式
         for (int i = 255; i >= 21; i -= 18) {
             bmp.addColor(0, i, i); // アクア色
@@ -321,7 +321,7 @@ public class BMP_UT {
         String file = "C:\\Users\\ユーザ名\\Desktop\\java_4bit_BI_RLE4.bmp";
         String comp = "";
 
-        Bmp bmp = new Bmp();
+        BMP bmp = new BMP();
         try {
             bmp.input(file);
         } catch (IOException e) {
@@ -360,9 +360,9 @@ public class BMP_UT {
                 break;
         }
         System.out.println("圧縮形式: " + comp);
-        System.out.println("画像データサイズ: " + bmp.getImageSize());
-        System.out.println("水平方向の解像度: " + bmp.getPixPerMeterX());
-        System.out.println("垂直方向の解像度: " + bmp.getPixPerMeterY());
+        System.out.println("画像データサイズ: " + bmp.getSizeImage());
+        System.out.println("水平方向の解像度: " + bmp.getXPelsPerMeter());
+        System.out.println("垂直方向の解像度: " + bmp.getYPelsPerMeter());
         System.out.println("使用する色数: " + bmp.getColors().size());
         System.out.println("重要な色数: " + bmp.getCirImportant());
         System.out.println();
