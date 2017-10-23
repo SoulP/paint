@@ -1,12 +1,15 @@
 package file.format.bmp;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import file.Tools;
+import file.io.BMP;
 
 /**
  * <b>BMP - OS/2 V2</b><br>
- * date: 2017/10/18 last_date: 2017/10/20<br>
+ * date: 2017/10/18 last_date: 2017/10/23<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -216,22 +219,19 @@ import file.Tools;
  */
 public class BMP_V2 extends BMP_V3 {
     // ファイルヘッダ
-    protected byte[]              bV2HeaderSize;                         // ファイルヘッダと情報ヘッダの合計サイズを格納する (byte)
-    protected byte[]              bV2HotspotX;                           // ホットスポット x
-    protected byte[]              bV2HotspotY;                           // ホットスポット y
+    protected byte[]              bV2HeaderSize;                 // ファイルヘッダと情報ヘッダの合計サイズを格納する (byte)
+    protected byte[]              bV2HotspotX;                   // ホットスポット x
+    protected byte[]              bV2HotspotY;                   // ホットスポット y
 
     // 情報ヘッダ
-    protected byte[]              bV2Resolution;                         // 解像度の単位
-    protected static final byte[] BV2_RESERVED         = { 0x00, 0x00 }; // 予約領域 常に0
-    protected byte[]              bV2Format;                             // 記録方式
-    protected byte[]              bV2Halftone;                           // ハーフトーンの方式
-    protected byte[]              bV2HalftoneParam1;                     // ハーフトーン時のパラメータ1
-    protected byte[]              bV2HalftoneParam2;                     // ハーフトーン時のパラメータ2
-    protected byte[]              bV2Encoding;                           // 符号化方式
-    protected byte[]              bV2Id;                                 // 識別子
-
-    protected static final int    INFO_HEADER_SIZE_MIN = 16;             // 情報ヘッダサイズ 最小
-    protected static final int    INFO_HEADER_SIZE_MAX = 64;             // 情報ヘッダサイズ 最大
+    protected byte[]              bV2Resolution;                 // 解像度の単位
+    protected static final byte[] BV2_RESERVED = { 0x00, 0x00 }; // 予約領域 常に0
+    protected byte[]              bV2Format;                     // 記録方式
+    protected byte[]              bV2Halftone;                   // ハーフトーンの方式
+    protected byte[]              bV2HalftoneParam1;             // ハーフトーン時のパラメータ1
+    protected byte[]              bV2HalftoneParam2;             // ハーフトーン時のパラメータ2
+    protected byte[]              bV2Encoding;                   // 符号化方式
+    protected byte[]              bV2Id;                         // 識別子
 
     /**
      * <b>BMP - OS/2 V2</b>
@@ -240,13 +240,35 @@ public class BMP_V2 extends BMP_V3 {
         clear();
     }
 
+    /**
+     * <b>BMP - OS/2 V2</b>
+     * 
+     * @param data
+     *            データ
+     */
+    public BMP_V2(byte[] data) {
+        clear();
+        set(data);
+    }
+
+    /**
+     * <b>BMP - OS/2 V2</b>
+     * 
+     * @param bmp
+     *            BMPのオブジェクト
+     */
+    public BMP_V2(BMP bmp) {
+        clear();
+        set(bmp);
+    }
+
     @Override
     public void clear() {
         super.clear();
         bV2HeaderSize = Tools.int2bytes(0);
         bV2HotspotX = Tools.short2bytes((short) 0);
         bV2HotspotY = Tools.short2bytes((short) 0);
-        bcSize = Tools.int2bytes(infoHeaderSize);
+        bcSize = Tools.int2bytes(INFO_HEADER_SIZE_V2_MIN);
         bV2Resolution = Tools.short2bytes((short) 0);
         bV2Format = Tools.short2bytes((short) 0);
         bV2Halftone = Tools.short2bytes((short) 0);
@@ -315,6 +337,25 @@ public class BMP_V2 extends BMP_V3 {
      */
     public void setHotspotX(short bV2HotspotX) {
         this.bV2HotspotX = Tools.short2bytes(bV2HotspotX);
+    }
+
+    /**
+     * ポインタのホットスポットの y 座標
+     * 
+     * @return ホットスポット y
+     */
+    public short getHotspotY() {
+        return Tools.bytes2short(bV2HotspotY);
+    }
+
+    /**
+     * ポインタのホットスポットの y 座標
+     * 
+     * @param bV2HotspotY
+     *            ホットスポット y
+     */
+    public void setHotspotY(short bV2HotspotY) {
+        this.bV2HotspotX = Tools.short2bytes(bV2HotspotY);
     }
 
     /**
@@ -475,31 +516,164 @@ public class BMP_V2 extends BMP_V3 {
     @Override
     public byte[] getBitmapHeader() {
         ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + getInfoHeaderSize());
+        buff.put(getFileHeader());
+        buff.put(getInfoHeader());
+        return buff.array();
+    }
+
+    @Override
+    public void set(byte[] data) {
+        byte[] fileHeader = Tools.subbytes(data, 0, FILE_HEADER_SIZE);
+        setFileHeader(fileHeader);
+        int headerSize = getHeaderSize();
+        byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, headerSize);
+        setInfoHeader(infoHeader);
+        int offset = Tools.bytes2int(bfOffBits);
+        byte[] bColors = Tools.subbytes(data, headerSize, offset);
+        setColors(bColors);
+        byte[] imgData = Tools.subbytes(data, offset, data.length);
+        setImage(imgData);
+    }
+
+    @Override
+    public void set(BMP bmp) {
+        super.set(bmp);
+        setHeaderSize(bmp.getHeaderSize());
+        setHotspotX((short) bmp.getHotspotX());
+        setHotspotY((short) bmp.getHotspotY());
+        setResolution((short) bmp.getResolution());
+        setFormat((short) bmp.getFormat());
+        setHalftone((short) bmp.getHaltone());
+        setHalftoneParam1(bmp.getHalftoneParam1());
+        setHalftoneParam2(bmp.getHalftoneParam2());
+        setEncoding(bmp.getEncoding());
+        setId(bmp.getId());
+    }
+
+    @Override
+    public int setFileHeader(byte[] data) {
+        int offset = 0;
+        bfType = Tools.subbytes(data, offset, offset += 2);
+        bV2HeaderSize = Tools.subbytes(data, offset, offset += 4);
+        bV2HotspotX = Tools.subbytes(data, offset, offset += 2);
+        bV2HotspotY = Tools.subbytes(data, offset, offset += 2);
+        bfOffBits = Tools.subbytes(data, offset, offset + 4);
+        return offset;
+    }
+
+    @Override
+    public int setInfoHeader(byte[] data) {
+        int offset = 0;
+        bcSize = Tools.subbytes(data, offset, offset += 4);
+        bcWidth = Tools.subbytes(data, offset, offset += 4);
+        bcHeight = Tools.subbytes(data, offset, offset += 4);
+        bcBitCount = Tools.subbytes(data, offset += 2, offset += 2);
+        if (data.length >= 20) biCompression = Tools.subbytes(data, offset, offset += 4); // 16 - 20 (4 バイト)
+        if (data.length >= 24) biSizeImage = Tools.subbytes(data, offset, offset += 4); // 20 - 24 (4 バイト)
+        if (data.length >= 28) biXPelsPerMeter = Tools.subbytes(data, offset, offset += 4); // 24 - 28 (4 バイト)
+        if (data.length >= 32) biYPelsPerMeter = Tools.subbytes(data, offset, offset += 4); // 28 - 32 (4 バイト)
+        if (data.length >= 36) biClrUsed = Tools.subbytes(data, offset, offset += 4); // 32 - 36 (4 バイト)
+        if (data.length >= 40) biCirImportant = Tools.subbytes(data, offset, offset += 4); // 36 - 40 (4 バイト)
+        if (data.length >= 42) bV2Resolution = Tools.subbytes(data, offset, offset += 2); // 40 - 42 (2 バイト)
+        if (data.length >= 46) bV2Format = Tools.subbytes(data, offset += 2, offset += 2); // 44 - 46 (2 バイト)
+        if (data.length >= 48) bV2Halftone = Tools.subbytes(data, offset, offset += 2); // 46 - 48 (2 バイト)
+        if (data.length >= 52) bV2HalftoneParam1 = Tools.subbytes(data, offset, offset += 4); // 48 - 52 (4 バイト)
+        if (data.length >= 56) bV2HalftoneParam2 = Tools.subbytes(data, offset, offset += 4); // 52 - 56 (4 バイト)
+        if (data.length >= 60) bV2Encoding = Tools.subbytes(data, offset, offset += 4); // 56 - 60 (4 バイト)
+        if (data.length >= 64) bV2Id = Tools.subbytes(data, offset, offset += 4); // 60 - 64 (4 バイト)
+        return offset;
+    }
+
+    @Override
+    public void setImage(byte[] data) {
+        if (getCompression() == 1 || getCompression() == 2 || getCompression() == 4) {
+            List<Byte> bytes = new ArrayList<>();
+            byte[] byteArray;
+            int endOffset = getOffset() + getSizeImage();
+            for (int i = getOffset(); i < endOffset; i += 2) {
+                byte b = data[i];
+                byte bb = data[i + 1];
+                bytes.add(b);
+                bytes.add(bb);
+
+                if (b == 0x00 & (bb == 0x00 || bb == 0x01)) {
+                    byteArray = new byte[bytes.size()];
+                    for (int a = 0; a < byteArray.length; a++)
+                        byteArray[a] = bytes.get(a);
+                    bytes.clear();
+                    image.add(byteArray);
+                    if (bb == 0x01) break;
+                }
+            }
+        } else if (getCompression() == 3) {
+        } else {
+            super.setImage(data);
+        }
+    }
+
+    @Override
+    public byte[] get() {
+        int imageSize = 0;
+        for (byte[] b : image)
+            imageSize += b.length;
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + getInfoHeaderSize() + colors.size() * 4 + imageSize);
+        buff.put(getBitmapHeader());
+        colors.forEach(color -> {
+            buff.put(color);
+        });
+        image.forEach(img -> {
+            buff.put(img);
+        });
+        return buff.array();
+    }
+
+    @Override
+    public byte[] getFileHeader() {
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE);
         buff.put(bfType);
         buff.put(bV2HeaderSize);
         buff.put(bV2HotspotX);
         buff.put(bV2HotspotY);
         buff.put(bfOffBits);
+        return buff.array();
+    }
+
+    @Override
+    public byte[] getInfoHeader() {
+        int infoHeaderSize = getInfoHeaderSize();
+        ByteBuffer buff = ByteBuffer.allocate(infoHeaderSize);
         buff.put(bcSize);
         buff.put(bcWidth);
         buff.put(bcHeight);
         buff.put(BC_PLANES);
         buff.put(bcBitCount);
-        if (getInfoHeaderSize() >= 20) buff.put(biCompression); // 16 - 20 (4 バイト)
-        if (getInfoHeaderSize() >= 24) buff.put(biSizeImage); // 20 - 24 (4 バイト)
-        if (getInfoHeaderSize() >= 28) buff.put(biXPelsPerMeter);// 24 - 28 (4 バイト)
-        if (getInfoHeaderSize() >= 32) buff.put(biYPelsPerMeter);// 28 - 32 (4 バイト)
-        if (getInfoHeaderSize() >= 36) buff.put(biClrUsed); // 32 - 36 (4 バイト)
-        if (getInfoHeaderSize() >= 40) buff.put(biCirImportant); // 36 - 40 (4 バイト)
-        if (getInfoHeaderSize() >= 42) buff.put(bV2Resolution); // 40 - 42 (2 バイト)
-        if (getInfoHeaderSize() >= 44) buff.put(BV2_RESERVED); // 42 - 44 (2 バイト)
-        if (getInfoHeaderSize() >= 46) buff.put(bV2Format); // 44 - 46 (2 バイト)
-        if (getInfoHeaderSize() >= 48) buff.put(bV2Halftone); // 46 - 48 (2 バイト)
-        if (getInfoHeaderSize() >= 52) buff.put(bV2HalftoneParam1); // 48 - 52 (4 バイト)
-        if (getInfoHeaderSize() >= 56) buff.put(bV2HalftoneParam2); // 52 - 56 (4 バイト)
-        if (getInfoHeaderSize() >= 60) buff.put(bV2Encoding); // 56 - 60 (4 バイト)
-        if (getInfoHeaderSize() >= 64) buff.put(bV2Id); // 60 - 64 (4 バイト)
-
+        if (infoHeaderSize >= 20) buff.put(biCompression); // 16 - 20 (4 バイト)
+        if (infoHeaderSize >= 24) buff.put(biSizeImage); // 20 - 24 (4 バイト)
+        if (infoHeaderSize >= 28) buff.put(biXPelsPerMeter);// 24 - 28 (4 バイト)
+        if (infoHeaderSize >= 32) buff.put(biYPelsPerMeter);// 28 - 32 (4 バイト)
+        if (infoHeaderSize >= 36) buff.put(biClrUsed); // 32 - 36 (4 バイト)
+        if (infoHeaderSize >= 40) buff.put(biCirImportant); // 36 - 40 (4 バイト)
+        if (infoHeaderSize >= 42) buff.put(bV2Resolution); // 40 - 42 (2 バイト)
+        if (infoHeaderSize >= 44) buff.put(BV2_RESERVED); // 42 - 44 (2 バイト)
+        if (infoHeaderSize >= 46) buff.put(bV2Format); // 44 - 46 (2 バイト)
+        if (infoHeaderSize >= 48) buff.put(bV2Halftone); // 46 - 48 (2 バイト)
+        if (infoHeaderSize >= 52) buff.put(bV2HalftoneParam1); // 48 - 52 (4 バイト)
+        if (infoHeaderSize >= 56) buff.put(bV2HalftoneParam2); // 52 - 56 (4 バイト)
+        if (infoHeaderSize >= 60) buff.put(bV2Encoding); // 56 - 60 (4 バイト)
+        if (infoHeaderSize >= 64) buff.put(bV2Id); // 60 - 64 (4 バイト)
         return buff.array();
+    }
+
+    @Override
+    public int getVersion() {
+        return 2;
+    }
+
+    /**
+     * @deprecated V2はファイルサイズ格納する情報はありません。
+     */
+    @Deprecated
+    @Override
+    protected void updateFileSize() {
     }
 }

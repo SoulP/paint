@@ -3,10 +3,11 @@ package file.format.bmp;
 import java.nio.ByteBuffer;
 
 import file.Tools;
+import file.io.BMP;
 
 /**
  * <b>BMP Windows V4</b><br>
- * date: 2017/10/18 last_date: 2017/10/20<br>
+ * date: 2017/10/18 last_date: 2017/10/23<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -213,22 +214,49 @@ import file.Tools;
  */
 public class BMP_V4 extends BMP_V3 {
     // 情報ヘッダ
-    protected byte[]    bV4RedMask;           // 赤成分のカラーマスク
-    protected byte[]    bV4GreenMask;         // 緑成分のカラーマスク
-    protected byte[]    bV4BlueMask;          // 青成分のカラーマスク
-    protected byte[]    bV4AlphaMask;         // α成分のカラーマスク
-    protected byte[]    bV4CSType;            // 色空間
-    protected byte[]    bV4Endpoints;         // CIEXYZTRIPLE構造体
-    protected byte[]    bV4GammaRed;          // 赤成分のガンマ値
-    protected byte[]    bV4GammaGreen;        // 緑成分のガンマ値
-    protected byte[]    bV4GammaBlue;         // 青成分のガンマ値
+    protected byte[] bV4RedMask;    // 赤成分のカラーマスク
+    protected byte[] bV4GreenMask;  // 緑成分のカラーマスク
+    protected byte[] bV4BlueMask;   // 青成分のカラーマスク
+    protected byte[] bV4AlphaMask;  // α成分のカラーマスク
+    protected byte[] bV4CSType;     // 色空間
+    protected byte[] bV4Endpoints;  // CIEXYZTRIPLE構造体
+    protected byte[] bV4GammaRed;   // 赤成分のガンマ値
+    protected byte[] bV4GammaGreen; // 緑成分のガンマ値
+    protected byte[] bV4GammaBlue;  // 青成分のガンマ値
 
-    protected final int infoHeaderSize = 108; // 情報ヘッダサイズ
+    /**
+     * <b>BMP - Windows V4</b>
+     */
+    public BMP_V4() {
+        clear();
+    }
+
+    /**
+     * <b>BMP - Windows V4</b>
+     * 
+     * @param data
+     *            データ
+     */
+    public BMP_V4(byte[] data) {
+        clear();
+        set(data);
+    }
+
+    /**
+     * <b>BMP - Windows V4</b>
+     * 
+     * @param bmp
+     *            BMPのオブジェクト
+     */
+    public BMP_V4(BMP bmp) {
+        clear();
+        set(bmp);
+    }
 
     @Override
     public void clear() {
         super.clear();
-        setInfoHeaderSize(infoHeaderSize);
+        setInfoHeaderSize(INFO_HEADER_SIZE_V4);
         bV4RedMask = Tools.int2bytes(0);
         bV4GreenMask = Tools.int2bytes(0);
         bV4BlueMask = Tools.int2bytes(0);
@@ -243,61 +271,61 @@ public class BMP_V4 extends BMP_V3 {
     /**
      * @return 赤成分のカラーマスク
      */
-    public int getRedMask() {
-        return Tools.bytes2int(bV4RedMask);
+    public byte[] getRedMask() {
+        return bV4RedMask;
     }
 
     /**
      * @param bV4RedMask
      *            赤成分のカラーマスク
      */
-    public void setRedMask(int bV4RedMask) {
-        this.bV4RedMask = Tools.int2bytes(bV4RedMask);
+    public void setRedMask(byte[] bV4RedMask) {
+        this.bV4RedMask = bV4RedMask;
     }
 
     /**
      * @return 緑成分のカラーマスク
      */
-    public int getGreenMask() {
-        return Tools.bytes2int(bV4GreenMask);
+    public byte[] getGreenMask() {
+        return bV4GreenMask;
     }
 
     /**
      * @param bV4GreenMask
      *            緑成分のカラーマスク
      */
-    public void setGreenMask(int bV4GreenMask) {
-        this.bV4GreenMask = Tools.int2bytes(bV4GreenMask);
+    public void setGreenMask(byte[] bV4GreenMask) {
+        this.bV4GreenMask = bV4GreenMask;
     }
 
     /**
      * @return 青成分のカラーマスク
      */
-    public int getBlueMask() {
-        return Tools.bytes2int(bV4BlueMask);
+    public byte[] getBlueMask() {
+        return bV4BlueMask;
     }
 
     /**
      * @param bV4BlueMask
      *            青成分のカラーマスク
      */
-    public void setBlueMask(int bV4BlueMask) {
-        this.bV4BlueMask = Tools.int2bytes(bV4BlueMask);
+    public void setBlueMask(byte[] bV4BlueMask) {
+        this.bV4BlueMask = bV4BlueMask;
     }
 
     /**
      * @return α成分のカラーマスク
      */
-    public int getAlphaMask() {
-        return Tools.bytes2int(bV4AlphaMask);
+    public byte[] getAlphaMask() {
+        return bV4AlphaMask;
     }
 
     /**
      * @param bV4AlphaMask
      *            α成分のカラーマスク
      */
-    public void setAlphaMask(int bV4AlphaMask) {
-        this.bV4AlphaMask = Tools.int2bytes(bV4AlphaMask);
+    public void setAlphaMask(byte[] bV4AlphaMask) {
+        this.bV4AlphaMask = bV4AlphaMask;
     }
 
     /**
@@ -308,8 +336,8 @@ public class BMP_V4 extends BMP_V3 {
      * 
      * @return 色空間
      */
-    public int getCSType() {
-        return Tools.bytes2int(bV4CSType);
+    public byte[] getCSType() {
+        return bV4CSType;
     }
 
     /**
@@ -321,8 +349,8 @@ public class BMP_V4 extends BMP_V3 {
      * @param bV4CSType
      *            色空間
      */
-    public void setCSType(int bV4CSType) {
-        this.bV4CSType = Tools.int2bytes(bV4CSType);
+    public void setCSType(byte[] bV4CSType) {
+        this.bV4CSType = bV4CSType;
     }
 
     /**
@@ -387,8 +415,74 @@ public class BMP_V4 extends BMP_V3 {
 
     @Override
     public byte[] getBitmapHeader() {
-        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + infoHeaderSize);
-        buff.put(super.getBitmapHeader());
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V4);
+        buff.put(getFileHeader());
+        buff.put(getInfoHeader());
+        return buff.array();
+    }
+
+    @Override
+    public void set(byte[] data) {
+        byte[] fileHeader = Tools.subbytes(data, 0, FILE_HEADER_SIZE);
+        byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, FILE_HEADER_SIZE + INFO_HEADER_SIZE_V4);
+        setFileHeader(fileHeader);
+        setInfoHeader(infoHeader);
+        byte[] bColors = Tools.subbytes(data, 0x0036, Tools.bytes2int(bfOffBits));
+        setColors(bColors);
+        byte[] imgData = Tools.subbytes(data, Tools.bytes2int(bfOffBits), getFileSize());
+        setImage(imgData);
+    }
+
+    @Override
+    public void set(BMP bmp) {
+        super.set(bmp);
+        setRedMask(bmp.getRedMask());
+        setGreenMask(bmp.getGreenMask());
+        setBlueMask(bmp.getBlueMask());
+        setAlphaMask(bmp.getAlphaMask());
+        setCSType(bmp.getCSType());
+        setEndpoints(bmp.getCiexyzTriple());
+        setGammaRed(bmp.getGammaRed());
+        setGammaGreen(bmp.getGammaGreen());
+        setGammaBlue(bmp.getGammaBlue());
+    }
+
+    @Override
+    public int setInfoHeader(byte[] data) {
+        int offset = super.setInfoHeader(data);
+        bV4RedMask = Tools.subbytes(data, offset, offset += 4);
+        bV4GreenMask = Tools.subbytes(data, offset, offset += 4);
+        bV4BlueMask = Tools.subbytes(data, offset, offset += 4);
+        bV4AlphaMask = Tools.subbytes(data, offset, offset += 4);
+        bV4CSType = Tools.subbytes(data, offset, offset += 4);
+        bV4Endpoints = Tools.subbytes(data, offset, offset += 36);
+        bV4GammaRed = Tools.subbytes(data, offset, offset += 4);
+        bV4GammaGreen = Tools.subbytes(data, offset, offset += 4);
+        bV4GammaBlue = Tools.subbytes(data, offset, offset += 4);
+        return offset;
+    }
+
+    @Override
+    public byte[] get() {
+        int imageSize = 0;
+        for (byte[] b : image)
+            imageSize += b.length;
+        setSizeImage(imageSize);
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V4 + colors.size() * 4 + imageSize);
+        buff.put(getBitmapHeader());
+        colors.forEach(color -> {
+            buff.put(color);
+        });
+        image.forEach(img -> {
+            buff.put(img);
+        });
+        return buff.array();
+    }
+
+    @Override
+    public byte[] getInfoHeader() {
+        ByteBuffer buff = ByteBuffer.allocate(INFO_HEADER_SIZE_V4);
+        buff.put(super.getInfoHeader());
         buff.put(bV4RedMask);
         buff.put(bV4GreenMask);
         buff.put(bV4BlueMask);
@@ -399,5 +493,16 @@ public class BMP_V4 extends BMP_V3 {
         buff.put(bV4GammaGreen);
         buff.put(bV4GammaBlue);
         return buff.array();
+    }
+
+    @Override
+    public int getVersion() {
+        return 4;
+    }
+
+    @Override
+    protected void updateFileSize() {
+        int fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V4 + getSizeImage() + colors.size() * 4;
+        bfSize = Tools.int2bytes(fileSize);
     }
 }

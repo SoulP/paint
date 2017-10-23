@@ -12,7 +12,7 @@ import file.io.BMP;
 
 /**
  * <b>BMPの単体テスト</b><br>
- * date: 2017/10/13 last_date 2017/10/20
+ * date: 2017/10/13 last_date 2017/10/23
  * 
  * @author ソウルP
  */
@@ -360,9 +360,9 @@ public class BMP_UT {
                 break;
         }
         System.out.println("圧縮形式: " + comp);
-        System.out.println("画像データサイズ: " + bmp.getSizeImage());
-        System.out.println("水平方向の解像度: " + bmp.getXPelsPerMeter());
-        System.out.println("垂直方向の解像度: " + bmp.getYPelsPerMeter());
+        System.out.println("画像データサイズ: " + bmp.getImageSize());
+        System.out.println("水平方向の解像度: " + bmp.getPixPerMeterX());
+        System.out.println("垂直方向の解像度: " + bmp.getPixPerMeterY());
         System.out.println("使用する色数: " + bmp.getColors().size());
         System.out.println("重要な色数: " + bmp.getCirImportant());
         System.out.println();

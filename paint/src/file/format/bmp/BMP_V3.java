@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import file.Tools;
+import file.io.BMP;
 
 /**
  * <b>BMP Windows V3</b><br>
- * date: 2017/10/12 last_date: 2017/10/20<br>
+ * date: 2017/10/12 last_date: 2017/10/23<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -161,8 +162,6 @@ public class BMP_V3 extends BMP_V1 {
     protected byte[]           biClrUsed;                           // 格納されているパレット数 (使用色数) 0の場合もある
     protected byte[]           biCirImportant;                      // 重要なパレットのインデックス 0の場合もある
 
-    protected final int        infoHeaderSize     = 40;             // 情報ヘッダサイズ
-
     public static final String CAN_NOT_USE_METHOD = "使用できないメソッドです。";
 
     /**
@@ -172,10 +171,32 @@ public class BMP_V3 extends BMP_V1 {
         clear();
     }
 
+    /**
+     * <b>BMP - Windows V3</b>
+     * 
+     * @param data
+     *            データ
+     */
+    public BMP_V3(byte[] data) {
+        clear();
+        set(data);
+    }
+
+    /**
+     * <b>BMP - Windows V3</b>
+     * 
+     * @param bmp
+     *            BMPのオブジェクト
+     */
+    public BMP_V3(BMP bmp) {
+        clear();
+        set(bmp);
+    }
+
     @Override
     public void clear() {
         super.clear();
-        bcSize = Tools.int2bytes(infoHeaderSize);
+        bcSize = Tools.int2bytes(INFO_HEADER_SIZE_V3);
         bcWidth = Tools.int2bytes(0);
         bcHeight = Tools.int2bytes(0);
         biCompression = Tools.int2bytes(0);
@@ -389,12 +410,6 @@ public class BMP_V3 extends BMP_V1 {
     }
 
     @Override
-    public void clearColors() {
-        super.clearColors();
-        setClrUsed(colors.size());
-    }
-
-    @Override
     public void addColor(int r, int g, int b) {
         super.addColor(r, g, b);
         setClrUsed(colors.size());
@@ -402,27 +417,36 @@ public class BMP_V3 extends BMP_V1 {
 
     @Override
     public byte[] getBitmapHeader() {
-        ByteBuffer buff = ByteBuffer.allocate(infoHeaderSize);
-        buff.put(super.getBitmapHeader());
-        buff.put(biCompression);
-        buff.put(biSizeImage);
-        buff.put(biXPelsPerMeter);
-        buff.put(biYPelsPerMeter);
-        buff.put(biClrUsed);
-        buff.put(biCirImportant);
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V3);
+        buff.put(getFileHeader());
+        buff.put(getInfoHeader());
         return buff.array();
     }
 
     @Override
     public void set(byte[] data) {
         byte[] fileHeader = Tools.subbytes(data, 0, FILE_HEADER_SIZE);
-        byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, FILE_HEADER_SIZE + infoHeaderSize);
+        byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, FILE_HEADER_SIZE + INFO_HEADER_SIZE_V3);
         setFileHeader(fileHeader);
         setInfoHeader(infoHeader);
-        byte[] bColors = Tools.subbytes(data, 0x001A, Tools.bytes2int(bfOffBits));
+        byte[] bColors = Tools.subbytes(data, 0x0036, Tools.bytes2int(bfOffBits));
         setColors(bColors);
         byte[] imgData = Tools.subbytes(data, Tools.bytes2int(bfOffBits), getFileSize());
         setImage(imgData);
+    }
+
+    @Override
+    public void set(BMP bmp) {
+        super.set(bmp);
+        setInfoHeaderSize(bmp.getInfoHeaderSize());
+        setWidth(bmp.getWidth());
+        setHeight(bmp.getHeight());
+        setCompression(bmp.getCompression());
+        setSizeImage(bmp.getImageSize());
+        setXPelsPerMeter(bmp.getPixPerMeterX());
+        setYPelsPerMeter(bmp.getPixPerMeterY());
+        setClrUsed(bmp.getClrUsed());
+        setCirImportant(bmp.getCirImportant());
     }
 
     @Override
@@ -484,9 +508,9 @@ public class BMP_V3 extends BMP_V1 {
         int imageSize = 0;
         for (byte[] b : image)
             imageSize += b.length;
-        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + infoHeaderSize + colors.size() * 4 + imageSize);
-        buff.put(getFileHeader());
-        buff.put(getInfoHeader());
+        setSizeImage(imageSize);
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V3 + colors.size() * 4 + imageSize);
+        buff.put(getBitmapHeader());
         colors.forEach(color -> {
             buff.put(color);
         });
@@ -498,7 +522,7 @@ public class BMP_V3 extends BMP_V1 {
 
     @Override
     public byte[] getInfoHeader() {
-        ByteBuffer buff = ByteBuffer.allocate(infoHeaderSize);
+        ByteBuffer buff = ByteBuffer.allocate(INFO_HEADER_SIZE_V3);
         buff.put(super.getInfoHeader());
         buff.put(biCompression);
         buff.put(biSizeImage);
@@ -510,8 +534,13 @@ public class BMP_V3 extends BMP_V1 {
     }
 
     @Override
+    public int getVersion() {
+        return 3;
+    }
+
+    @Override
     protected void updateFileSize() {
-        int fileSize = FILE_HEADER_SIZE + infoHeaderSize + getSizeImage() + colors.size() * 4;
+        int fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V3 + getSizeImage() + colors.size() * 4;
         bfSize = Tools.int2bytes(fileSize);
     }
 }

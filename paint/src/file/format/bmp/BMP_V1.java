@@ -4,10 +4,11 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import file.Tools;
+import file.io.BMP;
 
 /**
  * <b>BMP - OS/2 V1</b><br>
- * date: 2017/10/18 last_date: 2017/10/20<br>
+ * date: 2017/10/18 last_date: 2017/10/23<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -107,27 +108,21 @@ import file.Tools;
  */
 public class BMP_V1 implements BMPable {
     // ファイルヘッダ
-    protected byte[]              bfType;                                                              // ファイルタイプ 通常は'BM'
-    protected byte[]              bfSize;                                                              // ファイルサイズ (byte)
-    protected static final byte[] BF_RESERVED_1    = { 0x00, 0x00 };                                   // 予約領域 常に 0
-    protected static final byte[] BF_RESERVED_2    = { 0x00, 0x00 };                                   // 予約領域 常に 0
-    protected byte[]              bfOffBits;                                                           // ファイル先頭から画像データまでのオフセット (byte)
+    protected byte[]              bfType;                         // ファイルタイプ 通常は'BM'
+    protected byte[]              bfSize;                         // ファイルサイズ (byte)
+    protected static final byte[] BF_RESERVED_1 = { 0x00, 0x00 }; // 予約領域 常に 0
+    protected static final byte[] BF_RESERVED_2 = { 0x00, 0x00 }; // 予約領域 常に 0
+    protected byte[]              bfOffBits;                      // ファイル先頭から画像データまでのオフセット (byte)
 
     // 情報ヘッダ
-    protected byte[]              bcSize;                                                              // ヘッダサイズ (byte)
-    protected byte[]              bcWidth;                                                             // ビットマップの横幅 (ピクセル)
-    protected byte[]              bcHeight;                                                            // ビットマップの縦幅 (ピクセル)
-    protected static final byte[] BC_PLANES        = { 0x01, 0x00 };                                   // プレーン数 常に 1
-    protected byte[]              bcBitCount;                                                          // 1ピクセルあたりのビット数 (bit)
+    protected byte[]              bcSize;                         // ヘッダサイズ (byte)
+    protected byte[]              bcWidth;                        // ビットマップの横幅 (ピクセル)
+    protected byte[]              bcHeight;                       // ビットマップの縦幅 (ピクセル)
+    protected static final byte[] BC_PLANES     = { 0x01, 0x00 }; // プレーン数 常に 1
+    protected byte[]              bcBitCount;                     // 1ピクセルあたりのビット数 (bit)
 
-    protected List<byte[]>        colors;                                                              // カラーパレット
-    protected List<byte[]>        image;                                                               // イメージ
-
-    protected final int           FILE_HEADER_SIZE = 14;                                               // ファイルヘッダサイズ
-    protected final int           infoHeaderSize   = 12;                                               // 情報ヘッダサイズ
-    protected static final String ERROR_FILE_OR    = "ファイルの破損もしくは、";
-    protected static final String ERROR_IS_NOT_BMP = ERROR_FILE_OR + "拡張子がBMPではありません。";
-    protected static final String ERROR_BITCOUNT   = ERROR_FILE_OR + "ビットの深さが対応されていない値になっている可能性があります。";
+    protected List<byte[]>        colors;                         // カラーパレット
+    protected List<byte[]>        image;                          // イメージ
 
     /**
      * <b>BMP - OS/2 V1</b>
@@ -136,12 +131,34 @@ public class BMP_V1 implements BMPable {
         clear();
     }
 
+    /**
+     * <b>BMP - OS/2 V1</b>
+     * 
+     * @param bmp
+     *            BMPのデータ
+     */
+    public BMP_V1(byte[] data) {
+        clear();
+        set(data);
+    }
+
+    /**
+     * <b>BMP - OS/2 V1</b>
+     * 
+     * @param data
+     *            BMPのオブジェクト
+     */
+    public BMP_V1(BMP bmp) {
+        clear();
+        set(bmp);
+    }
+
     @Override
     public void clear() {
         setType(new byte[] { 0x42, 0x4D });
         bfSize = Tools.int2bytes(0);
         bfOffBits = Tools.int2bytes(0);
-        bcSize = Tools.int2bytes(infoHeaderSize);
+        bcSize = Tools.int2bytes(INFO_HEADER_SIZE_V1);
         bcWidth = Tools.short2bytes((short) 0);
         bcHeight = Tools.short2bytes((short) 0);
         bcBitCount = Tools.short2bytes((short) 0);
@@ -301,13 +318,6 @@ public class BMP_V1 implements BMPable {
     }
 
     /**
-     * <b>カラーパレット 全消去</b>
-     */
-    public void clearColors() {
-        colors.clear();
-    }
-
-    /**
      * <b>カラーパレットに色追加</b>
      * 
      * @param r
@@ -341,42 +351,18 @@ public class BMP_V1 implements BMPable {
         this.image = image;
     }
 
-    /**
-     * 1次元目は縦、2次元目は横
-     * 
-     * @param image
-     *            ビットマップデータ
-     */
-    public void setImage(byte[][] image) {
-        this.image.clear();
-        for (byte[] i : image)
-            this.image.add(i);
-    }
-
-    /**
-     * ファイルヘッダ と 情報ヘッダ
-     * 
-     * @return ヘッダ情報
-     */
+    @Override
     public byte[] getBitmapHeader() {
-        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + infoHeaderSize);
-        buff.put(bfType);
-        buff.put(bfSize);
-        buff.put(BF_RESERVED_1);
-        buff.put(BF_RESERVED_2);
-        buff.put(bfOffBits);
-        buff.put(bcSize);
-        buff.put(bcWidth);
-        buff.put(bcHeight);
-        buff.put(BC_PLANES);
-        buff.put(bcBitCount);
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V1);
+        buff.put(getFileHeader());
+        buff.put(getInfoHeader());
         return buff.array();
     }
 
     @Override
     public void set(byte[] data) {
         byte[] fileHeader = Tools.subbytes(data, 0, FILE_HEADER_SIZE);
-        byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, FILE_HEADER_SIZE + infoHeaderSize);
+        byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, FILE_HEADER_SIZE + INFO_HEADER_SIZE_V1);
         setFileHeader(fileHeader);
         setInfoHeader(infoHeader);
         byte[] bColors = Tools.subbytes(data, 0x001A, Tools.bytes2int(bfOffBits));
@@ -386,11 +372,23 @@ public class BMP_V1 implements BMPable {
     }
 
     @Override
-    public void setFileHeader(byte[] data) {
+    public void set(BMP bmp) {
+        setType(bmp.getType());
+        setFileSize(bmp.getFileSize());
+        setOffset(bmp.getImageOffset());
+        setInfoHeaderSize(bmp.getInfoHeaderSize());
+        setWidth((short) bmp.getWidth());
+        setHeight((short) bmp.getHeight());
+        setBitCount((short) bmp.getBitCount());
+    }
+
+    @Override
+    public int setFileHeader(byte[] data) {
         int offset = 0;
         bfType = Tools.subbytes(data, offset, offset += 2);
         bfSize = Tools.subbytes(data, offset, offset += 4);
         bfOffBits = Tools.subbytes(data, offset += 4, offset + 4);
+        return offset;
     }
 
     @Override
@@ -437,9 +435,8 @@ public class BMP_V1 implements BMPable {
         int imageSize = 0;
         for (byte[] b : image)
             imageSize += b.length;
-        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + infoHeaderSize + colors.size() * 4 + imageSize);
-        buff.put(getFileHeader());
-        buff.put(getInfoHeader());
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V1 + colors.size() * 4 + imageSize);
+        buff.put(getBitmapHeader());
         colors.forEach(color -> {
             buff.put(color);
         });
@@ -462,7 +459,7 @@ public class BMP_V1 implements BMPable {
 
     @Override
     public byte[] getInfoHeader() {
-        ByteBuffer buff = ByteBuffer.allocate(infoHeaderSize);
+        ByteBuffer buff = ByteBuffer.allocate(INFO_HEADER_SIZE_V1);
         buff.put(bcSize);
         buff.put(bcWidth);
         buff.put(bcHeight);
@@ -471,11 +468,16 @@ public class BMP_V1 implements BMPable {
         return buff.array();
     }
 
+    @Override
+    public int getVersion() {
+        return 1;
+    }
+
     protected void updateFileSize() {
         int imageSize = 0;
         for (byte[] b : image)
             imageSize += b.length;
-        int fileSize = FILE_HEADER_SIZE + infoHeaderSize + imageSize + colors.size() * 4;
+        int fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V1 + imageSize + colors.size() * 4;
         bfSize = Tools.int2bytes(fileSize);
     }
 }

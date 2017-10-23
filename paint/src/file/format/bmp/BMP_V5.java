@@ -3,10 +3,11 @@ package file.format.bmp;
 import java.nio.ByteBuffer;
 
 import file.Tools;
+import file.io.BMP;
 
 /**
  * <b>BMP Windows V5</b><br>
- * date: 2017/10/19 last_date: 2017/10/20<br>
+ * date: 2017/10/19 last_date: 2017/10/23<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -244,20 +245,62 @@ import file.Tools;
  */
 public class BMP_V5 extends BMP_V4 {
     // 情報ヘッダ
-    protected byte[]              bV5Intent;                                   // レンダリングの意図
-    protected byte[]              bV5ProfileData;                              // プロファイルデータのオフセット
-    protected byte[]              bV5ProfileSize;                              // プロファイルデータのサイズ
-    protected static final byte[] BV5_RESERVED   = { 0x00, 0x00, 0x00, 0x00 }; // 予約領域
+    protected byte[]              bV5Intent;                                 // レンダリングの意図
+    protected byte[]              bV5ProfileData;                            // プロファイルデータのオフセット
+    protected byte[]              bV5ProfileSize;                            // プロファイルデータのサイズ
+    protected static final byte[] BV5_RESERVED = { 0x00, 0x00, 0x00, 0x00 }; // 予約領域
 
-    protected final int           infoHeaderSize = 124;                        // 情報ヘッダサイズ
+    /**
+     * <b>BMP - Windows V5</b>
+     */
+    public BMP_V5() {
+        clear();
+    }
+
+    /**
+     * <b>BMP - Windows V5</b>
+     * 
+     * @param data
+     *            データ
+     */
+    public BMP_V5(byte[] data) {
+        clear();
+        set(data);
+    }
+
+    /**
+     * <b>BMP - Windows V5</b>
+     * 
+     * @param bmp
+     *            BMPのオブジェクト
+     */
+    public BMP_V5(BMP bmp) {
+        clear();
+        set(bmp);
+    }
 
     @Override
     public void clear() {
         super.clear();
-        setInfoHeaderSize(infoHeaderSize);
+        setInfoHeaderSize(INFO_HEADER_SIZE_V5);
         bV5Intent = Tools.int2bytes(0);
         bV5ProfileData = Tools.int2bytes(0);
         bV5ProfileSize = Tools.int2bytes(0);
+    }
+
+    /**
+     * @return レンダリングの意図
+     */
+    public int getIntent() {
+        return Tools.bytes2int(bV5Intent);
+    }
+
+    /**
+     * @param bV5Intent
+     *            レンダリングの意図
+     */
+    public void setIntent(int bV5Intent) {
+        this.bV5Intent = Tools.int2bytes(bV5Intent);
     }
 
     /**
@@ -300,12 +343,81 @@ public class BMP_V5 extends BMP_V4 {
 
     @Override
     public byte[] getBitmapHeader() {
-        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + infoHeaderSize);
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V5);
         buff.put(super.getBitmapHeader());
         buff.put(bV5Intent);
         buff.put(bV5ProfileData);
         buff.put(bV5ProfileSize);
         buff.put(BV5_RESERVED);
         return buff.array();
+    }
+
+    @Override
+    public void set(byte[] data) {
+        byte[] fileHeader = Tools.subbytes(data, 0, FILE_HEADER_SIZE);
+        byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, FILE_HEADER_SIZE + INFO_HEADER_SIZE_V5);
+        setFileHeader(fileHeader);
+        setInfoHeader(infoHeader);
+        byte[] bColors = Tools.subbytes(data, 0x0036, Tools.bytes2int(bfOffBits));
+        setColors(bColors);
+        byte[] imgData = Tools.subbytes(data, Tools.bytes2int(bfOffBits), getFileSize());
+        setImage(imgData);
+    }
+
+    @Override
+    public void set(BMP bmp) {
+        super.set(bmp);
+        setIntent(bmp.getIntent());
+        setProfileData(bmp.getProfileOffset());
+        setProfileSize(bmp.getProfileSize());
+    }
+
+    @Override
+    public int setInfoHeader(byte[] data) {
+        int offset = super.setInfoHeader(data);
+        bV5Intent = Tools.subbytes(data, offset, offset += 4);
+        bV5ProfileData = Tools.subbytes(data, offset, offset += 4);
+        bV5ProfileSize = Tools.subbytes(data, offset, offset += 4);
+        offset += 4;
+        return offset;
+    }
+
+    @Override
+    public byte[] get() {
+        int imageSize = 0;
+        for (byte[] b : image)
+            imageSize += b.length;
+        setSizeImage(imageSize);
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V5 + colors.size() * 4 + imageSize);
+        buff.put(getBitmapHeader());
+        colors.forEach(color -> {
+            buff.put(color);
+        });
+        image.forEach(img -> {
+            buff.put(img);
+        });
+        return buff.array();
+    }
+
+    @Override
+    public byte[] getInfoHeader() {
+        ByteBuffer buff = ByteBuffer.allocate(INFO_HEADER_SIZE_V5);
+        buff.put(super.getInfoHeader());
+        buff.put(bV5Intent);
+        buff.put(bV5ProfileData);
+        buff.put(bV5ProfileSize);
+        buff.put(BV5_RESERVED);
+        return buff.array();
+    }
+
+    @Override
+    public int getVersion() {
+        return 5;
+    }
+
+    @Override
+    protected void updateFileSize() {
+        int fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V5 + getSizeImage() + colors.size() * 4;
+        bfSize = Tools.int2bytes(fileSize);
     }
 }
