@@ -1054,6 +1054,33 @@ public class BMP {
         return bmp.getVersion();
     }
 
+    /**
+     * バージョンの値は 1 から 5 まで<br>
+     * バージョンの値が範囲外の場合、デフォルトとして 3 に設定される。
+     * 
+     * @param version
+     *            バージョン
+     */
+    public void setVersion(int version) {
+        switch (version) {
+            case 1:
+                bmp = new BMP_V1();
+                break;
+            case 2:
+                bmp = new BMP_V2();
+                break;
+            case 4:
+                bmp = new BMP_V4();
+                break;
+            case 5:
+                bmp = new BMP_V5();
+                break;
+            default:
+                bmp = new BMP_V3();
+                break;
+        }
+    }
+
     @Override
     public String toString() {
         return bmp.toString();

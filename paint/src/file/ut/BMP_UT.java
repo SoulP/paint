@@ -1,5 +1,6 @@
 package file.ut;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -402,5 +403,68 @@ public class BMP_UT {
 
         System.out.println(file);
         System.out.println(bmp);
+    }
+
+    /**
+     * <b>BMP バージョン変更</b><br>
+     * 成功テスト
+     */
+    @Test
+    public void bmpChangeVersion() {
+        BMP bmp = new BMP();
+        System.out.println("変更前: V" + bmp.getVersion());
+        assertEquals(bmp.getVersion(), 3);
+
+        bmp.setVersion(5);
+        System.out.println("変更後: V" + bmp.getVersion());
+        assertEquals(bmp.getVersion(), 5);
+    }
+
+    /**
+     * <b>BMP バージョン変更</b><br>
+     * 存在しないバージョンに変更し、デフォルトでバージョンが 3 なのか値を確認<br>
+     * 成功テスト
+     */
+    @Test
+    public void bmpChangeVersion_out_of_version() {
+        BMP bmp = new BMP();
+        System.out.println("変更前: V" + bmp.getVersion());
+        assertEquals(bmp.getVersion(), 3);
+
+        bmp.setVersion(6);
+        System.out.println("変更後: V" + bmp.getVersion());
+        assertEquals(bmp.getVersion(), 3);
+    }
+
+    /**
+     * <b>BMP バージョン変更</b><br>
+     * 存在しないバージョンに変更し、デフォルトでバージョンが 3 なのか値を確認<br>
+     * 成功テスト
+     */
+    @Test
+    public void bmpChangeVersion_out_of_version_01() {
+        BMP bmp = new BMP();
+        System.out.println("変更前: V" + bmp.getVersion());
+        assertEquals(bmp.getVersion(), 3);
+
+        bmp.setVersion(0);
+        System.out.println("変更後: V" + bmp.getVersion());
+        assertEquals(bmp.getVersion(), 3);
+    }
+
+    /**
+     * <b>BMP バージョン変更</b><br>
+     * 存在しないバージョンに変更し、デフォルトでバージョンが 3 なのか値を確認<br>
+     * 成功テスト
+     */
+    @Test
+    public void bmpChangeVersion_out_of_version_02() {
+        BMP bmp = new BMP();
+        System.out.println("変更前: V" + bmp.getVersion());
+        assertEquals(bmp.getVersion(), 3);
+
+        bmp.setVersion(-1);
+        System.out.println("変更後: V" + bmp.getVersion());
+        assertEquals(bmp.getVersion(), 3);
     }
 }
