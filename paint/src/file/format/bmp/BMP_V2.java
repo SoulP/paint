@@ -9,7 +9,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP - OS/2 V2</b><br>
- * date: 2017/10/18 last_date: 2017/10/23<br>
+ * date: 2017/10/18 last_date: 2017/10/24<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -442,7 +442,7 @@ public class BMP_V2 extends BMP_V3 {
     /**
      * @return ハーフトーン時のパラメータ1
      */
-    public int getHalftonParam1() {
+    public int getHalftoneParam1() {
         return Tools.bytes2int(bV2HalftoneParam1);
     }
 

@@ -17,7 +17,7 @@ import file.format.bmp.BMPable;
 
 /**
  * <b>BMP入出力</b><br>
- * date: 2017/10/12 last_date: 2017/10/23
+ * date: 2017/10/12 last_date: 2017/10/24
  * 
  * @author ソウルP
  * @version 1.0 2017/10/12 BMP作成
@@ -868,16 +868,58 @@ public class BMP {
                 }
                 break;
         }
-        BMP_V1 b = (BMP_V1) bmp;
-        setType(b.getType());
-        setFileSize(b.getFileSize());
-        setImageOffset(b.getOffset());
-        setInfoHeaderSize(b.getInfoHeaderSize());
-        setWidth(b.getWidthV1());
-        setHeight(b.getHeightV1());
-        setBitCount(b.getBitCount());
+        BMP_V1 b1 = (BMP_V1) bmp;
+        setType(b1.getType());
+        setFileSize(b1.getFileSize());
+        setImageOffset(b1.getOffset());
+        setInfoHeaderSize(b1.getInfoHeaderSize());
+        setWidth(b1.getWidthV1());
+        setHeight(b1.getHeightV1());
+        setBitCount(b1.getBitCount());
+        setColors(b1.getColors());
+        setImage(b1.getImage());
         if (bmp.getVersion() >= 2) {
-            
+            BMP_V3 b3 = (BMP_V3) bmp;
+            setWidth(b3.getWidth());
+            setHeight(b3.getHeight());
+            setCompression(b3.getCompression());
+            setImageSize(b3.getSizeImage());
+            setPixPerMeterX(b3.getXPelsPerMeter());
+            setPixPerMeterY(b3.getYPelsPerMeter());
+            setCirImportant(b3.getCirImportant());
+            if (bmp.getVersion() >= 3) {
+                setInfoHeaderSize(b3.getInfoHeaderSize());
+                if (bmp.getVersion() >= 4) {
+                    BMP_V4 b4 = (BMP_V4) bmp;
+                    setRedMask(b4.getRedMask());
+                    setGreenMask(b4.getGreenMask());
+                    setBlueMask(b4.getBlueMask());
+                    setAlphaMask(b4.getAlphaMask());
+                    setCSType(b4.getCSType());
+                    setCiexyzTriple(b4.getEndpoints());
+                    setGammaRed(b4.getGammaRed());
+                    setGammaGreen(b4.getGammaGreen());
+                    setGammaBlue(b4.getGammaBlue());
+                    if (bmp.getVersion() == 5) {
+                        BMP_V5 b5 = (BMP_V5) bmp;
+                        setIntent(b5.getIntent());
+                        setProfileOffset(b5.getProfileData());
+                        setProfileSize(b5.getProfileSize());
+                    }
+                }
+            } else {
+                BMP_V2 b2 = (BMP_V2) bmp;
+                setHeaderSize(b2.getHeaderSize());
+                setHotspotX(b2.getHotspotX());
+                setHotspotY(b2.getHotspotY());
+                setResolution(b2.getResolution());
+                setFormat(b2.getFormat());
+                setHalftone(b2.getHalftone());
+                setHalftoneParam1(b2.getHalftoneParam1());
+                setHalftoneParam2(b2.getHalftoneParam2());
+                setEncoding(b2.getEncoding());
+                setId(b2.getId());
+            }
         }
     }
 

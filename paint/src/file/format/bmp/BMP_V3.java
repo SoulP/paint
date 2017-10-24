@@ -9,7 +9,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP Windows V3</b><br>
- * date: 2017/10/12 last_date: 2017/10/23<br>
+ * date: 2017/10/12 last_date: 2017/10/24<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -168,6 +168,8 @@ public class BMP_V3 extends BMP_V1 {
      * <b>BMP - Windows V3</b>
      */
     public BMP_V3() {
+        colors = new ArrayList<>();
+        image = new ArrayList<>();
         clear();
     }
 
@@ -178,7 +180,7 @@ public class BMP_V3 extends BMP_V1 {
      *            データ
      */
     public BMP_V3(byte[] data) {
-        clear();
+        this();
         set(data);
     }
 
@@ -189,7 +191,7 @@ public class BMP_V3 extends BMP_V1 {
      *            BMPのオブジェクト
      */
     public BMP_V3(BMP bmp) {
-        clear();
+        this();
         set(bmp);
     }
 
@@ -411,7 +413,8 @@ public class BMP_V3 extends BMP_V1 {
 
     @Override
     public void addColor(int r, int g, int b) {
-        super.addColor(r, g, b);
+        byte[] color = { (byte) b, (byte) g, (byte) r, 0x00 };
+        colors.add(color);
         setClrUsed(colors.size());
     }
 
@@ -425,13 +428,14 @@ public class BMP_V3 extends BMP_V1 {
 
     @Override
     public void set(byte[] data) {
+        int colorOffset = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V3;
         byte[] fileHeader = Tools.subbytes(data, 0, FILE_HEADER_SIZE);
-        byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, FILE_HEADER_SIZE + INFO_HEADER_SIZE_V3);
+        byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, colorOffset);
         setFileHeader(fileHeader);
         setInfoHeader(infoHeader);
-        byte[] bColors = Tools.subbytes(data, 0x0036, Tools.bytes2int(bfOffBits));
+        byte[] bColors = Tools.subbytes(data, colorOffset, getOffset());
         setColors(bColors);
-        byte[] imgData = Tools.subbytes(data, Tools.bytes2int(bfOffBits), getFileSize());
+        byte[] imgData = Tools.subbytes(data, getOffset(), data.length);
         setImage(imgData);
     }
 
@@ -482,8 +486,7 @@ public class BMP_V3 extends BMP_V1 {
         if (getCompression() == 1 || getCompression() == 2) {
             List<Byte> bytes = new ArrayList<>();
             byte[] byteArray;
-            int endOffset = getOffset() + getSizeImage();
-            for (int i = getOffset(); i < endOffset; i += 2) {
+            for (int i = 0; i < data.length; i += 2) {
                 byte b = data[i];
                 byte bb = data[i + 1];
                 bytes.add(b);

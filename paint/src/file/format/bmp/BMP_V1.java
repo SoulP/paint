@@ -328,7 +328,7 @@ public class BMP_V1 implements BMPable {
      *            青 0 - 255
      */
     public void addColor(int r, int g, int b) {
-        byte[] color = { (byte) b, (byte) g, (byte) r, 0x00 };
+        byte[] color = { (byte) b, (byte) g, (byte) r, };
         colors.add(color);
     }
 
