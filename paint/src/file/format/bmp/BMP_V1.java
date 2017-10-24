@@ -388,6 +388,8 @@ public class BMP_V1 implements BMPable {
         setWidth((short) bmp.getWidth());
         setHeight((short) bmp.getHeight());
         setBitCount((short) bmp.getBitCount());
+        setColors(bmp.getColors());
+        setImage(bmp.getImage());
     }
 
     @Override

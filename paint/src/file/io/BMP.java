@@ -944,26 +944,51 @@ public class BMP {
      * @throws IOException
      */
     public void output(String file, int version) throws IOException {
-        if (bmp.getVersion() != version) {
+        if (version != 2) {
             switch (version) {
                 case 1:
-                    bmp = new BMP_V1(this);
-                    break;
-                case 2:
-                    bmp = new BMP_V2(this);
+                    infoHeaderSize = BMPable.INFO_HEADER_SIZE_V1;
                     break;
                 case 3:
-                    bmp = new BMP_V3(this);
+                    infoHeaderSize = BMPable.INFO_HEADER_SIZE_V3;
                     break;
                 case 4:
-                    bmp = new BMP_V4(this);
+                    infoHeaderSize = BMPable.INFO_HEADER_SIZE_V4;
                     break;
                 case 5:
-                    bmp = new BMP_V5(this);
+                    infoHeaderSize = BMPable.INFO_HEADER_SIZE_V5;
                     break;
                 default:
                     throw new IOException(BMPable.ERROR_UNSUPPORTED_VERSION);
             }
+        } else {
+            if (infoHeaderSize < BMPable.INFO_HEADER_SIZE_V2_MIN) infoHeaderSize = BMPable.INFO_HEADER_SIZE_V2_MIN;
+            if (infoHeaderSize > BMPable.INFO_HEADER_SIZE_V2_MAX) infoHeaderSize = BMPable.INFO_HEADER_SIZE_V2_MAX;
+        }
+        imageSize = 0;
+        for (byte[] img : image)
+            imageSize += img.length;
+        imageOffset = BMPable.FILE_HEADER_SIZE + infoHeaderSize + colors.size() * ((version == 1) ? 3 : 4);
+        fileSize = imageOffset + imageSize;
+
+        switch (version) {
+            case 1:
+                bmp = new BMP_V1(this);
+                break;
+            case 2:
+                bmp = new BMP_V2(this);
+                break;
+            case 3:
+                bmp = new BMP_V3(this);
+                break;
+            case 4:
+                bmp = new BMP_V4(this);
+                break;
+            case 5:
+                bmp = new BMP_V5(this);
+                break;
+            default:
+                throw new IOException(BMPable.ERROR_UNSUPPORTED_VERSION);
         }
 
         FileOutputStream out = null;

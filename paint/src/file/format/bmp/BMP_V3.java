@@ -527,7 +527,11 @@ public class BMP_V3 extends BMP_V1 {
     @Override
     public byte[] getInfoHeader() {
         ByteBuffer buff = ByteBuffer.allocate(INFO_HEADER_SIZE_V3);
-        buff.put(super.getInfoHeader());
+        buff.put(bcSize);
+        buff.put(bcWidth);
+        buff.put(bcHeight);
+        buff.put(BC_PLANES);
+        buff.put(bcBitCount);
         buff.put(biCompression);
         buff.put(biSizeImage);
         buff.put(biXPelsPerMeter);

@@ -17,6 +17,8 @@ import file.io.BMP;
  * @author ソウルP
  */
 public class BMP_UT {
+    static final String USER_NAME  = "ユーザ名";                                    // 入出力先のユーザ名
+    static final String BASIC_ADDR = "C:\\Users\\" + USER_NAME + "\\Desktop\\"; // 入出力先
 
     /**
      * <b>BMP 出力</b><br>
@@ -25,7 +27,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_1bit() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_1bit.bmp"; // 出力先
+        String file = BASIC_ADDR + "java_1bit.bmp";
         int width = 3;
         int height = 3;
 
@@ -41,7 +43,7 @@ public class BMP_UT {
         BMP bmp = new BMP();
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
-        bmp.setBitCount((short) 1); // ビットの深さ
+        bmp.setBitCount(1); // ビットの深さ
         bmp.addColor(255, 0, 255); // 紫色
         bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
@@ -59,7 +61,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_4bit() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_4bit.bmp"; // 出力先
+        String file = BASIC_ADDR + "java_4bit.bmp";
         int width = 3;
         int height = 3;
         byte[] img01 = { 0x10, 0x10, 0x00, 0x00 };
@@ -73,7 +75,7 @@ public class BMP_UT {
         BMP bmp = new BMP();
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
-        bmp.setBitCount((short) 4); // ビットの深さ
+        bmp.setBitCount(4); // ビットの深さ
         bmp.addColor(255, 0, 255); // 紫色
         bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
@@ -91,7 +93,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_8bit() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_8bit.bmp"; // 出力先
+        String file = BASIC_ADDR + "java_8bit.bmp";
         int width = 3;
         int height = 3;
 
@@ -107,7 +109,7 @@ public class BMP_UT {
         BMP bmp = new BMP();
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
-        bmp.setBitCount((short) 8); // ビットの深さ
+        bmp.setBitCount(8); // ビットの深さ
         bmp.addColor(255, 0, 255); // 紫色
         bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
@@ -125,7 +127,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_24bit() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_24bit.bmp"; // 出力先
+        String file = BASIC_ADDR + "java_24bit.bmp";
         int width = 3;
         int height = 3;
         // @formatter:off
@@ -158,7 +160,7 @@ public class BMP_UT {
         BMP bmp = new BMP();
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
-        bmp.setBitCount((short) 24); // ビットの深さ
+        bmp.setBitCount(24); // ビットの深さ
         bmp.setImage(image);// イメージ
         try {
             bmp.output(file);// 出力
@@ -174,7 +176,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_32bit() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_32bit.bmp"; // 出力先
+        String file = BASIC_ADDR + "java_32bit.bmp";
         int width = 3;
         int height = 3;
         // @formatter:off
@@ -204,7 +206,7 @@ public class BMP_UT {
         BMP bmp = new BMP();
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
-        bmp.setBitCount((short) 32); // ビットの深さ
+        bmp.setBitCount(32); // ビットの深さ
         bmp.setImage(image);// イメージ
         try {
             bmp.output(file);// 出力
@@ -221,7 +223,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_8bit_BI_RLE8() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_8bit_BI_RLE8.bmp"; // 出力先
+        String file = BASIC_ADDR + "java_8bit_BI_RLE8.bmp";
         int width = 13;
         int height = 13;
         // @formatter:off
@@ -273,7 +275,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpOutput_4bit_BI_RLE4() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_4bit_BI_RLE4.bmp"; // 出力先
+        String file = BASIC_ADDR + "java_4bit_BI_RLE4.bmp";
         int width = 14;
         int height = 14;
         // @formatter:off
@@ -318,7 +320,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpInput() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_4bit_BI_RLE4.bmp";
+        String file = BASIC_ADDR + "java_4bit_BI_RLE4.bmp";
         String comp = "";
 
         BMP bmp = new BMP();
@@ -389,7 +391,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpInput_02() {
-        String file = "C:\\Users\\ユーザ名\\Desktop\\java_4bit_BI_RLE4.bmp";
+        String file = BASIC_ADDR + "java_4bit_BI_RLE4.bmp";
 
         BMP bmp = new BMP();
         try {
