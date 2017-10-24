@@ -391,7 +391,7 @@ public class BMP_UT {
      */
     @Test
     public void bmpInput_02() {
-        String file = BASIC_ADDR + "java_4bit_BI_RLE4.bmp";
+        String file = BASIC_ADDR + "java_8bit_BI_RLE8.bmp";
 
         BMP bmp = new BMP();
         try {
