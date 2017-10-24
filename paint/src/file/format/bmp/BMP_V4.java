@@ -1,13 +1,14 @@
 package file.format.bmp;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import file.Tools;
 import file.io.BMP;
 
 /**
  * <b>BMP Windows V4</b><br>
- * date: 2017/10/18 last_date: 2017/10/23<br>
+ * date: 2017/10/18 last_date: 2017/10/24<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -498,6 +499,76 @@ public class BMP_V4 extends BMP_V3 {
     @Override
     public int getVersion() {
         return 4;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer buff = new StringBuffer(toStr());
+        buff.append(STR_NEW_LINE);
+        buff.append(toStrColorImage());
+
+        return buff.toString();
+    }
+
+    @Override
+    protected String toStr() {
+        StringBuffer buff = new StringBuffer(super.toStr());
+        buff.append(STR_RED_MASK);
+        buff.append(STR_0X);
+        for (byte b : getRedMask())
+            buff.append(String.format("%02X", b));
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_GREEN_MASK);
+        buff.append(STR_0X);
+        for (byte b : getGreenMask())
+            buff.append(String.format("%02X", b));
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_BLUE_MASK);
+        buff.append(STR_0X);
+        for (byte b : getBlueMask())
+            buff.append(String.format("%02X", b));
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_ALPHA_MASK);
+        buff.append(STR_0X);
+        for (byte b : getAlphaMask())
+            buff.append(String.format("%02X", b));
+        buff.append(STR_NEW_LINE);
+
+        byte[] cs = getCSType();
+        buff.append(STR_CSTYPE);
+        if (Arrays.equals(cs, new byte[] { 0x00, 0x00, 0x00, 0x00 })) buff.append(STR_CSTYPE_HEADER);
+        else {
+            for (byte c : cs)
+                buff.append((char) c);
+        }
+        buff.append(STR_NEW_LINE);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_CIEXYZTRIPLE);
+        buff.append(STR_NEW_LINE);
+        byte[] ciexyz = getEndpoints();
+        for (int i = 0; i < ciexyz.length;) {
+            buff.append(String.format(STR_16BIT_FORMAT, ciexyz[i]));
+            if (++i % 4 == 0) buff.append(STR_NEW_LINE);
+        }
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_GAMMA_RED);
+        buff.append(getGammaRed());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_GAMMA_GREEN);
+        buff.append(getGammaGreen());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_GAMMA_BLUE);
+        buff.append(getGammaBlue());
+        buff.append(STR_NEW_LINE);
+
+        return buff.toString();
     }
 
     @Override

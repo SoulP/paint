@@ -1021,4 +1021,16 @@ public class BMP {
         colors.clear();
         image.clear();
     }
+
+    /**
+     * @return バージョン
+     */
+    public int getVersion() {
+        return bmp.getVersion();
+    }
+
+    @Override
+    public String toString() {
+        return bmp.toString();
+    }
 }

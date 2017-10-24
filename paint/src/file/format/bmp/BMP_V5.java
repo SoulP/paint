@@ -7,7 +7,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP Windows V5</b><br>
- * date: 2017/10/19 last_date: 2017/10/23<br>
+ * date: 2017/10/19 last_date: 2017/10/24<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -413,6 +413,34 @@ public class BMP_V5 extends BMP_V4 {
     @Override
     public int getVersion() {
         return 5;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer buff = new StringBuffer(toStr());
+        buff.append(STR_NEW_LINE);
+        buff.append(toStrColorImage());
+
+        return buff.toString();
+    }
+
+    @Override
+    protected String toStr() {
+        StringBuffer buff = new StringBuffer(super.toStr());
+        buff.append(STR_INTENT);
+        buff.append(getIntent());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_PROFILE_DATA_OFFSET);
+        buff.append(Integer.toHexString(getProfileData()).toUpperCase());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_PROFILE_DATA_SIZE);
+        buff.append(getProfileSize());
+        buff.append(STR_BYTE);
+        buff.append(STR_NEW_LINE);
+
+        return buff.toString();
     }
 
     @Override

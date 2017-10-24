@@ -2,6 +2,7 @@ package file.format.bmp;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import file.Tools;
@@ -675,5 +676,183 @@ public class BMP_V2 extends BMP_V3 {
     @Deprecated
     @Override
     protected void updateFileSize() {
+    }
+
+    @Override
+    public String toString() {
+        byte[] t = getType();
+        int imageSize = 0;
+        for (byte[] b : image)
+            imageSize += b.length;
+        int fileSize = getHeaderSize() + colors.size() * 4 + imageSize;
+        StringBuffer buff = new StringBuffer();
+        buff.append(STR_BMP_V);
+        buff.append(getVersion());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_FILE_TYPE);
+        buff.append((char) t[0]);
+        buff.append((char) t[1]);
+        buff.append(STR_SPACE);
+        buff.append(STR_BRACKET_LEFT);
+        if (Arrays.equals(t, new byte[] { 0x42, 0x4D })) buff.append(STR_BMP);
+        else if (Arrays.equals(t, new byte[] { 0x49, 0x43 })) buff.append(STR_ICO_BLACK_WHITE);
+        else if (Arrays.equals(t, new byte[] { 0x43, 0x49 })) buff.append(STR_ICO_COLOR);
+        else if (Arrays.equals(t, new byte[] { 0x50, 0x54 })) buff.append(STR_PTR_BLACK_WHITE);
+        else if (Arrays.equals(t, new byte[] { 0x43, 0x50 })) buff.append(STR_PTR_COLOR);
+        else buff.append(STR_UNKNOWN);
+        buff.append(STR_BRACKET_RIGHT);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_FILE_SIZE);
+        buff.append(fileSize);
+        buff.append(STR_BYTE);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_HEADER_SIZE);
+        buff.append(getHeaderSize());
+        buff.append(STR_BYTE);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_INFO_HEADER_SIZE);
+        buff.append(getInfoHeaderSize());
+        buff.append(STR_BYTE);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_WIDTH);
+        buff.append(getWidth());
+        buff.append(STR_PIXEL);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_HEIGHT);
+        buff.append(getHeight());
+        buff.append(STR_PIXEL);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_PLANES);
+        buff.append(getPlanes());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_BITCOUNT);
+        buff.append(getBitCount());
+        buff.append(STR_BIT);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_COMPRESSION);
+        switch (getCompression()) {
+            case 0:
+                buff.append(STR_RGB);
+                break;
+            case 1:
+                buff.append(STR_RLE8);
+                break;
+            case 2:
+                buff.append(STR_RLE4);
+                break;
+            case 3:
+                buff.append(STR_HUFFMAN_1D);
+                break;
+            case 4:
+                buff.append(STR_RLE24);
+                break;
+            default:
+                buff.append(STR_UNKNOWN);
+                break;
+        }
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_IMAGE_SIZE);
+        buff.append(getSizeImage());
+        buff.append(STR_BYTE);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_PIX_PER_METER_X);
+        buff.append(getXPelsPerMeter());
+        buff.append(STR_PIXEL_M);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_PIX_PER_METER_Y);
+        buff.append(getYPelsPerMeter());
+        buff.append(STR_PIXEL_M);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_COLOR_USED);
+        buff.append(colors.size());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_COLOR_IMPORTANT);
+        buff.append(getCirImportant());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_RESOLUTION);
+        switch (getResolution()) {
+            case 0:
+                buff.append(STR_PIXEL_M);
+                break;
+            default:
+                buff.append(STR_UNKNOWN);
+                break;
+        }
+        buff.append(STR_NEW_LINE);
+        buff.append(STR_FORMAT);
+        switch (getFormat()) {
+            case 0:
+                buff.append(STR_FORMAT_BOTTOM_UP);
+                break;
+            default:
+                buff.append(STR_UNKNOWN);
+                break;
+        }
+        buff.append(STR_NEW_LINE);
+        buff.append(STR_HALFTONE);
+        switch (getHalftone()) {
+            case 0:
+                buff.append(STR_NO_HALFTONE);
+                break;
+            case 1:
+                buff.append(STR_RANDOM_DITHER);
+                break;
+            case 2:
+                buff.append(STR_PANDA);
+                break;
+            case 3:
+                buff.append(STR_SUPER_CIRCLE);
+                break;
+            default:
+                buff.append(STR_UNKNOWN);
+                break;
+        }
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_HALFTONE_PARAM1);
+        buff.append(getHalftoneParam1());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_HALFTONE_PARAM2);
+        buff.append(getHalftoneParam2());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_ENCODING);
+        switch (getEncoding()) {
+            case 0:
+                buff.append(STR_RGB2_RGBQUAD);
+                break;
+            case -1:
+                buff.append(STR_PALLET);
+                break;
+            default:
+                buff.append(STR_UNKNOWN);
+                break;
+        }
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_ID);
+        buff.append(getId());
+        buff.append(STR_NEW_LINE);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(toStrColorImage());
+
+        return buff.toString();
     }
 }

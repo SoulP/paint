@@ -12,7 +12,7 @@ import file.io.BMP;
 
 /**
  * <b>BMPの単体テスト</b><br>
- * date: 2017/10/13 last_date 2017/10/23
+ * date: 2017/10/13 last_date 2017/10/24
  * 
  * @author ソウルP
  */
@@ -329,6 +329,7 @@ public class BMP_UT {
         }
 
         System.out.println(file);
+        System.out.println("BMP V" + bmp.getVersion());
         System.out.println("ファイルサイズ: " + bmp.getFileSize());
         System.out.println("幅: " + bmp.getWidth());
         System.out.println("高さ: " + bmp.getHeight());
@@ -380,5 +381,24 @@ public class BMP_UT {
                 System.out.print(String.format("%02X ", b));
             System.out.println();
         });
+    }
+
+    /**
+     * <b>BMP 入力</b><br>
+     * 成功テスト
+     */
+    @Test
+    public void bmpInput_02() {
+        String file = "C:\\Users\\ユーザ名\\Desktop\\java_4bit_BI_RLE4.bmp";
+
+        BMP bmp = new BMP();
+        try {
+            bmp.input(file);
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+
+        System.out.println(file);
+        System.out.println(bmp);
     }
 }

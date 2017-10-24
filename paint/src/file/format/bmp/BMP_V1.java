@@ -1,6 +1,7 @@
 package file.format.bmp;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.List;
 
 import file.Tools;
@@ -8,7 +9,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP - OS/2 V1</b><br>
- * date: 2017/10/18 last_date: 2017/10/23<br>
+ * date: 2017/10/18 last_date: 2017/10/24<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -284,6 +285,13 @@ public class BMP_V1 implements BMPable {
     }
 
     /**
+     * @return プレーン数
+     */
+    public short getPlanes() {
+        return Tools.bytes2short(BC_PLANES);
+    }
+
+    /**
      * 単位はビット
      * 
      * @return 1ピクセルあたりのビット数
@@ -471,6 +479,112 @@ public class BMP_V1 implements BMPable {
     @Override
     public int getVersion() {
         return 1;
+    }
+
+    @Override
+    public String toString() {
+        byte[] t = getType();
+        StringBuffer buff = new StringBuffer();
+        buff.append(STR_BMP_V);
+        buff.append(getVersion());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_FILE_TYPE);
+        buff.append((char) t[0]);
+        buff.append((char) t[1]);
+        buff.append(STR_SPACE);
+
+        buff.append(STR_BRACKET_LEFT);
+        buff.append(Arrays.equals(t, new byte[] { 0x42, 0x4D }) ? STR_BMP : STR_UNKNOWN);
+        buff.append(STR_BRACKET_RIGHT);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_FILE_SIZE);
+        buff.append(getFileSize());
+        buff.append(STR_BYTE);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_INFO_HEADER_SIZE);
+        buff.append(getInfoHeaderSize());
+        buff.append(STR_BYTE);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_WIDTH);
+        buff.append(getWidthV1());
+        buff.append(STR_PIXEL);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_HEIGHT);
+        buff.append(getHeightV1());
+        buff.append(STR_PIXEL);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_PLANES);
+        buff.append(getPlanes());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_BITCOUNT);
+        buff.append(getBitCount());
+        buff.append(STR_BIT);
+        buff.append(STR_NEW_LINE);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_COLOR_PALLET);
+        buff.append(STR_NEW_LINE);
+        colors.forEach(color -> {
+            buff.append(STR_RGB_R);
+            buff.append(String.format(STR_COLOR_FORMAT, Byte.toUnsignedInt(color[2])));
+            buff.append(STR_COMMA_SPACE);
+
+            buff.append(STR_RGB_G);
+            buff.append(String.format(STR_COLOR_FORMAT, Byte.toUnsignedInt(color[1])));
+            buff.append(STR_COMMA_SPACE);
+
+            buff.append(STR_RGB_B);
+            buff.append(String.format(STR_COLOR_FORMAT, Byte.toUnsignedInt(color[0])));
+            buff.append(STR_NEW_LINE);
+        });
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_IMAGE_DATA);
+        buff.append(STR_NEW_LINE);
+        image.forEach(bA -> {
+            for (byte b : bA)
+                buff.append(String.format(STR_16BIT_FORMAT, b));
+            buff.append(STR_NEW_LINE);
+        });
+
+        return buff.toString();
+    }
+
+    protected String toStrColorImage() {
+        StringBuffer buff = new StringBuffer();
+        buff.append(STR_COLOR_PALLET);
+        buff.append(STR_NEW_LINE);
+        colors.forEach(color -> {
+            buff.append(STR_RGB_R);
+            buff.append(String.format(STR_COLOR_FORMAT, Byte.toUnsignedInt(color[2])));
+            buff.append(STR_COMMA_SPACE);
+
+            buff.append(STR_RGB_G);
+            buff.append(String.format(STR_COLOR_FORMAT, Byte.toUnsignedInt(color[1])));
+            buff.append(STR_COMMA_SPACE);
+
+            buff.append(STR_RGB_B);
+            buff.append(String.format(STR_COLOR_FORMAT, Byte.toUnsignedInt(color[0])));
+            buff.append(STR_NEW_LINE);
+        });
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_IMAGE_DATA);
+        buff.append(STR_NEW_LINE);
+        image.forEach(bA -> {
+            for (byte b : bA)
+                buff.append(String.format(STR_16BIT_FORMAT, b));
+            buff.append(STR_NEW_LINE);
+        });
+
+        return buff.toString();
     }
 
     protected void updateFileSize() {

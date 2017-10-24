@@ -2,6 +2,7 @@ package file.format.bmp;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import file.Tools;
@@ -539,6 +540,118 @@ public class BMP_V3 extends BMP_V1 {
     @Override
     public int getVersion() {
         return 3;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer buff = new StringBuffer(toStr());
+        buff.append(STR_NEW_LINE);
+        buff.append(toStrColorImage());
+
+        return buff.toString();
+    }
+
+    protected String toStr() {
+        byte[] t = getType();
+        StringBuffer buff = new StringBuffer();
+        buff.append(STR_BMP_V);
+        buff.append(getVersion());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_FILE_TYPE);
+        buff.append((char) t[0]);
+        buff.append((char) t[1]);
+        buff.append(STR_SPACE);
+
+        buff.append(STR_BRACKET_LEFT);
+        buff.append(Arrays.equals(t, new byte[] { 0x42, 0x4D }) ? STR_BMP : STR_UNKNOWN);
+        buff.append(STR_BRACKET_RIGHT);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_FILE_SIZE);
+        buff.append(getFileSize());
+        buff.append(STR_BYTE);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_INFO_HEADER_SIZE);
+        buff.append(getInfoHeaderSize());
+        buff.append(STR_BYTE);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_WIDTH);
+        buff.append(getWidth());
+        buff.append(STR_PIXEL);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_HEIGHT);
+        buff.append(getHeight());
+        buff.append(STR_PIXEL);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_PLANES);
+        buff.append(getPlanes());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_BITCOUNT);
+        buff.append(getBitCount());
+        buff.append(STR_BIT);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_COMPRESSION);
+        switch (getCompression()) {
+            case 0:
+                buff.append(STR_BI_RGB);
+                break;
+            case 1:
+                buff.append(STR_BI_RLE8);
+                break;
+            case 2:
+                buff.append(STR_BI_RLE4);
+                break;
+            case 3:
+                buff.append(STR_BI_BITFIELDS);
+                break;
+            case 4:
+                buff.append(STR_BI_JPEG);
+                break;
+            case 5:
+                buff.append(STR_BI_PNG);
+                break;
+            case 6:
+                buff.append(STR_BI_ALPHABITFIELDS);
+                break;
+            default:
+                buff.append(STR_UNKNOWN);
+                break;
+        }
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_IMAGE_SIZE);
+        buff.append(getSizeImage());
+        buff.append(STR_BYTE);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_PIX_PER_METER_X);
+        buff.append(getXPelsPerMeter());
+        buff.append(STR_PIXEL_M);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_PIX_PER_METER_Y);
+        buff.append(getYPelsPerMeter());
+        buff.append(STR_PIXEL_M);
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_COLOR_USED);
+        buff.append(colors.size());
+        buff.append(STR_NEW_LINE);
+
+        buff.append(STR_COLOR_IMPORTANT);
+        int important = getCirImportant();
+        if (important == 0) buff.append(STR_ALL);
+        else buff.append(important);
+        buff.append(STR_NEW_LINE);
+
+        return buff.toString();
     }
 
     @Override
