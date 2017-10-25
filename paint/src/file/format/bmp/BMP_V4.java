@@ -8,7 +8,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP Windows V4</b><br>
- * date: 2017/10/18 last_date: 2017/10/24<br>
+ * date: 2017/10/18 last_date: 2017/10/25<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -212,6 +212,7 @@ import file.io.BMP;
  * 
  * @author ソウルP
  * @version 1.0 2017/10/18 BMP_V4作成
+ * @version 1.1 2017/10/25 ビットフィールド追加
  */
 public class BMP_V4 extends BMP_V3 {
     // 情報ヘッダ
@@ -424,13 +425,27 @@ public class BMP_V4 extends BMP_V3 {
 
     @Override
     public void set(byte[] data) {
+        int endHeaderOffset = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V4;
         byte[] fileHeader = Tools.subbytes(data, 0, FILE_HEADER_SIZE);
         byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, FILE_HEADER_SIZE + INFO_HEADER_SIZE_V4);
         setFileHeader(fileHeader);
         setInfoHeader(infoHeader);
-        byte[] bColors = Tools.subbytes(data, 0x0036, Tools.bytes2int(bfOffBits));
-        setColors(bColors);
-        byte[] imgData = Tools.subbytes(data, Tools.bytes2int(bfOffBits), getFileSize());
+        int bitcount = getBitCount();
+        int compression = getCompression();
+        if (bitcount <= 8) {
+            byte[] bColors = Tools.subbytes(data, endHeaderOffset, getOffset());
+            setColors(bColors);
+        } else {
+            clearColors();
+            if ((bitcount == 16 || bitcount == 32)) {
+                if (compression == 3) {
+                    biBitFields = Tools.subbytes(data, endHeaderOffset, endHeaderOffset + 12);
+                } else if (compression == 6) {
+                    biBitFields = Tools.subbytes(data, endHeaderOffset, endHeaderOffset + 16);
+                } else biBitFields = null;
+            } else biBitFields = null;
+        }
+        byte[] imgData = Tools.subbytes(data, getOffset(), data.length);
         setImage(imgData);
     }
 
@@ -469,11 +484,19 @@ public class BMP_V4 extends BMP_V3 {
         for (byte[] b : image)
             imageSize += b.length;
         setSizeImage(imageSize);
-        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V4 + colors.size() * 4 + imageSize);
+        int bitcount = getBitCount();
+        int compression = getCompression();
+        int optSize = (bitcount <= 8) ? colors.size() * 4
+                : ((bitcount == 16 || bitcount == 32)) ? (compression == 3) ? 12 : (compression == 6) ? 16 : 0 : 0;
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V4 + optSize + imageSize);
         buff.put(getBitmapHeader());
-        colors.forEach(color -> {
-            buff.put(color);
-        });
+        if (bitcount <= 8) {
+            colors.forEach(color -> {
+                buff.put(color);
+            });
+        } else if ((compression == 3 || compression == 6) && (bitcount == 16 || bitcount == 32)) {
+            if (biBitFields != null) buff.put(biBitFields);
+        }
         image.forEach(img -> {
             buff.put(img);
         });

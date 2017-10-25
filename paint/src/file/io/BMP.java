@@ -17,7 +17,7 @@ import file.format.bmp.BMPable;
 
 /**
  * <b>BMP入出力</b><br>
- * date: 2017/10/12 last_date: 2017/10/24
+ * date: 2017/10/12 last_date: 2017/10/25
  * 
  * @author ソウルP
  * @version 1.0 2017/10/12 BMP作成
@@ -61,6 +61,7 @@ public class BMP {
     private int          id;
 
     private List<byte[]> colors;        // カラーパレット
+    private byte[]       bitfields;     // ビットフィールド
     private List<byte[]> image;         // イメージ
 
     /**
@@ -785,6 +786,37 @@ public class BMP {
     }
 
     /**
+     * 12 バイト (RGB)<br>
+     * もしくは<br>
+     * 16 バイト (RGBA)
+     * 
+     * @return ビットフィールド
+     */
+    public byte[] getBitFields() {
+        return Tools.endian(bitfields);
+    }
+
+    /**
+     * 12 バイト (RGB)<br>
+     * もしくは<br>
+     * 16 バイト (RGBA)
+     * 
+     * @param bitfields
+     *            ビットフィールド
+     */
+    public void setBitFields(byte[] bitfields) {
+        this.bitfields = Tools.endian(bitfields);
+    }
+
+    /**
+     * @return 空の場合 true<br>
+     *         空ではない場合 false
+     */
+    public boolean isEmptyBitFields() {
+        return bitfields == null;
+    }
+
+    /**
      * Listが縦、byte[]が横
      * 
      * @return ビットマップデータ
@@ -968,7 +1000,9 @@ public class BMP {
         imageSize = 0;
         for (byte[] img : image)
             imageSize += img.length;
-        imageOffset = BMPable.FILE_HEADER_SIZE + infoHeaderSize + colors.size() * ((version == 1) ? 3 : 4);
+        int optSize = (bitCount <= 8) ? colors.size() * ((version == 1) ? 3 : 4)
+                : ((bitCount == 16 || bitCount == 32)) ? (compression == 3) ? 12 : (compression == 6) ? 16 : 0 : 0;
+        imageOffset = BMPable.FILE_HEADER_SIZE + infoHeaderSize + optSize;
         fileSize = imageOffset + imageSize;
 
         switch (version) {
@@ -1044,6 +1078,7 @@ public class BMP {
         encoding = 0;
         id = 0;
         colors.clear();
+        bitfields = null;
         image.clear();
     }
 

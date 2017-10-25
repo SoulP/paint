@@ -1,6 +1,7 @@
 package file.format.bmp;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP - OS/2 V1</b><br>
- * date: 2017/10/18 last_date: 2017/10/24<br>
+ * date: 2017/10/18 last_date: 2017/10/25<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -129,6 +130,8 @@ public class BMP_V1 implements BMPable {
      * <b>BMP - OS/2 V1</b>
      */
     public BMP_V1() {
+        colors = new ArrayList<>();
+        image = new ArrayList<>();
         clear();
     }
 
@@ -139,7 +142,7 @@ public class BMP_V1 implements BMPable {
      *            BMPのデータ
      */
     public BMP_V1(byte[] data) {
-        clear();
+        this();
         set(data);
     }
 
@@ -150,7 +153,7 @@ public class BMP_V1 implements BMPable {
      *            BMPのオブジェクト
      */
     public BMP_V1(BMP bmp) {
-        clear();
+        this();
         set(bmp);
     }
 
@@ -338,6 +341,13 @@ public class BMP_V1 implements BMPable {
     public void addColor(int r, int g, int b) {
         byte[] color = { (byte) b, (byte) g, (byte) r, };
         colors.add(color);
+    }
+
+    /**
+     * カラーパレット 全消去
+     */
+    public void clearColors() {
+        colors.clear();
     }
 
     /**

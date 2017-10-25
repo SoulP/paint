@@ -5,11 +5,12 @@ import java.nio.ByteBuffer;
 /**
  * <b>ツール</b><br>
  * 変換など<br>
- * date: 2017/10/13 last_date: 2017/10/19
+ * date: 2017/10/13 last_date: 2017/10/25
  * 
  * @author ソウルP
  * @version 1.0 2017/10/13 Tools作成
  * @version 1.1 2017/10/19 byte[] と Byte[] の変換追加
+ * @version 1.2 2017/10/25 バイト配列の2次元から１次元に変換追加
  */
 public interface Tools {
     /**
@@ -195,5 +196,27 @@ public interface Tools {
         for (int i = 0; i < bytes.length; i++)
             bytes[i] = primBytes[i];
         return bytes;
+    }
+
+    /**
+     * 2次元バイト配列 → 1次元バイト配列に変換
+     * 
+     * @param bytes2D
+     *            2次元バイト配列
+     * @return １次元バイト配列
+     */
+    public static byte[] bytes2D2bytes1D(byte[][] bytes2D) {
+        int length = 0;
+        for (byte[] b : bytes2D)
+            length += b.length;
+        byte[] bytes1D = new byte[length];
+        int b2d = 0;
+        for (int i = 0; i < bytes2D.length; i++) {
+            for (int a = 0; a < bytes2D[i].length; a++) {
+                bytes1D[b2d + a] = bytes2D[i][a];
+            }
+            b2d += bytes2D[i].length;
+        }
+        return bytes1D;
     }
 }
