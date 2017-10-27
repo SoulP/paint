@@ -5,12 +5,13 @@ import java.nio.ByteBuffer;
 /**
  * <b>ツール</b><br>
  * 変換など<br>
- * date: 2017/10/13 last_date: 2017/10/25
+ * date: 2017/10/13 last_date: 2017/10/27
  * 
  * @author ソウルP
  * @version 1.0 2017/10/13 Tools作成
  * @version 1.1 2017/10/19 byte[] と Byte[] の変換追加
  * @version 1.2 2017/10/25 バイト配列の2次元から１次元に変換追加
+ * @version 1.3 2017/10/27 subbytes削除
  */
 public interface Tools {
     /**
@@ -147,27 +148,6 @@ public interface Tools {
      */
     public static double bytes2double(byte[] bytes) {
         return ByteBuffer.wrap(endian(bytes)).getDouble();
-    }
-
-    /**
-     * <b>部分バイト配列の取得</b>
-     * 
-     * @param bytes
-     *            バイト配列
-     * @param beginIndex
-     *            開始インデックス (この値を含む)
-     * @param endIndex
-     *            終了インデックス (この値を含まない)
-     * @return 指定された部分バイト配列
-     */
-    public static byte[] subbytes(byte[] bytes, int beginIndex, int endIndex) {
-        int size;
-        if ((size = endIndex - beginIndex) <= 0) throw new IndexOutOfBoundsException();
-        byte[] b = new byte[size];
-        int count = 0;
-        for (int i = beginIndex; i < endIndex; i++)
-            b[count++] = bytes[i];
-        return b;
     }
 
     /**

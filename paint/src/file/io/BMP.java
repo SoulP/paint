@@ -1,10 +1,12 @@
 package file.io;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import file.Tools;
@@ -17,52 +19,56 @@ import file.format.bmp.BMPable;
 
 /**
  * <b>BMP入出力</b><br>
- * date: 2017/10/12 last_date: 2017/10/25
+ * date: 2017/10/12 last_date: 2017/10/27
  * 
  * @author ソウルP
  * @version 1.0 2017/10/12 BMP作成
  * @version 1.1 2017/10/18 各情報ヘッダに対応
+ * @version 1.2 2017/10/27 GAP1（オプショナル）追加、GAP2（オプショナル）追加、プロファイル追加
  */
 public class BMP {
     private BMPable      bmp;
-    private byte[]       type;
-    private int          fileSize;
-    private int          imageOffset;
-    private int          infoHeaderSize;
-    private int          width;
-    private int          height;
-    private int          bitCount;
-    private int          compression;
-    private int          imageSize;
-    private int          pixPerMeterX;
-    private int          pixPerMeterY;
-    private int          cirImportant;
-    private byte[]       redMask;
-    private byte[]       greenMask;
-    private byte[]       blueMask;
-    private byte[]       alphaMask;
-    private byte[]       csType;
-    private byte[]       ciexyzTriple;
-    private float        gammaRed;
-    private float        gammaGreen;
-    private float        gammaBlue;
-    private int          intent;
-    private int          profileOffset;
-    private int          profileSize;
-    private int          headerSize;
-    private int          hotspotX;
-    private int          hotspotY;
-    private int          resolution;
-    private int          format;
-    private int          halftone;
-    private int          halftoneParam1;
-    private int          halftoneParam2;
-    private int          encoding;
-    private int          id;
+    private byte[]       type;           // ファイルタイプ
+    private int          fileSize;       // ファイルサイズ
+    private int          imageOffset;    // 画像データオフセット
+    private int          infoHeaderSize; // 情報ヘッダサイズ
+    private int          width;          // 幅
+    private int          height;         // 高さ
+    private int          bitCount;       // ビット数
+    private int          compression;    // 圧縮形式
+    private int          imageSize;      // 画像データサイズ
+    private int          pixPerMeterX;   // 水平方向の解像度
+    private int          pixPerMeterY;   // 垂直方向の解像度
+    private int          cirImportant;   // 重要な色数
+    private byte[]       redMask;        // 赤成分のカラーマスク
+    private byte[]       greenMask;      // 緑成分のカラーマスク
+    private byte[]       blueMask;       // 青成分のカラーマスク
+    private byte[]       alphaMask;      // α成分のカラーマスク
+    private byte[]       csType;         // 色空間
+    private byte[]       ciexyzTriple;   // CIEXYZTRIPLE構造体
+    private float        gammaRed;       // 赤成分のガンマ値
+    private float        gammaGreen;     // 緑成分のガンマ値
+    private float        gammaBlue;      // 青成分のガンマ値
+    private int          intent;         // レンダリングの意図
+    private int          profileOffset;  // プロファイルデータオフセット
+    private int          profileSize;    // プロファイルデータサイズ
+    private int          headerSize;     // ヘッダサイズ
+    private int          hotspotX;       // ホットスポット x
+    private int          hotspotY;       // ホットスポット y
+    private int          resolution;     // 解像度の単位
+    private int          format;         // 記録方式
+    private int          halftone;       // ハーフトーンの方式
+    private int          halftoneParam1; // ハーフトーン時のパラメータ1
+    private int          halftoneParam2; // ハーフトーン時のパラメータ2
+    private int          encoding;       // 符号化方式
+    private int          id;             // 識別子
+    private byte[]       gap1;           // オプショナル
+    private byte[]       gap2;           // オプショナル
+    private byte[]       profile;        // プロファイル
 
-    private List<byte[]> colors;        // カラーパレット
-    private byte[]       bitfields;     // ビットフィールド
-    private List<byte[]> image;         // イメージ
+    private List<byte[]> colors;         // カラーパレット
+    private byte[]       bitfields;      // ビットフィールド
+    private List<byte[]> image;          // イメージ
 
     /**
      * <b>BMP</b>
@@ -71,6 +77,30 @@ public class BMP {
         colors = new ArrayList<>();
         image = new ArrayList<>();
         clear();
+    }
+
+    /**
+     * <b>BMP</b>
+     * 
+     * @param version
+     *            バージョン
+     */
+    public BMP(int version) {
+        this();
+        setVersion(version);
+    }
+
+    /**
+     * <b>BMP</b><br>
+     * 読み込み
+     * 
+     * @param file
+     *            入力先
+     * @throws IOException
+     */
+    public BMP(String file) throws IOException {
+        this();
+        input(file);
     }
 
     /**
@@ -545,17 +575,7 @@ public class BMP {
      * @return プロファイルデータのサイズ
      */
     public int getProfileSize() {
-        return profileSize;
-    }
-
-    /**
-     * V5
-     * 
-     * @param profileSize
-     *            プロファイルデータのサイズ
-     */
-    public void setProfileSize(int profileSize) {
-        this.profileSize = profileSize;
+        return profile.length;
     }
 
     /**
@@ -813,7 +833,86 @@ public class BMP {
      *         空ではない場合 false
      */
     public boolean isEmptyBitFields() {
-        return bitfields == null;
+        return bitfields == null || bitfields.length == 0;
+    }
+
+    /**
+     * V3 - V5
+     * 
+     * @return オプショナル
+     */
+    public byte[] getGap1() {
+        return gap1;
+    }
+
+    /**
+     * V3 - V5
+     * 
+     * @param gap1
+     *            オプショナル
+     */
+    public void setGap1(byte[] gap1) {
+        this.gap1 = gap1;
+    }
+
+    /**
+     * @return 空の場合 true<br>
+     *         空ではない場合 false
+     */
+    public boolean isEmptyGap1() {
+        return gap1 == null || gap1.length == 0;
+    }
+
+    /**
+     * V5
+     * 
+     * @return オプショナル
+     */
+    public byte[] getGap2() {
+        return gap2;
+    }
+
+    /**
+     * @param gap2
+     *            オプショナル
+     */
+    public void setGap2(byte[] gap2) {
+        this.gap2 = gap2;
+    }
+
+    /**
+     * @return 空の場合 true<br>
+     *         空ではない場合 false
+     */
+    public boolean isEmptyGap2() {
+        return gap2 == null || gap2.length == 0;
+    }
+
+    /**
+     * V5
+     * 
+     * @return プロファイル
+     */
+    public byte[] getProfile() {
+        return profile;
+    }
+
+    /**
+     * V5
+     * 
+     * @param profile
+     *            プロファイル
+     */
+    public void setProfile(byte[] profile) {
+        this.profile = profile;
+    }
+
+    /**
+     * @return 空の場合 true<br>
+     *         空ではない場合 false
+     */
+    public boolean isEmptyProfile() {
+        return profile == null || profile.length == 0;
     }
 
     /**
@@ -876,7 +975,7 @@ public class BMP {
             }
         }
 
-        int infoHeaderSize = Tools.bytes2int(Tools.subbytes(data, 0x000E, 0x000E + 4));
+        int infoHeaderSize = Tools.bytes2int(Arrays.copyOfRange(data, 0x000E, 0x000E + 4));
         switch (infoHeaderSize) {
             case BMPable.INFO_HEADER_SIZE_V3:
                 bmp = new BMP_V3(data);
@@ -921,6 +1020,8 @@ public class BMP {
             setCirImportant(b3.getCirImportant());
             if (bmp.getVersion() >= 3) {
                 setInfoHeaderSize(b3.getInfoHeaderSize());
+                if (!b3.isEmptyGap1()) setGap1(b3.getGap1());
+                if (!b3.isEmptyGap2()) setGap2(b3.getGap2());
                 if (bmp.getVersion() >= 4) {
                     BMP_V4 b4 = (BMP_V4) bmp;
                     setRedMask(b4.getRedMask());
@@ -936,7 +1037,7 @@ public class BMP {
                         BMP_V5 b5 = (BMP_V5) bmp;
                         setIntent(b5.getIntent());
                         setProfileOffset(b5.getProfileData());
-                        setProfileSize(b5.getProfileSize());
+                        if (!b5.isEmptyProfile()) setProfile(b5.getProfile());
                     }
                 }
             } else {
@@ -963,7 +1064,7 @@ public class BMP {
      * @throws IOException
      */
     public void output(String file) throws IOException {
-        output(file, 3);
+        output(file, bmp.getVersion());
     }
 
     /**
@@ -1002,8 +1103,12 @@ public class BMP {
             imageSize += img.length;
         int optSize = (bitCount <= 8) ? colors.size() * ((version == 1) ? 3 : 4)
                 : ((bitCount == 16 || bitCount == 32)) ? (compression == 3) ? 12 : (compression == 6) ? 16 : 0 : 0;
-        imageOffset = BMPable.FILE_HEADER_SIZE + infoHeaderSize + optSize;
-        fileSize = imageOffset + imageSize;
+        int gap1Size = (!isEmptyGap1() && version >= 3) ? gap1.length : 0;
+        int gap2Size = (!isEmptyGap2() && version >= 3) ? gap2.length : 0;
+        profileSize = (isEmptyProfile() && version == 5) ? profile.length : 0;
+        imageOffset = BMPable.FILE_HEADER_SIZE + infoHeaderSize + optSize + gap1Size;
+        profileOffset = imageOffset + imageSize + gap2Size - BMPable.FILE_HEADER_SIZE;
+        fileSize = imageOffset + imageSize + gap2Size + profileSize;
 
         switch (version) {
             case 1:
@@ -1024,6 +1129,9 @@ public class BMP {
             default:
                 throw new IOException(BMPable.ERROR_UNSUPPORTED_VERSION);
         }
+
+        File check = new File(file.substring(0, file.lastIndexOf("\\")));
+        if (!check.exists()) check.mkdirs();
 
         FileOutputStream out = null;
         out = new FileOutputStream(file);
@@ -1060,7 +1168,7 @@ public class BMP {
         blueMask = ByteBuffer.allocate(4).putInt(0).array();
         alphaMask = ByteBuffer.allocate(4).putInt(0).array();
         csType = ByteBuffer.allocate(4).putInt(0).array();
-        ciexyzTriple = ByteBuffer.allocate(32).putLong(0).putLong(0).putLong(0).putLong(0).array();
+        ciexyzTriple = ByteBuffer.allocate(36).putLong(0).putLong(0).putLong(0).putLong(0).putInt(0).array();
         gammaRed = 0.0f;
         gammaGreen = 0.0f;
         gammaBlue = 0.0f;
@@ -1078,7 +1186,10 @@ public class BMP {
         encoding = 0;
         id = 0;
         colors.clear();
-        bitfields = null;
+        bitfields = new byte[0];
+        gap1 = new byte[0];
+        gap2 = new byte[0];
+        profile = new byte[0];
         image.clear();
     }
 

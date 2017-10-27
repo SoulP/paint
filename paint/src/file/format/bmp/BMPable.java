@@ -4,7 +4,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP </b><br>
- * date: 2017/10/20 last_date: 2017/10/24
+ * date: 2017/10/20 last_date: 2017/10/27
  * 
  * @author ソウルP
  * @version 1.0 2017/10/20 BMPable作成
@@ -97,18 +97,23 @@ public interface BMPable {
     String STR_RGB_B                 = "B" + STR_SPACE_EQUAL_SPACE;
     String STR_COMMA_SPACE           = "," + STR_SPACE;
     String STR_COLOR_FORMAT          = "%3s";
-    String STR_16BIT_FORMAT          = "%02X ";
+    String STR_16BIT_FORMAT_NO_SPACE = "%02X";
+    String STR_16BIT_FORMAT          = STR_16BIT_FORMAT_NO_SPACE + STR_SPACE;
     String STR_0X                    = "0x";
     String STR_COLOR_MASK            = "カラーマスク" + STR_COLON_SPACE;
-    String STR_RED_MATERIAL          = "赤成分";
-    String STR_GREEN_MATERIAL        = "緑成分";
-    String STR_BLUE_MATERIAL         = "青成分";
-    String STR_ALPHA_MATERIAL        = "α成分";
+    String STR_RED                   = "赤";
+    String STR_GREEN                 = "緑";
+    String STR_BLUE                  = "青";
+    String STR_ALPHA                 = "α";
+    String STR_RED_MATERIAL          = STR_RED + "成分";
+    String STR_GREEN_MATERIAL        = STR_GREEN + "成分";
+    String STR_BLUE_MATERIAL         = STR_BLUE + "成分";
+    String STR_ALPHA_MATERIAL        = STR_ALPHA + "成分";
     String STR_RED_MASK              = STR_RED_MATERIAL + STR_OF + STR_COLOR_MASK;
     String STR_GREEN_MASK            = STR_GREEN_MATERIAL + STR_OF + STR_COLOR_MASK;
     String STR_BLUE_MASK             = STR_BLUE_MATERIAL + STR_OF + STR_COLOR_MASK;
     String STR_ALPHA_MASK            = STR_ALPHA_MATERIAL + STR_OF + STR_COLOR_MASK;
-    String STR_CSTYPE                = "色空間";
+    String STR_CSTYPE                = "色空間" + STR_COLON_SPACE;
     String STR_CSTYPE_HEADER         = "ヘッダ内で定義";
     String STR_GAMMA_VALUE           = "ガンマ値" + STR_COLON_SPACE;
     String STR_GAMMA_RED             = STR_RED_MATERIAL + STR_OF + STR_GAMMA_VALUE;
@@ -119,6 +124,15 @@ public interface BMPable {
     String STR_PROFILE_DATA_OFFSET   = "プロファイルデータのオフセット" + STR_COLON_SPACE;
     String STR_PROFILE_DATA_SIZE     = "プロファイルデータのサイズ" + STR_COLON_SPACE;
     String STR_ALL                   = "全て";
+    String STR_BITFIELDS             = "【ビットフィールド】";
+    String STR_MASK                  = "マスク";
+    String STR_BITFIELDS_RED         = STR_RED + STR_MASK + STR_COLON_SPACE;
+    String STR_BITFIELDS_GREEN       = STR_GREEN + STR_MASK + STR_COLON_SPACE;
+    String STR_BITFIELDS_BLUE        = STR_BLUE + STR_MASK + STR_COLON_SPACE;
+    String STR_BITFIELDS_ALPHA       = STR_ALPHA + STR_MASK + STR_COLON_SPACE;
+    String STR_GAP1                  = "【GAP1 オプショナル】";
+    String STR_GAP2                  = "【GAP2 オプショナル】";
+    String STR_PROFILE               = "【プロファイル】";
 
     /**
      * <b>初期化</b>

@@ -10,7 +10,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP - OS/2 V2</b><br>
- * date: 2017/10/18 last_date: 2017/10/24<br>
+ * date: 2017/10/18 last_date: 2017/10/27<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -514,6 +514,34 @@ public class BMP_V2 extends BMP_V3 {
         this.bV2Id = Tools.int2bytes(bV2Id);
     }
 
+    /**
+     * @deprecated
+     * @return null
+     */
+    @Deprecated
+    @Override
+    public byte[] getGap1() {
+        return null;
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    @Override
+    public void setGap1(byte[] gap1) {
+    }
+
+    /**
+     * @deprecated
+     * @return true
+     */
+    @Deprecated
+    @Override
+    public boolean isEmptyGap1() {
+        return true;
+    }
+
     @Override
     public byte[] getBitmapHeader() {
         ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + getInfoHeaderSize());
@@ -524,15 +552,15 @@ public class BMP_V2 extends BMP_V3 {
 
     @Override
     public void set(byte[] data) {
-        byte[] fileHeader = Tools.subbytes(data, 0, FILE_HEADER_SIZE);
+        byte[] fileHeader = Arrays.copyOfRange(data, 0, FILE_HEADER_SIZE);
         setFileHeader(fileHeader);
         int headerSize = getHeaderSize();
-        byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, headerSize);
+        byte[] infoHeader = Arrays.copyOfRange(data, FILE_HEADER_SIZE, headerSize);
         setInfoHeader(infoHeader);
         int offset = Tools.bytes2int(bfOffBits);
-        byte[] bColors = Tools.subbytes(data, headerSize, offset);
+        byte[] bColors = Arrays.copyOfRange(data, headerSize, offset);
         setColors(bColors);
-        byte[] imgData = Tools.subbytes(data, offset, data.length);
+        byte[] imgData = Arrays.copyOfRange(data, offset, data.length);
         setImage(imgData);
     }
 
@@ -554,34 +582,34 @@ public class BMP_V2 extends BMP_V3 {
     @Override
     public int setFileHeader(byte[] data) {
         int offset = 0;
-        bfType = Tools.subbytes(data, offset, offset += 2);
-        bV2HeaderSize = Tools.subbytes(data, offset, offset += 4);
-        bV2HotspotX = Tools.subbytes(data, offset, offset += 2);
-        bV2HotspotY = Tools.subbytes(data, offset, offset += 2);
-        bfOffBits = Tools.subbytes(data, offset, offset + 4);
+        bfType = Arrays.copyOfRange(data, offset, offset += 2);
+        bV2HeaderSize = Arrays.copyOfRange(data, offset, offset += 4);
+        bV2HotspotX = Arrays.copyOfRange(data, offset, offset += 2);
+        bV2HotspotY = Arrays.copyOfRange(data, offset, offset += 2);
+        bfOffBits = Arrays.copyOfRange(data, offset, offset + 4);
         return offset;
     }
 
     @Override
     public int setInfoHeader(byte[] data) {
         int offset = 0;
-        bcSize = Tools.subbytes(data, offset, offset += 4);
-        bcWidth = Tools.subbytes(data, offset, offset += 4);
-        bcHeight = Tools.subbytes(data, offset, offset += 4);
-        bcBitCount = Tools.subbytes(data, offset += 2, offset += 2);
-        if (data.length >= 20) biCompression = Tools.subbytes(data, offset, offset += 4); // 16 - 20 (4 バイト)
-        if (data.length >= 24) biSizeImage = Tools.subbytes(data, offset, offset += 4); // 20 - 24 (4 バイト)
-        if (data.length >= 28) biXPelsPerMeter = Tools.subbytes(data, offset, offset += 4); // 24 - 28 (4 バイト)
-        if (data.length >= 32) biYPelsPerMeter = Tools.subbytes(data, offset, offset += 4); // 28 - 32 (4 バイト)
-        if (data.length >= 36) biClrUsed = Tools.subbytes(data, offset, offset += 4); // 32 - 36 (4 バイト)
-        if (data.length >= 40) biCirImportant = Tools.subbytes(data, offset, offset += 4); // 36 - 40 (4 バイト)
-        if (data.length >= 42) bV2Resolution = Tools.subbytes(data, offset, offset += 2); // 40 - 42 (2 バイト)
-        if (data.length >= 46) bV2Format = Tools.subbytes(data, offset += 2, offset += 2); // 44 - 46 (2 バイト)
-        if (data.length >= 48) bV2Halftone = Tools.subbytes(data, offset, offset += 2); // 46 - 48 (2 バイト)
-        if (data.length >= 52) bV2HalftoneParam1 = Tools.subbytes(data, offset, offset += 4); // 48 - 52 (4 バイト)
-        if (data.length >= 56) bV2HalftoneParam2 = Tools.subbytes(data, offset, offset += 4); // 52 - 56 (4 バイト)
-        if (data.length >= 60) bV2Encoding = Tools.subbytes(data, offset, offset += 4); // 56 - 60 (4 バイト)
-        if (data.length >= 64) bV2Id = Tools.subbytes(data, offset, offset += 4); // 60 - 64 (4 バイト)
+        bcSize = Arrays.copyOfRange(data, offset, offset += 4);
+        bcWidth = Arrays.copyOfRange(data, offset, offset += 4);
+        bcHeight = Arrays.copyOfRange(data, offset, offset += 4);
+        bcBitCount = Arrays.copyOfRange(data, offset += 2, offset += 2);
+        if (data.length >= 20) biCompression = Arrays.copyOfRange(data, offset, offset += 4); // 16 - 20 (4 バイト)
+        if (data.length >= 24) biSizeImage = Arrays.copyOfRange(data, offset, offset += 4); // 20 - 24 (4 バイト)
+        if (data.length >= 28) biXPelsPerMeter = Arrays.copyOfRange(data, offset, offset += 4); // 24 - 28 (4 バイト)
+        if (data.length >= 32) biYPelsPerMeter = Arrays.copyOfRange(data, offset, offset += 4); // 28 - 32 (4 バイト)
+        if (data.length >= 36) biClrUsed = Arrays.copyOfRange(data, offset, offset += 4); // 32 - 36 (4 バイト)
+        if (data.length >= 40) biCirImportant = Arrays.copyOfRange(data, offset, offset += 4); // 36 - 40 (4 バイト)
+        if (data.length >= 42) bV2Resolution = Arrays.copyOfRange(data, offset, offset += 2); // 40 - 42 (2 バイト)
+        if (data.length >= 46) bV2Format = Arrays.copyOfRange(data, offset += 2, offset += 2); // 44 - 46 (2 バイト)
+        if (data.length >= 48) bV2Halftone = Arrays.copyOfRange(data, offset, offset += 2); // 46 - 48 (2 バイト)
+        if (data.length >= 52) bV2HalftoneParam1 = Arrays.copyOfRange(data, offset, offset += 4); // 48 - 52 (4 バイト)
+        if (data.length >= 56) bV2HalftoneParam2 = Arrays.copyOfRange(data, offset, offset += 4); // 52 - 56 (4 バイト)
+        if (data.length >= 60) bV2Encoding = Arrays.copyOfRange(data, offset, offset += 4); // 56 - 60 (4 バイト)
+        if (data.length >= 64) bV2Id = Arrays.copyOfRange(data, offset, offset += 4); // 60 - 64 (4 バイト)
         return offset;
     }
 

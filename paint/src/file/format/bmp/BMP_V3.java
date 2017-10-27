@@ -154,6 +154,7 @@ import file.io.BMP;
  * @version 1.0 2017/10/12 BMP_V3作成
  * @version 1.1 2017/10/18 ファイルヘッダと一部の情報ヘッダを BMP_V1 に移動
  * @version 1.2 2017/10/25 ビットフィールド追加
+ * @version 1.3 2017/10/27 GAP1 と GAP2 （オプショナル）追加
  */
 public class BMP_V3 extends BMP_V1 {
     // 情報ヘッダ
@@ -164,6 +165,8 @@ public class BMP_V3 extends BMP_V1 {
     protected byte[]           biClrUsed;                           // 格納されているパレット数 (使用色数) 0の場合もある
     protected byte[]           biCirImportant;                      // 重要なパレットのインデックス 0の場合もある
     protected byte[]           biBitFields;                         // ビットフィールド形式
+    protected byte[]           gap1;                                // オプショナル
+    protected byte[]           gap2;                                // オプショナル
 
     public static final String CAN_NOT_USE_METHOD = "使用できないメソッドです。";
 
@@ -201,16 +204,18 @@ public class BMP_V3 extends BMP_V1 {
     @Override
     public void clear() {
         super.clear();
-        bcSize = Tools.int2bytes(INFO_HEADER_SIZE_V3);
-        bcWidth = Tools.int2bytes(0);
-        bcHeight = Tools.int2bytes(0);
-        biCompression = Tools.int2bytes(0);
-        biSizeImage = Tools.int2bytes(0);
-        biXPelsPerMeter = Tools.int2bytes(0);
-        biYPelsPerMeter = Tools.int2bytes(0);
-        biClrUsed = Tools.int2bytes(0);
-        biCirImportant = Tools.int2bytes(0);
-        biBitFields = null;
+        setInfoHeaderSize(INFO_HEADER_SIZE_V3);
+        setWidth(0);
+        setHeight(0);
+        setCompression(0);
+        setSizeImage(0);
+        setXPelsPerMeter(0);
+        setYPelsPerMeter(0);
+        setClrUsed(0);
+        setCirImportant(0);
+        biBitFields = new byte[0];
+        gap1 = new byte[0];
+        gap2 = new byte[0];
     }
 
     /**
@@ -445,6 +450,60 @@ public class BMP_V3 extends BMP_V1 {
         this.biBitFields = Tools.endian(biBitFields);
     }
 
+    /**
+     * @return 空の場合 true<br>
+     *         空ではない場合 false
+     */
+    public boolean isEmptyBitFields() {
+        return biBitFields == null || biBitFields.length == 0;
+    }
+
+    /**
+     * @return オプショナル
+     */
+    public byte[] getGap1() {
+        return gap1;
+    }
+
+    /**
+     * @param gap1
+     *            オプショナル
+     */
+    public void setGap1(byte[] gap1) {
+        this.gap1 = gap1;
+    }
+
+    /**
+     * @return 空の場合 true<br>
+     *         空ではない場合 false
+     */
+    public boolean isEmptyGap1() {
+        return gap1 == null || gap1.length == 0;
+    }
+
+    /**
+     * @return オプショナル
+     */
+    public byte[] getGap2() {
+        return gap2;
+    }
+
+    /**
+     * @param gap2
+     *            オプショナル
+     */
+    public void setGap2(byte[] gap2) {
+        this.gap2 = gap2;
+    }
+
+    /**
+     * @return 空の場合 true<br>
+     *         空ではない場合 false
+     */
+    public boolean isEmptyGap2() {
+        return gap2 == null || gap2.length == 0;
+    }
+
     @Override
     public byte[] getBitmapHeader() {
         ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V3);
@@ -456,33 +515,52 @@ public class BMP_V3 extends BMP_V1 {
     @Override
     public void set(byte[] data) {
         int endHeaderOffset = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V3;
-        byte[] fileHeader = Tools.subbytes(data, 0, FILE_HEADER_SIZE);
-        byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, endHeaderOffset);
+        byte[] fileHeader = Arrays.copyOfRange(data, 0, FILE_HEADER_SIZE);
+        byte[] infoHeader = Arrays.copyOfRange(data, FILE_HEADER_SIZE, endHeaderOffset);
         setFileHeader(fileHeader);
         setInfoHeader(infoHeader);
         int bitcount = getBitCount();
         int compression = getCompression();
         if (bitcount <= 8) {
-            byte[] bColors = Tools.subbytes(data, endHeaderOffset, getOffset());
+            int endColorOffset = endHeaderOffset + getClrUsed() * 4;
+            byte[] bColors = Arrays.copyOfRange(data, endHeaderOffset, endColorOffset);
             setColors(bColors);
+            gap1 = Arrays.copyOfRange(data, endColorOffset, getOffset());
         } else {
             clearColors();
             if ((bitcount == 16 || bitcount == 32)) {
                 if (compression == 3) {
-                    biBitFields = Tools.subbytes(data, endHeaderOffset, endHeaderOffset + 12);
+                    int endBitFieldsOffset = endHeaderOffset + 12;
+                    biBitFields = Arrays.copyOfRange(data, endHeaderOffset, endBitFieldsOffset);
+                    gap1 = Arrays.copyOfRange(data, endBitFieldsOffset, getOffset());
                 } else if (compression == 6) {
-                    biBitFields = Tools.subbytes(data, endHeaderOffset, endHeaderOffset + 16);
-                } else biBitFields = null;
-            } else biBitFields = null;
+                    int endBitFieldsOffset = endHeaderOffset + 16;
+                    biBitFields = Arrays.copyOfRange(data, endHeaderOffset, endBitFieldsOffset);
+                    gap1 = Arrays.copyOfRange(data, endBitFieldsOffset, getOffset());
+                } else {
+                    biBitFields = null;
+                    gap1 = Arrays.copyOfRange(data, endHeaderOffset, getOffset());
+                }
+            } else {
+                biBitFields = null;
+                gap1 = Arrays.copyOfRange(data, endHeaderOffset, getOffset());
+            }
         }
-        byte[] imgData = Tools.subbytes(data, getOffset(), data.length);
+        int imageSize = getSizeImage();
+        byte[] imgData;
+        if (imageSize == 0) {
+            imgData = Arrays.copyOfRange(data, getOffset(), data.length);
+        } else {
+            int endImageOffset = getOffset() + imageSize;
+            imgData = Arrays.copyOfRange(data, getOffset(), endImageOffset);
+            gap2 = Arrays.copyOfRange(data, endImageOffset, data.length);
+        }
         setImage(imgData);
     }
 
     @Override
     public void set(BMP bmp) {
         super.set(bmp);
-        setInfoHeaderSize(bmp.getInfoHeaderSize());
         setWidth(bmp.getWidth());
         setHeight(bmp.getHeight());
         setCompression(bmp.getCompression());
@@ -492,21 +570,22 @@ public class BMP_V3 extends BMP_V1 {
         setClrUsed(bmp.getClrUsed());
         setCirImportant(bmp.getCirImportant());
         if (!bmp.isEmptyBitFields()) setBitFields(bmp.getBitFields());
+        if (!bmp.isEmptyGap1()) setGap1(bmp.getGap1());
+        if (!bmp.isEmptyGap2()) setGap2(bmp.getGap2());
     }
 
     @Override
     public int setInfoHeader(byte[] data) {
-        int offset = 0;
-        bcSize = Tools.subbytes(data, offset, offset += 4);
-        bcWidth = Tools.subbytes(data, offset, offset += 4);
-        bcHeight = Tools.subbytes(data, offset, offset += 4);
-        bcBitCount = Tools.subbytes(data, offset += 2, offset += 2);
-        biCompression = Tools.subbytes(data, offset, offset += 4);
-        biSizeImage = Tools.subbytes(data, offset, offset += 4);
-        biXPelsPerMeter = Tools.subbytes(data, offset, offset += 4);
-        biYPelsPerMeter = Tools.subbytes(data, offset, offset += 4);
-        biClrUsed = Tools.subbytes(data, offset, offset += 4);
-        biCirImportant = Tools.subbytes(data, offset, offset += 4);
+        int offset = 4;
+        bcWidth = Arrays.copyOfRange(data, offset, offset += 4);
+        bcHeight = Arrays.copyOfRange(data, offset, offset += 4);
+        bcBitCount = Arrays.copyOfRange(data, offset += 2, offset += 2);
+        biCompression = Arrays.copyOfRange(data, offset, offset += 4);
+        biSizeImage = Arrays.copyOfRange(data, offset, offset += 4);
+        biXPelsPerMeter = Arrays.copyOfRange(data, offset, offset += 4);
+        biYPelsPerMeter = Arrays.copyOfRange(data, offset, offset += 4);
+        biClrUsed = Arrays.copyOfRange(data, offset, offset += 4);
+        biCirImportant = Arrays.copyOfRange(data, offset, offset += 4);
         return offset;
     }
 
@@ -556,7 +635,9 @@ public class BMP_V3 extends BMP_V1 {
         int bitcount = getBitCount();
         int compression = getCompression();
         int optSize = (bitcount <= 8) ? colors.size() * 4
-                : (compression == 3 && (bitcount == 16 || bitcount == 32)) ? 12 : 0;
+                : ((bitcount == 16 || bitcount == 32)) ? (compression == 3) ? 12 : (compression == 6) ? 16 : 0 : 0;
+        if (!isEmptyGap1()) optSize += gap1.length;
+        if (!isEmptyGap2() && imageSize != 0) optSize += gap2.length;
         ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V3 + optSize + imageSize);
         buff.put(getBitmapHeader());
         if (bitcount <= 8) {
@@ -564,11 +645,17 @@ public class BMP_V3 extends BMP_V1 {
                 buff.put(color);
             });
         } else if ((compression == 3 || compression == 6) && (bitcount == 16 || bitcount == 32)) {
-            if (biBitFields != null) buff.put(biBitFields);
+            if (!isEmptyBitFields()) buff.put(biBitFields);
         }
+
+        if (!isEmptyGap1()) buff.put(gap1);
+
         image.forEach(img -> {
             buff.put(img);
         });
+
+        if (!isEmptyGap2() && imageSize != 0) buff.put(gap2);
+
         return buff.array();
     }
 
@@ -598,7 +685,51 @@ public class BMP_V3 extends BMP_V1 {
     public String toString() {
         StringBuffer buff = new StringBuffer(toStr());
         buff.append(STR_NEW_LINE);
+        buff.append(STR_BITFIELDS);
+        if (!isEmptyBitFields()) {
+            buff.append(STR_BITFIELDS_RED);
+            buff.append(STR_0X);
+            byte[] bF = Tools.endian(biBitFields);
+            for (int i = 0; i < 4; i++)
+                buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
+            buff.append(STR_NEW_LINE);
+            buff.append(STR_BITFIELDS_GREEN);
+            for (int i = 4; i < 8; i++)
+                buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
+            buff.append(STR_NEW_LINE);
+            buff.append(STR_BITFIELDS_BLUE);
+            for (int i = 8; i < 12; i++)
+                buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
+            if (getCompression() == 6) {
+                buff.append(STR_NEW_LINE);
+                buff.append(STR_BITFIELDS_ALPHA);
+                for (int i = 12; i < 16; i++)
+                    buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
+            }
+        }
+        buff.append(STR_NEW_LINE);
+        buff.append(STR_NEW_LINE);
         buff.append(toStrColorImage());
+        buff.append(STR_NEW_LINE);
+        buff.append(STR_NEW_LINE);
+        buff.append(STR_GAP1);
+        buff.append(STR_NEW_LINE);
+        if (!isEmptyGap1()) {
+            for (int i = 0; i < gap1.length;) {
+                buff.append(String.format(STR_16BIT_FORMAT, gap1[i]));
+                if (++i % 8 == 0) buff.append(STR_NEW_LINE);
+            }
+        }
+        buff.append(STR_NEW_LINE);
+        buff.append(STR_NEW_LINE);
+        buff.append(STR_GAP2);
+        buff.append(STR_NEW_LINE);
+        if (!isEmptyGap2()) {
+            for (int i = 0; i < gap2.length;) {
+                buff.append(String.format(STR_16BIT_FORMAT, gap2[i]));
+                if (++i % 8 == 0) buff.append(STR_NEW_LINE);
+            }
+        }
 
         return buff.toString();
     }

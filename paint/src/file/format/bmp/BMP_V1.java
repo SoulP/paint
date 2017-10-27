@@ -10,7 +10,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP - OS/2 V1</b><br>
- * date: 2017/10/18 last_date: 2017/10/25<br>
+ * date: 2017/10/18 last_date: 2017/10/27<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -160,12 +160,12 @@ public class BMP_V1 implements BMPable {
     @Override
     public void clear() {
         setType(new byte[] { 0x42, 0x4D });
-        bfSize = Tools.int2bytes(0);
-        bfOffBits = Tools.int2bytes(0);
-        bcSize = Tools.int2bytes(INFO_HEADER_SIZE_V1);
-        bcWidth = Tools.short2bytes((short) 0);
-        bcHeight = Tools.short2bytes((short) 0);
-        bcBitCount = Tools.short2bytes((short) 0);
+        setFileSize(0);
+        setOffset(0);
+        setInfoHeaderSize(INFO_HEADER_SIZE_V1);
+        setWidth((short) 0);
+        setHeight((short) 0);
+        setBitCount((short) 0);
     }
 
     /**
@@ -379,13 +379,17 @@ public class BMP_V1 implements BMPable {
 
     @Override
     public void set(byte[] data) {
-        byte[] fileHeader = Tools.subbytes(data, 0, FILE_HEADER_SIZE);
-        byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, FILE_HEADER_SIZE + INFO_HEADER_SIZE_V1);
+        int endHeaderOffset = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V1;
+        byte[] fileHeader = Arrays.copyOfRange(data, 0, FILE_HEADER_SIZE);
+        byte[] infoHeader = Arrays.copyOfRange(data, FILE_HEADER_SIZE, endHeaderOffset);
         setFileHeader(fileHeader);
         setInfoHeader(infoHeader);
-        byte[] bColors = Tools.subbytes(data, 0x001A, Tools.bytes2int(bfOffBits));
-        setColors(bColors);
-        byte[] imgData = Tools.subbytes(data, Tools.bytes2int(bfOffBits), getFileSize());
+        int bitCount = getBitCount();
+        if (bitCount <= 8) {
+            byte[] bColors = Arrays.copyOfRange(data, endHeaderOffset, getOffset());
+            setColors(bColors);
+        }
+        byte[] imgData = Arrays.copyOfRange(data, getOffset(), getFileSize());
         setImage(imgData);
     }
 
@@ -394,7 +398,6 @@ public class BMP_V1 implements BMPable {
         setType(bmp.getType());
         setFileSize(bmp.getFileSize());
         setOffset(bmp.getImageOffset());
-        setInfoHeaderSize(bmp.getInfoHeaderSize());
         setWidth((short) bmp.getWidth());
         setHeight((short) bmp.getHeight());
         setBitCount((short) bmp.getBitCount());
@@ -405,19 +408,18 @@ public class BMP_V1 implements BMPable {
     @Override
     public int setFileHeader(byte[] data) {
         int offset = 0;
-        bfType = Tools.subbytes(data, offset, offset += 2);
-        bfSize = Tools.subbytes(data, offset, offset += 4);
-        bfOffBits = Tools.subbytes(data, offset += 4, offset + 4);
+        bfType = Arrays.copyOfRange(data, offset, offset += 2);
+        bfSize = Arrays.copyOfRange(data, offset, offset += 4);
+        bfOffBits = Arrays.copyOfRange(data, offset += 4, offset + 4);
         return offset;
     }
 
     @Override
     public int setInfoHeader(byte[] data) {
-        int offset = 0;
-        bcSize = Tools.subbytes(data, offset, offset += 4);
-        bcWidth = Tools.subbytes(data, offset, offset += 2);
-        bcHeight = Tools.subbytes(data, offset, offset += 2);
-        bcBitCount = Tools.subbytes(data, offset += 2, offset += 2);
+        int offset = 4;
+        bcWidth = Arrays.copyOfRange(data, offset, offset += 2);
+        bcHeight = Arrays.copyOfRange(data, offset, offset += 2);
+        bcBitCount = Arrays.copyOfRange(data, offset += 2, offset += 2);
         return offset;
     }
 
@@ -441,7 +443,7 @@ public class BMP_V1 implements BMPable {
         if (bitCount == 8 || bitCount == 16) tempW = (width % 4 == 0) ? width : (4 - width % 4 + width);
         if (bitCount == 24) tempW = (width * 3 % 4 == 0) ? width : 4 - width * 3 % 4 + width * 3;
         if (bitCount == 32) tempW = width * 4;
-        for (int i = getOffset(); i < getFileSize(); i += tempW) {
+        for (int i = 0; i < data.length; i += tempW) {
             byte[] img = new byte[tempW];
             for (int w = 0; w < tempW; w++) {
                 img[w] = data[i + w];

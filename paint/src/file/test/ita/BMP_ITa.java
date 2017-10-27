@@ -1,9 +1,10 @@
-package file.ut;
+package file.test.ita;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,16 +12,16 @@ import org.junit.jupiter.api.Test;
 
 import file.Tools;
 import file.io.BMP;
+import file.test.Settings;
 
 /**
- * <b>BMPの単体テスト</b><br>
- * date: 2017/10/13 last_date 2017/10/25
+ * <b>BMPの内部結合テスト</b><br>
+ * date: 2017/10/13 last_date 2017/10/27
  * 
  * @author ソウルP
  */
-public class BMP_UT {
-    static final String USER_NAME  = "ユーザ名";                                    // 入出力先のユーザ名
-    static final String BASIC_ADDR = "C:\\Users\\" + USER_NAME + "\\Desktop\\"; // 入出力先
+public class BMP_ITa extends Settings {
+    public final String addr = BASIC_ADDR + "BMP\\BMP_ITa\\";
 
     /**
      * <b>BMP 出力</b><br>
@@ -28,8 +29,8 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpOutput_1bit() {
-        String file = BASIC_ADDR + "java_1bit.bmp";
+    public void test000_bmpOutput_1bit() {
+        String file = addr + "java_1bit.bmp";
         int width = 3;
         int height = 3;
 
@@ -62,8 +63,8 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpOutput_4bit() {
-        String file = BASIC_ADDR + "java_4bit.bmp";
+    public void test010_bmpOutput_4bit() {
+        String file = addr + "java_4bit.bmp";
         int width = 3;
         int height = 3;
         byte[] img01 = { 0x10, 0x10, 0x00, 0x00 };
@@ -95,8 +96,8 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpOutput_4bit_BI_RLE4() {
-        String file = BASIC_ADDR + "java_4bit_BI_RLE4.bmp";
+    public void test011_bmpOutput_4bit_BI_RLE4() {
+        String file = addr + "java_4bit_BI_RLE4.bmp";
         int width = 14;
         int height = 14;
         // @formatter:off
@@ -141,8 +142,8 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpOutput_8bit() {
-        String file = BASIC_ADDR + "java_8bit.bmp";
+    public void test020_bmpOutput_8bit() {
+        String file = addr + "java_8bit.bmp";
         int width = 3;
         int height = 3;
 
@@ -176,8 +177,8 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpOutput_8bit_BI_RLE8() {
-        String file = BASIC_ADDR + "java_8bit_BI_RLE8.bmp";
+    public void test021_bmpOutput_8bit_BI_RLE8() {
+        String file = addr + "java_8bit_BI_RLE8.bmp";
         int width = 13;
         int height = 13;
         // @formatter:off
@@ -229,8 +230,8 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpOutput_16bit() {
-        String file = BASIC_ADDR + "java_16bit.bmp";
+    public void test030_bmpOutput_16bit() {
+        String file = addr + "java_16bit.bmp";
         int width = 3;
         int height = 3;
         // @formatter:off
@@ -281,8 +282,8 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpOutput_16bit_BitFields() {
-        String file = BASIC_ADDR + "java_16bit_BitFields.bmp";
+    public void test031_bmpOutput_16bit_BitFields() {
+        String file = addr + "java_16bit_BitFields.bmp";
         int width = 3;
         int height = 3;
         // @formatter:off
@@ -344,8 +345,8 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpOutput_24bit() {
-        String file = BASIC_ADDR + "java_24bit.bmp";
+    public void test040_bmpOutput_24bit() {
+        String file = addr + "java_24bit.bmp";
         int width = 3;
         int height = 3;
         // @formatter:off
@@ -393,8 +394,8 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpOutput_32bit() {
-        String file = BASIC_ADDR + "java_32bit.bmp";
+    public void test050_bmpOutput_32bit() {
+        String file = addr + "java_32bit.bmp";
         int width = 3;
         int height = 3;
         // @formatter:off
@@ -442,8 +443,8 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpOutput_32bit_BitFields() {
-        String file = BASIC_ADDR + "java_32bit_BitFields.bmp";
+    public void test051_bmpOutput_32bit_BitFields() {
+        String file = addr + "java_32bit_BitFields.bmp";
         int width = 3;
         int height = 3;
         // @formatter:off
@@ -515,8 +516,8 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpInput() {
-        String file = BASIC_ADDR + "java_4bit_BI_RLE4.bmp";
+    public void test100_bmpInput() {
+        String file = addr + "java_4bit_BI_RLE4.bmp";
         String comp = "";
 
         BMP bmp = new BMP();
@@ -586,8 +587,8 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpInput_02() {
-        String file = BASIC_ADDR + "java_8bit_BI_RLE8.bmp";
+    public void test110_bmpInput() {
+        String file = addr + "java_8bit_BI_RLE8.bmp";
 
         BMP bmp = new BMP();
         try {
@@ -605,7 +606,7 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpChangeVersion() {
+    public void test200_bmpChangeVersion() {
         BMP bmp = new BMP();
         System.out.println("変更前: V" + bmp.getVersion());
         assertEquals(bmp.getVersion(), 3);
@@ -621,7 +622,7 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpChangeVersion_out_of_version() {
+    public void test210_bmpChangeVersion_out_of_version() {
         BMP bmp = new BMP();
         System.out.println("変更前: V" + bmp.getVersion());
         assertEquals(bmp.getVersion(), 3);
@@ -637,7 +638,7 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpChangeVersion_out_of_version_01() {
+    public void test300_bmpChangeVersion_out_of_version() {
         BMP bmp = new BMP();
         System.out.println("変更前: V" + bmp.getVersion());
         assertEquals(bmp.getVersion(), 3);
@@ -653,7 +654,7 @@ public class BMP_UT {
      * 成功テスト
      */
     @Test
-    public void bmpChangeVersion_out_of_version_02() {
+    public void test301_bmpChangeVersion_out_of_version() {
         BMP bmp = new BMP();
         System.out.println("変更前: V" + bmp.getVersion());
         assertEquals(bmp.getVersion(), 3);
@@ -661,5 +662,236 @@ public class BMP_UT {
         bmp.setVersion(-1);
         System.out.println("変更後: V" + bmp.getVersion());
         assertEquals(bmp.getVersion(), 3);
+    }
+
+    /**
+     * <b>オプショナルデータ 入出力確認</b><br>
+     * GAP1だけ<br>
+     * 成功テスト
+     */
+    @Test
+    public void test400_bmpV3Gap1() {
+        String file = addr + "java_bmpV3Gap1.bmp";
+        String str = "生麦生米生卵";
+
+        // 出力
+        byte[] gap1 = null;
+        try {
+            gap1 = str.getBytes("UTF-8");
+            int width = 3;
+            int height = 3;
+
+            // イメージ情報
+            byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
+            byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };
+            byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };
+            List<byte[]> image = new ArrayList<>();
+            image.add(img01);
+            image.add(img02);
+            image.add(img03);
+
+            BMP bmp = new BMP();
+            bmp.setWidth(width); // 幅
+            bmp.setHeight(height); // 高さ
+            bmp.setBitCount(8); // ビットの深さ
+            bmp.addColor(255, 0, 255); // 紫色
+            bmp.addColor(0, 255, 255); // アクア色
+            bmp.setGap1(gap1); // オプショナル
+            bmp.setImage(image);// イメージ
+            bmp.output(file);// 出力
+
+            // 入力
+            bmp = new BMP(file);
+            String gap1Str = "";
+            gap1Str = new String(bmp.getGap1(), "UTF-8");
+
+            assertEquals(str, gap1Str);
+
+            System.out.println(bmp);
+            System.out.println();
+            System.out.println("GAP1: " + gap1Str);
+            System.out.println();
+        } catch (UnsupportedEncodingException e) {
+            fail(e.getMessage());
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    /**
+     * <b>オプショナルデータ 入出力確認</b><br>
+     * GAP2だけ<br>
+     * 成功テスト
+     */
+    @Test
+    public void test401_bmpV3Gap2() {
+        String file = addr + "java_bmpV3Gap2.bmp";
+        String str = "赤巻紙青巻紙黄巻紙";
+
+        // 出力
+        byte[] gap2 = null;
+        try {
+            gap2 = str.getBytes("UTF-8");
+            int width = 3;
+            int height = 3;
+
+            // イメージ情報
+            byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
+            byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };
+            byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };
+            List<byte[]> image = new ArrayList<>();
+            image.add(img01);
+            image.add(img02);
+            image.add(img03);
+
+            BMP bmp = new BMP();
+            bmp.setWidth(width); // 幅
+            bmp.setHeight(height); // 高さ
+            bmp.setBitCount(8); // ビットの深さ
+            bmp.addColor(255, 0, 255); // 紫色
+            bmp.addColor(0, 255, 255); // アクア色
+            bmp.setGap2(gap2); // オプショナル
+            bmp.setImage(image);// イメージ
+            bmp.output(file);// 出力
+
+            // 入力
+            bmp = new BMP(file);
+            String gap2Str = "";
+            gap2Str = new String(bmp.getGap2(), "UTF-8");
+
+            assertEquals(str, gap2Str);
+
+            System.out.println(bmp);
+            System.out.println();
+            System.out.println("GAP2: " + gap2Str);
+            System.out.println();
+        } catch (UnsupportedEncodingException e) {
+            fail(e.getMessage());
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    /**
+     * <b>オプショナルデータ 入出力確認</b><br>
+     * 成功テスト
+     */
+    @Test
+    public void test402_bmpV3Gap() {
+        String file = addr + "java_bmpV3Gap.bmp";
+        String str1 = "生麦生米生卵";
+        String str2 = "YEAH!!";
+
+        // 出力
+        byte[] gap1 = null;
+        byte[] gap2 = null;
+        try {
+            gap1 = str1.getBytes("UTF-8");
+            gap2 = str2.getBytes("UTF-8");
+            int width = 3;
+            int height = 3;
+
+            // イメージ情報
+            byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
+            byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };
+            byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };
+            List<byte[]> image = new ArrayList<>();
+            image.add(img01);
+            image.add(img02);
+            image.add(img03);
+
+            BMP bmp = new BMP();
+            bmp.setWidth(width); // 幅
+            bmp.setHeight(height); // 高さ
+            bmp.setBitCount(8); // ビットの深さ
+            bmp.addColor(255, 0, 255); // 紫色
+            bmp.addColor(0, 255, 255); // アクア色
+            bmp.setGap1(gap1); // オプショナル 1
+            bmp.setGap2(gap2); // オプショナル 2
+            bmp.setImage(image); // イメージ
+            bmp.output(file); // 出力
+
+            // 入力
+            bmp = new BMP(file);
+            String gap1Str = "";
+            String gap2Str = "";
+            gap1Str = new String(bmp.getGap1(), "UTF-8");
+            gap2Str = new String(bmp.getGap2(), "UTF-8");
+
+            assertEquals(str1, gap1Str);
+            assertEquals(str2, gap2Str);
+
+            System.out.println(bmp);
+            System.out.println();
+            System.out.println("GAP1: " + gap1Str);
+            System.out.println("GAP2: " + gap2Str);
+            System.out.println();
+        } catch (UnsupportedEncodingException e) {
+            fail(e.getMessage());
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    /**
+     * <b>オプショナルデータ 入出力確認</b><br>
+     * プロファイルなし<br>
+     * 成功テスト
+     */
+    @Test
+    public void test403_bmpV5Gap() {
+        String file = addr + "bmpV5Gap.bmp";
+        String str1 = "生麦生米生卵";
+        String str2 = "Hello World!!";
+
+        // 出力
+        byte[] gap1 = null;
+        byte[] gap2 = null;
+        try {
+            gap1 = str1.getBytes("UTF-8");
+            gap2 = str2.getBytes("UTF-8");
+            int width = 3;
+            int height = 3;
+
+            // イメージ情報
+            byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
+            byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };
+            byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };
+            List<byte[]> image = new ArrayList<>();
+            image.add(img01);
+            image.add(img02);
+            image.add(img03);
+
+            BMP bmp = new BMP(5);
+            bmp.setWidth(width); // 幅
+            bmp.setHeight(height); // 高さ
+            bmp.setBitCount(8); // ビットの深さ
+            bmp.addColor(255, 0, 255); // 紫色
+            bmp.addColor(0, 255, 255); // アクア色
+            bmp.setGap1(gap1);
+            bmp.setGap2(gap2);
+            bmp.setImage(image);// イメージ
+            bmp.output(file);// 出力
+
+            // 入力
+            bmp = new BMP(file);
+            String gap1Str = "";
+            String gap2Str = "";
+
+            gap1Str = new String(bmp.getGap1(), "UTF-8");
+            gap2Str = new String(bmp.getGap2(), "UTF-8");
+            assertEquals(str1, gap1Str);
+            assertEquals(str2, gap2Str);
+
+            System.out.println(bmp);
+            System.out.println();
+            System.out.println("GAP1: " + gap1Str);
+            System.out.println("GAP2: " + gap2Str);
+            System.out.println();
+        } catch (UnsupportedEncodingException e) {
+            fail(e.getMessage());
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
     }
 }

@@ -1,6 +1,7 @@
 package file.format.bmp;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import file.Tools;
@@ -8,7 +9,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP Windows V4</b><br>
- * date: 2017/10/18 last_date: 2017/10/25<br>
+ * date: 2017/10/18 last_date: 2017/10/27<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -212,7 +213,8 @@ import file.io.BMP;
  * 
  * @author ソウルP
  * @version 1.0 2017/10/18 BMP_V4作成
- * @version 1.1 2017/10/25 ビットフィールド追加
+ * @version 1.1 2017/10/25 ビットフィールド追加 BMP_V3 から継承
+ * @version 1.2 2017/10/27 GAP1 と GAP2 （オプショナル）追加 BMP_V3 から継承
  */
 public class BMP_V4 extends BMP_V3 {
     // 情報ヘッダ
@@ -230,6 +232,8 @@ public class BMP_V4 extends BMP_V3 {
      * <b>BMP - Windows V4</b>
      */
     public BMP_V4() {
+        colors = new ArrayList<>();
+        image = new ArrayList<>();
         clear();
     }
 
@@ -240,7 +244,7 @@ public class BMP_V4 extends BMP_V3 {
      *            データ
      */
     public BMP_V4(byte[] data) {
-        clear();
+        this();
         set(data);
     }
 
@@ -251,7 +255,7 @@ public class BMP_V4 extends BMP_V3 {
      *            BMPのオブジェクト
      */
     public BMP_V4(BMP bmp) {
-        clear();
+        this();
         set(bmp);
     }
 
@@ -264,7 +268,7 @@ public class BMP_V4 extends BMP_V3 {
         bV4BlueMask = Tools.int2bytes(0);
         bV4AlphaMask = Tools.int2bytes(0);
         bV4CSType = Tools.int2bytes(0);
-        bV4Endpoints = ByteBuffer.allocate(32).putLong(0).putLong(0).putLong(0).putLong(0).array();
+        bV4Endpoints = ByteBuffer.allocate(36).putLong(0).putLong(0).putLong(0).putLong(0).putInt(0).array();
         bV4GammaRed = Tools.float2bytes(0.0f);
         bV4GammaGreen = Tools.float2bytes(0.0f);
         bV4GammaBlue = Tools.float2bytes(0.0f);
@@ -426,26 +430,46 @@ public class BMP_V4 extends BMP_V3 {
     @Override
     public void set(byte[] data) {
         int endHeaderOffset = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V4;
-        byte[] fileHeader = Tools.subbytes(data, 0, FILE_HEADER_SIZE);
-        byte[] infoHeader = Tools.subbytes(data, FILE_HEADER_SIZE, FILE_HEADER_SIZE + INFO_HEADER_SIZE_V4);
+        byte[] fileHeader = Arrays.copyOfRange(data, 0, FILE_HEADER_SIZE);
+        byte[] infoHeader = Arrays.copyOfRange(data, FILE_HEADER_SIZE, endHeaderOffset);
         setFileHeader(fileHeader);
         setInfoHeader(infoHeader);
         int bitcount = getBitCount();
         int compression = getCompression();
         if (bitcount <= 8) {
-            byte[] bColors = Tools.subbytes(data, endHeaderOffset, getOffset());
+            int endColorOffset = endHeaderOffset + getClrUsed() * 4;
+            byte[] bColors = Arrays.copyOfRange(data, endHeaderOffset, endColorOffset);
             setColors(bColors);
+            gap1 = Arrays.copyOfRange(data, endColorOffset, getOffset());
         } else {
             clearColors();
             if ((bitcount == 16 || bitcount == 32)) {
                 if (compression == 3) {
-                    biBitFields = Tools.subbytes(data, endHeaderOffset, endHeaderOffset + 12);
+                    int endBitFieldsOffset = endHeaderOffset + 12;
+                    biBitFields = Arrays.copyOfRange(data, endHeaderOffset, endBitFieldsOffset);
+                    gap1 = Arrays.copyOfRange(data, endBitFieldsOffset, getOffset());
                 } else if (compression == 6) {
-                    biBitFields = Tools.subbytes(data, endHeaderOffset, endHeaderOffset + 16);
-                } else biBitFields = null;
-            } else biBitFields = null;
+                    int endBitFieldsOffset = endHeaderOffset + 16;
+                    biBitFields = Arrays.copyOfRange(data, endHeaderOffset, endBitFieldsOffset);
+                    gap1 = Arrays.copyOfRange(data, endBitFieldsOffset, getOffset());
+                } else {
+                    biBitFields = null;
+                    gap1 = Arrays.copyOfRange(data, endHeaderOffset, getOffset());
+                }
+            } else {
+                biBitFields = null;
+                gap1 = Arrays.copyOfRange(data, endHeaderOffset, getOffset());
+            }
         }
-        byte[] imgData = Tools.subbytes(data, getOffset(), data.length);
+        int imageSize = getSizeImage();
+        byte[] imgData;
+        if (imageSize == 0) {
+            imgData = Arrays.copyOfRange(data, getOffset(), data.length);
+        } else {
+            int endImageOffset = getOffset() + imageSize;
+            imgData = Arrays.copyOfRange(data, getOffset(), endImageOffset);
+            gap2 = Arrays.copyOfRange(data, endImageOffset, data.length);
+        }
         setImage(imgData);
     }
 
@@ -466,15 +490,15 @@ public class BMP_V4 extends BMP_V3 {
     @Override
     public int setInfoHeader(byte[] data) {
         int offset = super.setInfoHeader(data);
-        bV4RedMask = Tools.subbytes(data, offset, offset += 4);
-        bV4GreenMask = Tools.subbytes(data, offset, offset += 4);
-        bV4BlueMask = Tools.subbytes(data, offset, offset += 4);
-        bV4AlphaMask = Tools.subbytes(data, offset, offset += 4);
-        bV4CSType = Tools.subbytes(data, offset, offset += 4);
-        bV4Endpoints = Tools.subbytes(data, offset, offset += 36);
-        bV4GammaRed = Tools.subbytes(data, offset, offset += 4);
-        bV4GammaGreen = Tools.subbytes(data, offset, offset += 4);
-        bV4GammaBlue = Tools.subbytes(data, offset, offset += 4);
+        bV4RedMask = Arrays.copyOfRange(data, offset, offset += 4);
+        bV4GreenMask = Arrays.copyOfRange(data, offset, offset += 4);
+        bV4BlueMask = Arrays.copyOfRange(data, offset, offset += 4);
+        bV4AlphaMask = Arrays.copyOfRange(data, offset, offset += 4);
+        bV4CSType = Arrays.copyOfRange(data, offset, offset += 4);
+        bV4Endpoints = Arrays.copyOfRange(data, offset, offset += 36);
+        bV4GammaRed = Arrays.copyOfRange(data, offset, offset += 4);
+        bV4GammaGreen = Arrays.copyOfRange(data, offset, offset += 4);
+        bV4GammaBlue = Arrays.copyOfRange(data, offset, offset += 4);
         return offset;
     }
 
@@ -488,7 +512,8 @@ public class BMP_V4 extends BMP_V3 {
         int compression = getCompression();
         int optSize = (bitcount <= 8) ? colors.size() * 4
                 : ((bitcount == 16 || bitcount == 32)) ? (compression == 3) ? 12 : (compression == 6) ? 16 : 0 : 0;
-        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V4 + optSize + imageSize);
+        if (!isEmptyGap1()) optSize += gap1.length;
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V4 + optSize + +imageSize);
         buff.put(getBitmapHeader());
         if (bitcount <= 8) {
             colors.forEach(color -> {
@@ -497,9 +522,13 @@ public class BMP_V4 extends BMP_V3 {
         } else if ((compression == 3 || compression == 6) && (bitcount == 16 || bitcount == 32)) {
             if (biBitFields != null) buff.put(biBitFields);
         }
+
+        if (!isEmptyGap1()) buff.put(gap1);
+
         image.forEach(img -> {
             buff.put(img);
         });
+
         return buff.array();
     }
 
@@ -516,6 +545,7 @@ public class BMP_V4 extends BMP_V3 {
         buff.put(bV4GammaRed);
         buff.put(bV4GammaGreen);
         buff.put(bV4GammaBlue);
+
         return buff.array();
     }
 
@@ -528,7 +558,40 @@ public class BMP_V4 extends BMP_V3 {
     public String toString() {
         StringBuffer buff = new StringBuffer(toStr());
         buff.append(STR_NEW_LINE);
+        buff.append(STR_BITFIELDS);
+        if (!isEmptyBitFields()) {
+            buff.append(STR_BITFIELDS_RED);
+            buff.append(STR_0X);
+            byte[] bF = Tools.endian(biBitFields);
+            for (int i = 0; i < 4; i++)
+                buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
+            buff.append(STR_NEW_LINE);
+            buff.append(STR_BITFIELDS_GREEN);
+            for (int i = 4; i < 8; i++)
+                buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
+            buff.append(STR_NEW_LINE);
+            buff.append(STR_BITFIELDS_BLUE);
+            for (int i = 8; i < 12; i++)
+                buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
+            if (getCompression() == 6) {
+                buff.append(STR_NEW_LINE);
+                buff.append(STR_BITFIELDS_ALPHA);
+                for (int i = 12; i < 16; i++)
+                    buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
+            }
+        }
+        buff.append(STR_NEW_LINE);
+        buff.append(STR_NEW_LINE);
         buff.append(toStrColorImage());
+        buff.append(STR_NEW_LINE);
+        buff.append(STR_NEW_LINE);
+        buff.append(STR_GAP1);
+        if (gap1 != null) {
+            for (int i = 0; i < gap1.length;) {
+                buff.append(String.format(STR_16BIT_FORMAT, gap1[i]));
+                if (++i % 8 == 0) buff.append(STR_NEW_LINE);
+            }
+        }
 
         return buff.toString();
     }
