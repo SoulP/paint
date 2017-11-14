@@ -46,8 +46,6 @@ public class BMP_V1_UT extends Basic {
      */
     @Test
     public void test000_8bit_output() throws IOException {
-        bmp = new BMP_V1();
-
         short width = 3;
         short height = 3;
         short bitCount = 8;
