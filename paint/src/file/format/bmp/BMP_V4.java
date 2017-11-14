@@ -275,6 +275,41 @@ public class BMP_V4 extends BMP_V3 {
     }
 
     /**
+     * &nbsp;
+     * 
+     * @deprecated
+     *             <ul>
+     *             以下のメソッドを使ってください
+     *             <li>{@link #getRedMask()}</li>
+     *             <li>{@link #getGreenMask()}</li>
+     *             <li>{@link #getBlueMask()}</li>
+     *             <li>{@link #getAlphaMask()}</li>
+     *             </ul>
+     */
+    @Deprecated
+    @Override
+    public byte[] getBitFields() {
+        return null;
+    }
+
+    /**
+     * &nbsp;
+     * 
+     * @deprecated
+     *             <ul>
+     *             以下のメソッドを使ってください
+     *             <li>{@link #setRedMask(byte[])}</li>
+     *             <li>{@link #setGreenMask(byte[])}</li>
+     *             <li>{@link #setBlueMask(byte[])}</li>
+     *             <li>{@link #setAlphaMask(byte[])}</li>
+     *             </ul>
+     */
+    @Deprecated
+    @Override
+    public void setBitFields(byte[] biBitFields) {
+    }
+
+    /**
      * @return 赤成分のカラーマスク
      */
     public byte[] getRedMask() {
@@ -445,9 +480,7 @@ public class BMP_V4 extends BMP_V3 {
             clearColors();
             if ((bitcount == 16 || bitcount == 32)) {
                 if (compression == 3) {
-                    int endBitFieldsOffset = endHeaderOffset + 12;
-                    biBitFields = Arrays.copyOfRange(data, endHeaderOffset, endBitFieldsOffset);
-                    gap1 = Arrays.copyOfRange(data, endBitFieldsOffset, getOffset());
+                    gap1 = Arrays.copyOfRange(data, endHeaderOffset, getOffset());
                 } else if (compression == 6) {
                     int endBitFieldsOffset = endHeaderOffset + 16;
                     biBitFields = Arrays.copyOfRange(data, endHeaderOffset, endBitFieldsOffset);

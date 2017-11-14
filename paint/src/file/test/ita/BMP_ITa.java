@@ -196,7 +196,7 @@ public class BMP_ITa extends Basic {
         int width = 3;
         int height = 3;
 
-        byte[] bitfields = Tools.bytes2D2bytes1D(r5g5b5Mask); // ビットフィールド
+        byte[] bitfields = Tools.bytes2D2bytes1D(r5g5b5MaskV3); // ビットフィールド
 
         BMP bmp = new BMP();
         bmp.setWidth(width);// 幅
@@ -269,7 +269,7 @@ public class BMP_ITa extends Basic {
         int width = 3;
         int height = 3;
 
-        byte[] bitfields = Tools.bytes2D2bytes1D(bitFields32bitMask); // ビットフィールド
+        byte[] bitfields = Tools.bytes2D2bytes1D(bitFields32bitMaskV3); // ビットフィールド
 
         BMP bmp = new BMP();
         bmp.setWidth(width);// 幅

@@ -214,7 +214,7 @@ public class BMP_V3_UT extends Basic {
         short bitCount = 16;
         List<byte[]> image = image_16bit_BitFields;
 
-        bmp = setupBmpV3(width, height, bitCount, null, r5g5b5Mask, image);
+        bmp = setupBmpV3(width, height, bitCount, null, r5g5b5MaskV3, image);
         bmp.setCompression(3);
 
         out = new FileOutputStream(addr + "test031_16bit_BitFields.bmp");
@@ -282,7 +282,7 @@ public class BMP_V3_UT extends Basic {
         short bitCount = 32;
         List<byte[]> image = image_32bit_BitFields;
 
-        bmp = setupBmpV3(width, height, bitCount, null, bitFields32bitMask, image);
+        bmp = setupBmpV3(width, height, bitCount, null, bitFields32bitMaskV3, image);
         bmp.setCompression(3);
 
         out = new FileOutputStream(addr + "test051_32bit_BitFields.bmp");

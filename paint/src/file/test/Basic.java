@@ -3,6 +3,12 @@ package file.test;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 共通化 (テスト用)<br>
+ * date: 2017/11/14 last_date: 2017/11/14
+ * 
+ * @author ソウルP
+ */
 public abstract class Basic extends Settings {
     // イメージ
     public static List<byte[]> image_1bit;
@@ -17,8 +23,10 @@ public abstract class Basic extends Settings {
     public static byte[][]     image_8bit_BI_RLE8;
 
     // カラーマスク
-    public static byte[][]     r5g5b5Mask;
-    public static byte[][]     bitFields32bitMask;
+    public static byte[][]     r5g5b5MaskV3;
+    public static byte[][]     r5g5b5MaskV4;
+    public static byte[][]     bitFields32bitMaskV3;
+    public static byte[][]     bitFields32bitMaskV4;
 
     static {
         image_1bit = new ArrayList<>();
@@ -213,7 +221,8 @@ public abstract class Basic extends Settings {
 
     static {
         // @formatter:off
-        r5g5b5Mask = new byte[][] {
+        // ビッグエンディアン （マスク入れる時はリトルエンディアン）
+        r5g5b5MaskV3 = new byte[][] {
                 { 0x00, 0x00, 0x7c, 0x00 },         // 赤マスク
                 { 0x00, 0x00, 0x03, (byte) 0xe0 },  // 緑マスク
                 { 0x00, 0x00, 0x00, 0x1f }          // 青マスク
@@ -223,6 +232,24 @@ public abstract class Basic extends Settings {
 
     static {
         // @formatter:off
+        /*
+         * ビッグエンディアン （マスク入れる時はリトルエンディアン）
+         * V3は青から赤へ処理されるが、V4以上は情報ヘッダに各色マスクがあるので、
+         * 赤から青へ処理される
+         * V3 = BGRA
+         * V4以上 = RGBA
+         */
+        r5g5b5MaskV4 = new byte[][] {
+                { 0x00, 0x00, 0x00, 0x1f },         // 赤マスク
+                { 0x00, 0x00, 0x03, (byte) 0xe0 },  // 緑マスク
+                { 0x00, 0x00, 0x7c, 0x00 }          // 青マスク
+        };
+        // @formatter:on
+    }
+
+    static {
+        // @formatter:off
+        // ビッグエンディアン （マスク入れる時はリトルエンディアン）
         // ビットフィールドのカラーマスク
         /*
          * ビッグエンディアンだが、緑マスクの0x000FF000の場合、
@@ -235,9 +262,25 @@ public abstract class Basic extends Settings {
          * 0xff000000 → 0xff000000
          * 0x0ff00000 → 0xf00f0000 と カラーマスク値を入れる
          */
-        bitFields32bitMask = new byte[][] {
+        bitFields32bitMaskV3 = new byte[][] {
                 { (byte) 0xff, 0x00, 0x00, 0x00 },  // 赤マスク
                 { 0x00, (byte) 0xf0, 0x0f,  0x00 }, // 緑マスク
+                { 0x00, 0x00, 0x00, (byte) 0xff }   // 青マスク
+        };
+        // @formatter:on
+    }
+
+    static {
+        // @formatter:off
+        // ビッグエンディアン
+        // ビットフィールドのカラーマスク
+        /*
+         * 情報ヘッダの中に各色マスク格納できるので、
+         * ビッグエンディアンのままでOK
+         */
+        bitFields32bitMaskV4 = new byte[][] {
+                { (byte) 0xff, 0x00, 0x00, 0x00 },  // 赤マスク
+                { 0x00, 0x0f, (byte) 0xf0,  0x00 }, // 緑マスク
                 { 0x00, 0x00, 0x00, (byte) 0xff }   // 青マスク
         };
         // @formatter:on
