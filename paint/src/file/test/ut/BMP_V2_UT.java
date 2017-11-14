@@ -35,6 +35,64 @@ public class BMP_V2_UT extends Basic {
 
     /**
      * 出力<br>
+     * 1ビット<br>
+     * 成功テスト<br>
+     * <p>
+     * OS/2は、情報ヘッダサイズ16～64ビット設定可能ですが、 Windowsの場合は、40ビットしかできない。
+     * </p>
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test000_1bit_output() throws IOException {
+        int infoHeaderSize = 40;
+        int width = 3;
+        int height = 3;
+        short bitCount = 1;
+        List<byte[]> colors = new ArrayList<>();
+        colors.add(new byte[] { (byte) 0xff, 0x00, (byte) 0xff, 0x00 }); // 紫色
+        colors.add(new byte[] { (byte) 0xff, (byte) 0xff, 0x00, 0x00 }); // アクア色
+        List<byte[]> image = image_1bit;
+
+        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, colors, image);
+
+        out = new FileOutputStream(addr + "test000_1bit.bmp");
+        out.write(bmp.get());
+        out.flush();
+        out.close();
+    }
+
+    /**
+     * 出力<br>
+     * 4ビット<br>
+     * 成功テスト<br>
+     * <p>
+     * OS/2は、情報ヘッダサイズ16～64ビット設定可能ですが、 Windowsの場合は、40ビットしかできない。
+     * </p>
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test010_4bit_output() throws IOException {
+        int infoHeaderSize = 40;
+        int width = 3;
+        int height = 3;
+        short bitCount = 4;
+        List<byte[]> colors = new ArrayList<>();
+        colors.add(new byte[] { (byte) 0xff, 0x00, (byte) 0xff, 0x00 }); // 紫色
+        colors.add(new byte[] { (byte) 0xff, (byte) 0xff, 0x00, 0x00 }); // アクア色
+        List<byte[]> image = image_4bit;
+
+        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, colors, image);
+
+        out = new FileOutputStream(addr + "test010_4bit.bmp");
+        out.write(bmp.get());
+        out.flush();
+        out.close();
+    }
+
+    /**
+     * 出力<br>
      * 8ビット<br>
      * 成功テスト<br>
      * <p>
@@ -44,7 +102,7 @@ public class BMP_V2_UT extends Basic {
      * @throws IOException
      */
     @Test
-    public void test000_8bit_output() throws IOException {
+    public void test020_8bit_output() throws IOException {
         int infoHeaderSize = 40;
         int width = 3;
         int height = 3;
@@ -56,7 +114,7 @@ public class BMP_V2_UT extends Basic {
 
         bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, colors, image);
 
-        out = new FileOutputStream(addr + "test000_8bit.bmp");
+        out = new FileOutputStream(addr + "test020_8bit.bmp");
         out.write(bmp.get());
         out.flush();
         out.close();
@@ -73,7 +131,7 @@ public class BMP_V2_UT extends Basic {
      * @throws IOException
      */
     @Test
-    public void test010_16bit_output() throws IOException {
+    public void test030_16bit_output() throws IOException {
         int infoHeaderSize = 40;
         int width = 3;
         int height = 3;
@@ -82,7 +140,7 @@ public class BMP_V2_UT extends Basic {
 
         bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);
 
-        out = new FileOutputStream(addr + "test010_16bit.bmp");
+        out = new FileOutputStream(addr + "test030_16bit.bmp");
         out.write(bmp.get());
         out.flush();
         out.close();
@@ -99,7 +157,7 @@ public class BMP_V2_UT extends Basic {
      * @throws IOException
      */
     @Test
-    public void test020_24bit_output() throws IOException {
+    public void test040_24bit_output() throws IOException {
         int infoHeaderSize = 40;
         int width = 3;
         int height = 3;
@@ -108,7 +166,7 @@ public class BMP_V2_UT extends Basic {
 
         bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);
 
-        out = new FileOutputStream(addr + "test020_24bit.bmp");
+        out = new FileOutputStream(addr + "test040_24bit.bmp");
         out.write(bmp.get());
         out.flush();
         out.close();
@@ -125,7 +183,7 @@ public class BMP_V2_UT extends Basic {
      * @throws IOException
      */
     @Test
-    public void test030_32bit_output() throws IOException {
+    public void test050_32bit_output() throws IOException {
         int infoHeaderSize = 40;
         int width = 3;
         int height = 3;
@@ -134,10 +192,48 @@ public class BMP_V2_UT extends Basic {
 
         bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);
 
-        out = new FileOutputStream(addr + "test030_32bit.bmp");
+        out = new FileOutputStream(addr + "test050_32bit.bmp");
         out.write(bmp.get());
         out.flush();
         out.close();
+    }
+
+    /**
+     * 入力<br>
+     * 1bit<br>
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test100_1bit_input() throws IOException {
+        in = new FileInputStream(addr + "test000_1bit.bmp");
+        byte[] data = new byte[in.available()];
+        in.read(data);
+        in.close();
+
+        bmp = new BMP_V2(data);
+
+        System.out.println(bmp);
+    }
+
+    /**
+     * 入力<br>
+     * 4bit<br>
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test110_4bit_input() throws IOException {
+        in = new FileInputStream(addr + "test010_4bit.bmp");
+        byte[] data = new byte[in.available()];
+        in.read(data);
+        in.close();
+
+        bmp = new BMP_V2(data);
+
+        System.out.println(bmp);
     }
 
     /**
@@ -148,8 +244,8 @@ public class BMP_V2_UT extends Basic {
      * @throws IOException
      */
     @Test
-    public void test100_8bit_input() throws IOException {
-        in = new FileInputStream(addr + "test000_8bit.bmp");
+    public void test120_8bit_input() throws IOException {
+        in = new FileInputStream(addr + "test020_8bit.bmp");
         byte[] data = new byte[in.available()];
         in.read(data);
         in.close();
@@ -167,8 +263,8 @@ public class BMP_V2_UT extends Basic {
      * @throws IOException
      */
     @Test
-    public void test110_16bit_input() throws IOException {
-        in = new FileInputStream(addr + "test010_16bit.bmp");
+    public void test130_16bit_input() throws IOException {
+        in = new FileInputStream(addr + "test030_16bit.bmp");
         byte[] data = new byte[in.available()];
         in.read(data);
         in.close();
@@ -186,8 +282,8 @@ public class BMP_V2_UT extends Basic {
      * @throws IOException
      */
     @Test
-    public void test120_24bit_input() throws IOException {
-        in = new FileInputStream(addr + "test020_24bit.bmp");
+    public void test140_24bit_input() throws IOException {
+        in = new FileInputStream(addr + "test040_24bit.bmp");
         byte[] data = new byte[in.available()];
         in.read(data);
         in.close();
@@ -205,8 +301,8 @@ public class BMP_V2_UT extends Basic {
      * @throws IOException
      */
     @Test
-    public void test130_32bit_input() throws IOException {
-        in = new FileInputStream(addr + "test030_32bit.bmp");
+    public void test150_32bit_input() throws IOException {
+        in = new FileInputStream(addr + "test050_32bit.bmp");
         byte[] data = new byte[in.available()];
         in.read(data);
         in.close();
