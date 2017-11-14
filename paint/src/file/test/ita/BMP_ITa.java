@@ -1,10 +1,8 @@
 package file.test.ita;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +28,11 @@ public class BMP_ITa extends Settings {
      * <b>BMP 出力</b><br>
      * 1bit<br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test000_bmpOutput_1bit() {
+    public void test000_bmpOutput_1bit() throws IOException {
         String file = addr + "java_1bit.bmp";
         int width = 3;
         int height = 3;
@@ -53,20 +53,19 @@ public class BMP_ITa extends Settings {
         bmp.addColor(255, 0, 255); // 紫色
         bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
-        try {
-            bmp.output(file);// 出力
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+
+        bmp.output(file);// 出力
     }
 
     /**
      * <b>BMP 出力</b><br>
      * 4bit<br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test010_bmpOutput_4bit() {
+    public void test010_bmpOutput_4bit() throws IOException {
         String file = addr + "java_4bit.bmp";
         int width = 3;
         int height = 3;
@@ -85,11 +84,8 @@ public class BMP_ITa extends Settings {
         bmp.addColor(255, 0, 255); // 紫色
         bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
-        try {
-            bmp.output(file);// 出力
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+
+        bmp.output(file);// 出力
     }
 
     /**
@@ -97,9 +93,11 @@ public class BMP_ITa extends Settings {
      * 4bit<br>
      * 圧縮形式: BI_RLE4<br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test011_bmpOutput_4bit_BI_RLE4() {
+    public void test011_bmpOutput_4bit_BI_RLE4() throws IOException {
         String file = addr + "java_4bit_BI_RLE4.bmp";
         int width = 14;
         int height = 14;
@@ -132,20 +130,19 @@ public class BMP_ITa extends Settings {
             bmp.addColor(0, i, i); // アクア色
         }
         bmp.setImage(img);// イメージ
-        try {
-            bmp.output(file);// 出力
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+
+        bmp.output(file);// 出力
     }
 
     /**
      * <b>BMP 出力</b><br>
      * 8bit<br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test020_bmpOutput_8bit() {
+    public void test020_bmpOutput_8bit() throws IOException {
         String file = addr + "java_8bit.bmp";
         int width = 3;
         int height = 3;
@@ -166,11 +163,8 @@ public class BMP_ITa extends Settings {
         bmp.addColor(255, 0, 255); // 紫色
         bmp.addColor(0, 255, 255); // アクア色
         bmp.setImage(image);// イメージ
-        try {
-            bmp.output(file);// 出力
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+
+        bmp.output(file);// 出力
     }
 
     /**
@@ -178,9 +172,11 @@ public class BMP_ITa extends Settings {
      * 8bit<br>
      * 圧縮形式: BI_RLE8<br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test021_bmpOutput_8bit_BI_RLE8() {
+    public void test021_bmpOutput_8bit_BI_RLE8() throws IOException {
         String file = addr + "java_8bit_BI_RLE8.bmp";
         int width = 13;
         int height = 13;
@@ -218,11 +214,8 @@ public class BMP_ITa extends Settings {
         bmp.addColor(0, 0, 0); // 黒色
         bmp.addColor(255, 255, 255); // 白色
         bmp.setImage(img);// イメージ
-        try {
-            bmp.output(file);// 出力
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+
+        bmp.output(file);// 出力
     }
 
     /**
@@ -231,9 +224,11 @@ public class BMP_ITa extends Settings {
      * 16 bit の場合、画像データの１ピクセルのデータに対してリトルエンディアンになる<br>
      * デフォルト: R5 G6 B5<br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test030_bmpOutput_16bit() {
+    public void test030_bmpOutput_16bit() throws IOException {
         String file = addr + "java_16bit.bmp";
         int width = 3;
         int height = 3;
@@ -269,11 +264,8 @@ public class BMP_ITa extends Settings {
         bmp.setHeight(height); // 高さ
         bmp.setBitCount(16); // ビットの深さ
         bmp.setImage(image); // イメージ
-        try {
-            bmp.output(file);// 出力
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+
+        bmp.output(file);// 出力
     }
 
     /**
@@ -283,9 +275,11 @@ public class BMP_ITa extends Settings {
      * 同じくBitFieldsのRGB順のデータをリトルエンディアンになる<br>
      * ビットフィールドで設定: R5 G5 B5<br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test031_bmpOutput_16bit_BitFields() {
+    public void test031_bmpOutput_16bit_BitFields() throws IOException {
         String file = addr + "java_16bit_BitFields.bmp";
         int width = 3;
         int height = 3;
@@ -335,20 +329,19 @@ public class BMP_ITa extends Settings {
         bmp.setCompression(3); // 圧縮形式
         bmp.setBitFields(bitfields); // ビットフィールド
         bmp.setImage(image); // イメージ
-        try {
-            bmp.output(file);// 出力
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+
+        bmp.output(file);// 出力
     }
 
     /**
      * <b>BMP 出力</b><br>
      * 24bit<br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test040_bmpOutput_24bit() {
+    public void test040_bmpOutput_24bit() throws IOException {
         String file = addr + "java_24bit.bmp";
         int width = 3;
         int height = 3;
@@ -384,20 +377,19 @@ public class BMP_ITa extends Settings {
         bmp.setHeight(height); // 高さ
         bmp.setBitCount(24); // ビットの深さ
         bmp.setImage(image);// イメージ
-        try {
-            bmp.output(file);// 出力
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+
+        bmp.output(file);// 出力
     }
 
     /**
      * <b>BMP 出力</b><br>
      * 32bit<br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test050_bmpOutput_32bit() {
+    public void test050_bmpOutput_32bit() throws IOException {
         String file = addr + "java_32bit.bmp";
         int width = 3;
         int height = 3;
@@ -430,11 +422,8 @@ public class BMP_ITa extends Settings {
         bmp.setHeight(height); // 高さ
         bmp.setBitCount(32); // ビットの深さ
         bmp.setImage(image);// イメージ
-        try {
-            bmp.output(file);// 出力
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+
+        bmp.output(file);// 出力
     }
 
     /**
@@ -444,9 +433,11 @@ public class BMP_ITa extends Settings {
      * 同じくBitFieldsのRGB順のデータをリトルエンディアンになる<br>
      * ビットフィールドで設定: R5 G5 B5<br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test051_bmpOutput_32bit_BitFields() {
+    public void test051_bmpOutput_32bit_BitFields() throws IOException {
         String file = addr + "java_32bit_BitFields.bmp";
         int width = 3;
         int height = 3;
@@ -507,28 +498,23 @@ public class BMP_ITa extends Settings {
         bmp.setCompression(3); // 圧縮形式
         bmp.setBitFields(bitfields); // ビットフィールド
         bmp.setImage(image); // イメージ
-        try {
-            bmp.output(file);// 出力
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+
+        bmp.output(file);// 出力
     }
 
     /**
      * <b>BMP 入力</b><br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test100_bmpInput() {
+    public void test100_bmpInput() throws IOException {
         String file = addr + "java_4bit_BI_RLE4.bmp";
         String comp = "";
 
         BMP bmp = new BMP();
-        try {
-            bmp.input(file);
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+        bmp.input(file);
 
         System.out.println(file);
         System.out.println("BMP V" + bmp.getVersion());
@@ -588,17 +574,15 @@ public class BMP_ITa extends Settings {
     /**
      * <b>BMP 入力</b><br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test110_bmpInput() {
+    public void test110_bmpInput() throws IOException {
         String file = addr + "java_8bit_BI_RLE8.bmp";
 
         BMP bmp = new BMP();
-        try {
-            bmp.input(file);
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+        bmp.input(file);
 
         System.out.println(file);
         System.out.println(bmp);
@@ -671,116 +655,110 @@ public class BMP_ITa extends Settings {
      * <b>オプショナルデータ 入出力確認</b><br>
      * GAP1だけ<br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test400_bmpV3Gap1() {
+    public void test400_bmpV3Gap1() throws IOException {
         String file = addr + "java_bmpV3Gap1.bmp";
         String str = "生麦生米生卵";
 
         // 出力
         byte[] gap1 = null;
-        try {
-            gap1 = str.getBytes("UTF-8");
-            int width = 3;
-            int height = 3;
+        gap1 = str.getBytes("UTF-8");
+        int width = 3;
+        int height = 3;
 
-            // イメージ情報
-            byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
-            byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };
-            byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };
-            List<byte[]> image = new ArrayList<>();
-            image.add(img01);
-            image.add(img02);
-            image.add(img03);
+        // イメージ情報
+        byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
+        byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };
+        byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };
+        List<byte[]> image = new ArrayList<>();
+        image.add(img01);
+        image.add(img02);
+        image.add(img03);
 
-            BMP bmp = new BMP();
-            bmp.setWidth(width); // 幅
-            bmp.setHeight(height); // 高さ
-            bmp.setBitCount(8); // ビットの深さ
-            bmp.addColor(255, 0, 255); // 紫色
-            bmp.addColor(0, 255, 255); // アクア色
-            bmp.setGap1(gap1); // オプショナル
-            bmp.setImage(image);// イメージ
-            bmp.output(file);// 出力
+        BMP bmp = new BMP();
+        bmp.setWidth(width); // 幅
+        bmp.setHeight(height); // 高さ
+        bmp.setBitCount(8); // ビットの深さ
+        bmp.addColor(255, 0, 255); // 紫色
+        bmp.addColor(0, 255, 255); // アクア色
+        bmp.setGap1(gap1); // オプショナル
+        bmp.setImage(image);// イメージ
+        bmp.output(file);// 出力
 
-            // 入力
-            bmp = new BMP(file);
-            String gap1Str = "";
-            gap1Str = new String(bmp.getGap1(), "UTF-8");
+        // 入力
+        bmp = new BMP(file);
+        String gap1Str = "";
+        gap1Str = new String(bmp.getGap1(), "UTF-8");
 
-            assertEquals(str, gap1Str);
+        assertEquals(str, gap1Str);
 
-            System.out.println(bmp);
-            System.out.println();
-            System.out.println("GAP1: " + gap1Str);
-            System.out.println();
-        } catch (UnsupportedEncodingException e) {
-            fail(e.getMessage());
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+        System.out.println(bmp);
+        System.out.println();
+        System.out.println("GAP1: " + gap1Str);
+        System.out.println();
     }
 
     /**
      * <b>オプショナルデータ 入出力確認</b><br>
      * GAP2だけ<br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test401_bmpV3Gap2() {
+    public void test401_bmpV3Gap2() throws IOException {
         String file = addr + "java_bmpV3Gap2.bmp";
         String str = "赤巻紙青巻紙黄巻紙";
 
         // 出力
         byte[] gap2 = null;
-        try {
-            gap2 = str.getBytes("UTF-8");
-            int width = 3;
-            int height = 3;
+        gap2 = str.getBytes("UTF-8");
+        int width = 3;
+        int height = 3;
 
-            // イメージ情報
-            byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
-            byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };
-            byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };
-            List<byte[]> image = new ArrayList<>();
-            image.add(img01);
-            image.add(img02);
-            image.add(img03);
+        // イメージ情報
+        byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
+        byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };
+        byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };
+        List<byte[]> image = new ArrayList<>();
+        image.add(img01);
+        image.add(img02);
+        image.add(img03);
 
-            BMP bmp = new BMP();
-            bmp.setWidth(width); // 幅
-            bmp.setHeight(height); // 高さ
-            bmp.setBitCount(8); // ビットの深さ
-            bmp.addColor(255, 0, 255); // 紫色
-            bmp.addColor(0, 255, 255); // アクア色
-            bmp.setGap2(gap2); // オプショナル
-            bmp.setImage(image);// イメージ
-            bmp.output(file);// 出力
+        BMP bmp = new BMP();
+        bmp.setWidth(width); // 幅
+        bmp.setHeight(height); // 高さ
+        bmp.setBitCount(8); // ビットの深さ
+        bmp.addColor(255, 0, 255); // 紫色
+        bmp.addColor(0, 255, 255); // アクア色
+        bmp.setGap2(gap2); // オプショナル
+        bmp.setImage(image);// イメージ
+        bmp.output(file);// 出力
 
-            // 入力
-            bmp = new BMP(file);
-            String gap2Str = "";
-            gap2Str = new String(bmp.getGap2(), "UTF-8");
+        // 入力
+        bmp = new BMP(file);
+        String gap2Str = "";
+        gap2Str = new String(bmp.getGap2(), "UTF-8");
 
-            assertEquals(str, gap2Str);
+        assertEquals(str, gap2Str);
 
-            System.out.println(bmp);
-            System.out.println();
-            System.out.println("GAP2: " + gap2Str);
-            System.out.println();
-        } catch (UnsupportedEncodingException e) {
-            fail(e.getMessage());
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+        System.out.println(bmp);
+        System.out.println();
+        System.out.println("GAP2: " + gap2Str);
+        System.out.println();
     }
 
     /**
      * <b>オプショナルデータ 入出力確認</b><br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test402_bmpV3Gap() {
+    public void test402_bmpV3Gap() throws IOException {
         String file = addr + "java_bmpV3Gap.bmp";
         String str1 = "生麦生米生卵";
         String str2 = "YEAH!!";
@@ -788,61 +766,57 @@ public class BMP_ITa extends Settings {
         // 出力
         byte[] gap1 = null;
         byte[] gap2 = null;
-        try {
-            gap1 = str1.getBytes("UTF-8");
-            gap2 = str2.getBytes("UTF-8");
-            int width = 3;
-            int height = 3;
+        gap1 = str1.getBytes("UTF-8");
+        gap2 = str2.getBytes("UTF-8");
+        int width = 3;
+        int height = 3;
 
-            // イメージ情報
-            byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
-            byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };
-            byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };
-            List<byte[]> image = new ArrayList<>();
-            image.add(img01);
-            image.add(img02);
-            image.add(img03);
+        // イメージ情報
+        byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
+        byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };
+        byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };
+        List<byte[]> image = new ArrayList<>();
+        image.add(img01);
+        image.add(img02);
+        image.add(img03);
 
-            BMP bmp = new BMP();
-            bmp.setWidth(width); // 幅
-            bmp.setHeight(height); // 高さ
-            bmp.setBitCount(8); // ビットの深さ
-            bmp.addColor(255, 0, 255); // 紫色
-            bmp.addColor(0, 255, 255); // アクア色
-            bmp.setGap1(gap1); // オプショナル 1
-            bmp.setGap2(gap2); // オプショナル 2
-            bmp.setImage(image); // イメージ
-            bmp.output(file); // 出力
+        BMP bmp = new BMP();
+        bmp.setWidth(width); // 幅
+        bmp.setHeight(height); // 高さ
+        bmp.setBitCount(8); // ビットの深さ
+        bmp.addColor(255, 0, 255); // 紫色
+        bmp.addColor(0, 255, 255); // アクア色
+        bmp.setGap1(gap1); // オプショナル 1
+        bmp.setGap2(gap2); // オプショナル 2
+        bmp.setImage(image); // イメージ
+        bmp.output(file); // 出力
 
-            // 入力
-            bmp = new BMP(file);
-            String gap1Str = "";
-            String gap2Str = "";
-            gap1Str = new String(bmp.getGap1(), "UTF-8");
-            gap2Str = new String(bmp.getGap2(), "UTF-8");
+        // 入力
+        bmp = new BMP(file);
+        String gap1Str = "";
+        String gap2Str = "";
+        gap1Str = new String(bmp.getGap1(), "UTF-8");
+        gap2Str = new String(bmp.getGap2(), "UTF-8");
 
-            assertEquals(str1, gap1Str);
-            assertEquals(str2, gap2Str);
+        assertEquals(str1, gap1Str);
+        assertEquals(str2, gap2Str);
 
-            System.out.println(bmp);
-            System.out.println();
-            System.out.println("GAP1: " + gap1Str);
-            System.out.println("GAP2: " + gap2Str);
-            System.out.println();
-        } catch (UnsupportedEncodingException e) {
-            fail(e.getMessage());
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+        System.out.println(bmp);
+        System.out.println();
+        System.out.println("GAP1: " + gap1Str);
+        System.out.println("GAP2: " + gap2Str);
+        System.out.println();
     }
 
     /**
      * <b>オプショナルデータ 入出力確認</b><br>
      * プロファイルなし<br>
      * 成功テスト
+     * 
+     * @throws IOException
      */
     @Test
-    public void test403_bmpV5Gap() {
+    public void test403_bmpV5Gap() throws IOException {
         String file = addr + "bmpV5Gap.bmp";
         String str1 = "生麦生米生卵";
         String str2 = "Hello World!!";
@@ -850,7 +824,6 @@ public class BMP_ITa extends Settings {
         // 出力
         byte[] gap1 = null;
         byte[] gap2 = null;
-        try {
             gap1 = str1.getBytes("UTF-8");
             gap2 = str2.getBytes("UTF-8");
             int width = 3;
@@ -891,10 +864,5 @@ public class BMP_ITa extends Settings {
             System.out.println("GAP1: " + gap1Str);
             System.out.println("GAP2: " + gap2Str);
             System.out.println();
-        } catch (UnsupportedEncodingException e) {
-            fail(e.getMessage());
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
     }
 }

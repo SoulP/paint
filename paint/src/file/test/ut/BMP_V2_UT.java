@@ -1,10 +1,7 @@
 package file.test.ut;
 
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,12 +27,11 @@ public class BMP_V2_UT extends Settings {
 
     @Before
     public void before() {
-        File check = new File(addr);
-        if (!check.exists()) check.mkdirs();
+        new File(addr).mkdirs();
     }
 
     @Test
-    public void test000_Output() throws FileNotFoundException {
+    public void test000_Output() throws IOException {
         bmp = new BMP_V2();
 
         int width = 3;
@@ -81,43 +77,22 @@ public class BMP_V2_UT extends Settings {
         bmp.setOffset(fileSize);
         fileSize += imageSize;
 
-        try {
-            out = new FileOutputStream(addr + "test000_Output.bmp");
-            out.write(bmp.get());
-            out.flush();
-        } catch (IOException e) {
-            fail(e.getMessage());
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    out = null;
-                }
-            }
-        }
+        out = new FileOutputStream(addr + "test000_Output.bmp");
+        out.write(bmp.get());
+        out.flush();
+
+        out.close();
     }
 
     @Test
-    public void test010_Input() {
-        try {
-            in = new FileInputStream(addr + "test000_Output.bmp");
-            byte[] data = new byte[in.available()];
-            in.read(data);
+    public void test010_Input() throws IOException {
+        in = new FileInputStream(addr + "test000_Output.bmp");
+        byte[] data = new byte[in.available()];
+        in.read(data);
+        in.close();
 
-            bmp = new BMP_V2(data);
+        bmp = new BMP_V2(data);
 
-            System.out.println(bmp);
-        } catch (IOException e) {
-            fail(e.getMessage());
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    in = null;
-                }
-            }
-        }
+        System.out.println(bmp);
     }
 }
