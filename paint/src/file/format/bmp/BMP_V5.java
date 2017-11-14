@@ -9,7 +9,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP Windows V5</b><br>
- * date: 2017/10/19 last_date: 2017/10/27<br>
+ * date: 2017/10/19 last_date: 2017/11/14<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -425,10 +425,19 @@ public class BMP_V5 extends BMP_V4 {
         } else {
             int endImageOffset = getOffset() + imageSize;
             imgData = Arrays.copyOfRange(data, getOffset(), endImageOffset);
-            gap2 = Arrays.copyOfRange(data, endImageOffset, profileOffset);
+            if (endImageOffset < profileOffset) {
+                gap2 = Arrays.copyOfRange(data, endImageOffset, profileOffset);
+            } else {
+                gap2 = null;
+            }
         }
         setImage(imgData);
-        profile = Arrays.copyOfRange(data, profileOffset, profileOffset + getProfileSize());
+        int profileSize = getProfileSize();
+        if (profileSize > 0) {
+            profile = Arrays.copyOfRange(data, profileOffset, profileOffset + getProfileSize());
+        } else {
+            profile = null;
+        }
     }
 
     @Override

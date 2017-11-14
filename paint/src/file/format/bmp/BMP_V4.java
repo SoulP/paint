@@ -9,7 +9,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP Windows V4</b><br>
- * date: 2017/10/18 last_date: 2017/10/27<br>
+ * date: 2017/10/18 last_date: 2017/11/14<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -561,6 +561,8 @@ public class BMP_V4 extends BMP_V3 {
         image.forEach(img -> {
             buff.put(img);
         });
+
+        if (!isEmptyGap2() && imageSize != 0) buff.put(gap2);
 
         return buff.array();
     }
