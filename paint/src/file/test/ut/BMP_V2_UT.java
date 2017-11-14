@@ -82,7 +82,7 @@ public class BMP_V2_UT extends Basic {
 
         bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);
 
-        out = new FileOutputStream(addr + "test000_16bit.bmp");
+        out = new FileOutputStream(addr + "test010_16bit.bmp");
         out.write(bmp.get());
         out.flush();
         out.close();
@@ -108,7 +108,7 @@ public class BMP_V2_UT extends Basic {
 
         bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);
 
-        out = new FileOutputStream(addr + "test000_24bit.bmp");
+        out = new FileOutputStream(addr + "test020_24bit.bmp");
         out.write(bmp.get());
         out.flush();
         out.close();
@@ -134,7 +134,7 @@ public class BMP_V2_UT extends Basic {
 
         bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);
 
-        out = new FileOutputStream(addr + "test000_32bit.bmp");
+        out = new FileOutputStream(addr + "test030_32bit.bmp");
         out.write(bmp.get());
         out.flush();
         out.close();
@@ -168,7 +168,7 @@ public class BMP_V2_UT extends Basic {
      */
     @Test
     public void test110_16bit_input() throws IOException {
-        in = new FileInputStream(addr + "test000_16bit.bmp");
+        in = new FileInputStream(addr + "test010_16bit.bmp");
         byte[] data = new byte[in.available()];
         in.read(data);
         in.close();
@@ -187,7 +187,7 @@ public class BMP_V2_UT extends Basic {
      */
     @Test
     public void test120_24bit_input() throws IOException {
-        in = new FileInputStream(addr + "test000_24bit.bmp");
+        in = new FileInputStream(addr + "test020_24bit.bmp");
         byte[] data = new byte[in.available()];
         in.read(data);
         in.close();
@@ -206,7 +206,7 @@ public class BMP_V2_UT extends Basic {
      */
     @Test
     public void test130_32bit_input() throws IOException {
-        in = new FileInputStream(addr + "test000_32bit.bmp");
+        in = new FileInputStream(addr + "test030_32bit.bmp");
         byte[] data = new byte[in.available()];
         in.read(data);
         in.close();
