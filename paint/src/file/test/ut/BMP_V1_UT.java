@@ -4,7 +4,6 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ public class BMP_V1_UT extends Settings {
     }
 
     @Test
-    public void test000_Output() throws FileNotFoundException {
+    public void test000_Output() {
         bmp = new BMP_V1();
 
         short width = 3;
