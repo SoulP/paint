@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import file.format.bmp.BMP_V2;
-import file.test.Settings;
+import file.test.Basic;
 
 /**
  * <b>BMP V2 の単体テスト</b><br>
@@ -19,7 +21,8 @@ import file.test.Settings;
  * 
  * @author ソウルP
  */
-public class BMP_V2_UT extends Settings {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class BMP_V2_UT extends Basic {
     final String     addr = BASIC_ADDR + "BMP\\BMP_V2_UT\\";
     FileOutputStream out;
     FileInputStream  in;
@@ -30,63 +33,123 @@ public class BMP_V2_UT extends Settings {
         new File(addr).mkdirs();
     }
 
+    /**
+     * 出力<br>
+     * 8ビット<br>
+     * 成功テスト<br>
+     * <p>
+     * OS/2は、情報ヘッダサイズ16～64ビット設定可能ですが、 Windowsの場合は、40ビットしかできない。
+     * </p>
+     * 
+     * @throws IOException
+     */
     @Test
-    public void test000_Output() throws IOException {
-        bmp = new BMP_V2();
-
+    public void test000_8bit_output() throws IOException {
+        int infoHeaderSize = 40;
         int width = 3;
         int height = 3;
         short bitCount = 8;
-        short hotspotX = 0;
-        short hotspotY = 0;
-        int infoHeaderSize = 40;
+        List<byte[]> colors = new ArrayList<>();
+        colors.add(new byte[] { (byte) 0xff, 0x00, (byte) 0xff, 0x00 }); // 紫色
+        colors.add(new byte[] { (byte) 0xff, (byte) 0xff, 0x00, 0x00 }); // アクア色
+        List<byte[]> image = image_8bit;
 
-        // イメージ情報
-        byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };
-        byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };
-        byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };
-        List<byte[]> image = new ArrayList<>();
-        image.add(img01);
-        image.add(img02);
-        image.add(img03);
+        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, colors, image);
 
-        bmp.setHeaderSize(bmp.getFileHeaderSize() + infoHeaderSize);
-        bmp.setHotspotX(hotspotX);
-        bmp.setHotspotY(hotspotY);
-        bmp.setInfoHeaderSize(infoHeaderSize);
-        bmp.setBitCount(bitCount); // ビットの深さ
-        bmp.setWidth(width); // 幅
-        bmp.setHeight(height); // 高さ
-        bmp.setCompression(0); // 圧縮形式
-        bmp.addColor(255, 0, 255); // 紫色
-        bmp.addColor(0, 255, 255); // アクア色
-        bmp.setImage(image); // イメージ
-
-        int fileSize = bmp.getFileHeaderSize() + infoHeaderSize;
-
-        int colorSize = 0;
-        for (byte[] c : bmp.getColors())
-            colorSize += c.length;
-        fileSize += colorSize;
-
-        int imageSize = 0;
-        for (byte[] i : image)
-            imageSize += i.length;
-        bmp.setSizeImage(imageSize);
-
-        bmp.setOffset(fileSize);
-        fileSize += imageSize;
-
-        out = new FileOutputStream(addr + "test000_Output.bmp");
+        out = new FileOutputStream(addr + "test000_8bit.bmp");
         out.write(bmp.get());
         out.flush();
-
         out.close();
     }
 
+    /**
+     * 出力<br>
+     * 16bit<br>
+     * 成功テスト<br>
+     * <p>
+     * OS/2は、情報ヘッダサイズ16～64ビット設定可能ですが、 Windowsの場合は、40ビットしかできない。
+     * </p>
+     * 
+     * @throws IOException
+     */
     @Test
-    public void test010_Input() throws IOException {
-        in = new FileInputStream(addr + "test000_Output.bmp");
+    public void test010_16bit_output() throws IOException {
+        int infoHeaderSize = 40;
+        int width = 3;
+        int height = 3;
+        short bitCount = 16;
+        List<byte[]> image = image_16bit;
+
+        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);
+
+        out = new FileOutputStream(addr + "test000_16bit.bmp");
+        out.write(bmp.get());
+        out.flush();
+        out.close();
+    }
+
+    /**
+     * 出力<br>
+     * 24bit<br>
+     * 成功テスト<br>
+     * <p>
+     * OS/2は、情報ヘッダサイズ16～64ビット設定可能ですが、 Windowsの場合は、40ビットしかできない。
+     * </p>
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test020_24bit_output() throws IOException {
+        int infoHeaderSize = 40;
+        int width = 3;
+        int height = 3;
+        short bitCount = 24;
+        List<byte[]> image = image_24bit;
+
+        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);
+
+        out = new FileOutputStream(addr + "test000_24bit.bmp");
+        out.write(bmp.get());
+        out.flush();
+        out.close();
+    }
+
+    /**
+     * 出力<br>
+     * 32bit<br>
+     * 成功テスト<br>
+     * <p>
+     * OS/2は、情報ヘッダサイズ16～64ビット設定可能ですが、 Windowsの場合は、40ビットしかできない。
+     * </p>
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test030_32bit_output() throws IOException {
+        int infoHeaderSize = 40;
+        int width = 3;
+        int height = 3;
+        short bitCount = 32;
+        List<byte[]> image = image_32bit;
+
+        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);
+
+        out = new FileOutputStream(addr + "test000_32bit.bmp");
+        out.write(bmp.get());
+        out.flush();
+        out.close();
+    }
+
+    /**
+     * 入力<br>
+     * 8bit<br>
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test100_8bit_input() throws IOException {
+        in = new FileInputStream(addr + "test000_8bit.bmp");
         byte[] data = new byte[in.available()];
         in.read(data);
         in.close();
@@ -94,5 +157,93 @@ public class BMP_V2_UT extends Settings {
         bmp = new BMP_V2(data);
 
         System.out.println(bmp);
+    }
+
+    /**
+     * 入力<br>
+     * 16bit<br>
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test110_16bit_input() throws IOException {
+        in = new FileInputStream(addr + "test000_16bit.bmp");
+        byte[] data = new byte[in.available()];
+        in.read(data);
+        in.close();
+
+        bmp = new BMP_V2(data);
+
+        System.out.println(bmp);
+    }
+
+    /**
+     * 入力<br>
+     * 24bit<br>
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test120_24bit_input() throws IOException {
+        in = new FileInputStream(addr + "test000_24bit.bmp");
+        byte[] data = new byte[in.available()];
+        in.read(data);
+        in.close();
+
+        bmp = new BMP_V2(data);
+
+        System.out.println(bmp);
+    }
+
+    /**
+     * 入力<br>
+     * 32bit<br>
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test130_32bit_input() throws IOException {
+        in = new FileInputStream(addr + "test000_32bit.bmp");
+        byte[] data = new byte[in.available()];
+        in.read(data);
+        in.close();
+
+        bmp = new BMP_V2(data);
+
+        System.out.println(bmp);
+    }
+
+    private BMP_V2 setupBmpV2(int infoHeaderSize, int width, int height, short bitCount, List<byte[]> colors,
+            List<byte[]> image) {
+        bmp = new BMP_V2();
+
+        bmp.setHeaderSize(bmp.getFileHeaderSize() + infoHeaderSize);
+        bmp.setInfoHeaderSize(infoHeaderSize);
+        bmp.setWidth(width); // 幅
+        bmp.setHeight(height); // 高さ
+        bmp.setBitCount(bitCount); // ビットの深さ
+        bmp.setImage(image); // イメージ
+
+        int fileSize = bmp.getFileHeaderSize() + bmp.getInfoHeaderSize();
+
+        if (!(colors == null || colors.isEmpty())) {
+            bmp.setColors(colors); // 色
+            int colorSize = 0;
+            for (byte[] c : bmp.getColors())
+                colorSize += c.length;
+            fileSize += colorSize;
+        }
+
+        int imageSize = 0;
+        for (byte[] i : image_8bit)
+            imageSize += i.length;
+
+        bmp.setOffset(fileSize);
+        fileSize += imageSize;
+
+        return bmp;
     }
 }
