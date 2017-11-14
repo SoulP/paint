@@ -10,7 +10,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP - OS/2 V1</b><br>
- * date: 2017/10/18 last_date: 2017/10/27<br>
+ * date: 2017/10/18 last_date: 2017/11/14<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -339,7 +339,7 @@ public class BMP_V1 implements BMPable {
      *            青 0 - 255
      */
     public void addColor(int r, int g, int b) {
-        byte[] color = { (byte) b, (byte) g, (byte) r, };
+        byte[] color = { (byte) b, (byte) g, (byte) r };
         colors.add(color);
     }
 
