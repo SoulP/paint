@@ -18,6 +18,7 @@ public abstract class Basic extends Settings {
 
     // カラーマスク
     public static byte[][]     r5g5b5Mask;
+    public static byte[][]     bitFields32bitMask;
 
     static {
         image_1bit = new ArrayList<>();
@@ -216,6 +217,28 @@ public abstract class Basic extends Settings {
                 { 0x00, 0x00, 0x7c, 0x00 },         // 赤マスク
                 { 0x00, 0x00, 0x03, (byte) 0xe0 },  // 緑マスク
                 { 0x00, 0x00, 0x00, 0x1f }          // 青マスク
+        };
+        // @formatter:on
+    }
+
+    static {
+        // @formatter:off
+        // ビットフィールドのカラーマスク
+        /*
+         * ビッグエンディアンだが、緑マスクの0x000FF000の場合、
+         * ビッグエンディアンからリトルエンディアン変換でバイト毎として 0f f0 と分かれる為、
+         * リトルエンディアンに変換される時は、 f0 0f となってしまい、
+         * 正しくない緑マスクに設定されので、予め、その一部だけリトルエンディアンにしておくと良い。
+         * 
+         * 要するに、バイト単位はビッグエンディアン、ビット単位はリトルエンディアンとして値を入れると良い
+         * 【例え】
+         * 0xff000000 → 0xff000000
+         * 0x0ff00000 → 0xf00f0000 と カラーマスク値を入れる
+         */
+        bitFields32bitMask = new byte[][] {
+                { (byte) 0xff, 0x00, 0x00, 0x00 },  // 赤マスク
+                { 0x00, (byte) 0xf0, 0x0f,  0x00 }, // 緑マスク
+                { 0x00, 0x00, 0x00, (byte) 0xff }   // 青マスク
         };
         // @formatter:on
     }

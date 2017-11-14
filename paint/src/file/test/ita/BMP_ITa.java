@@ -269,27 +269,7 @@ public class BMP_ITa extends Basic {
         int width = 3;
         int height = 3;
 
-        // @formatter:off
-        // ビットフィールドのカラーマスク
-        /*
-         * ビッグエンディアンだが、緑マスクの0x000FF000の場合、
-         * ビッグエンディアンからリトルエンディアン変換でバイト毎として 0f f0 と分かれる為、
-         * リトルエンディアンに変換される時は、 f0 0f となってしまい、
-         * 正しくない緑マスクに設定されので、予め、その一部だけリトルエンディアンにしておくと良い。
-         * 
-         * 要するに、バイト単位はビッグエンディアン、ビット単位はリトルエンディアンとして値を入れると良い
-         * 【例え】
-         * 0xff000000 → 0xff000000
-         * 0x0ff00000 → 0xf00f0000 と カラーマスク値を入れる
-         */
-        byte[][] colormask = {
-                { (byte) 0xff, 0x00, 0x00, 0x00 },  // 赤マスク
-                { 0x00, (byte) 0xf0, 0x0f,  0x00 }, // 緑マスク
-                { 0x00, 0x00, 0x00, (byte) 0xff }   // 青マスク
-        };
-        // @formatter:on
-
-        byte[] bitfields = Tools.bytes2D2bytes1D(colormask); // ビットフィールド
+        byte[] bitfields = Tools.bytes2D2bytes1D(bitFields32bitMask); // ビットフィールド
 
         BMP bmp = new BMP();
         bmp.setWidth(width);// 幅

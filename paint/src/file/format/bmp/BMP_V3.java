@@ -10,7 +10,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP Windows V3</b><br>
- * date: 2017/10/12 last_date: 2017/10/25<br>
+ * date: 2017/10/12 last_date: 2017/11/14<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>
@@ -686,6 +686,7 @@ public class BMP_V3 extends BMP_V1 {
         StringBuffer buff = new StringBuffer(toStr());
         buff.append(STR_NEW_LINE);
         buff.append(STR_BITFIELDS);
+        buff.append(STR_NEW_LINE);
         if (!isEmptyBitFields()) {
             buff.append(STR_BITFIELDS_RED);
             buff.append(STR_0X);
@@ -694,15 +695,18 @@ public class BMP_V3 extends BMP_V1 {
                 buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
             buff.append(STR_NEW_LINE);
             buff.append(STR_BITFIELDS_GREEN);
+            buff.append(STR_0X);
             for (int i = 4; i < 8; i++)
                 buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
             buff.append(STR_NEW_LINE);
             buff.append(STR_BITFIELDS_BLUE);
+            buff.append(STR_0X);
             for (int i = 8; i < 12; i++)
                 buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
             if (getCompression() == 6) {
                 buff.append(STR_NEW_LINE);
                 buff.append(STR_BITFIELDS_ALPHA);
+                buff.append(STR_0X);
                 for (int i = 12; i < 16; i++)
                     buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
             }
