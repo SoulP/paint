@@ -8,7 +8,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import file.Tools;
 import file.io.BMP;
@@ -20,6 +22,7 @@ import file.test.Settings;
  * 
  * @author ソウルP
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BMP_ITa extends Settings {
     public final String addr = BASIC_ADDR + "BMP\\BMP_ITa\\";
 
