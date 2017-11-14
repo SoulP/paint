@@ -35,7 +35,7 @@ public class BMP_V1_UT extends Basic {
 
     /**
      * 出力<br>
-     * 8ビット<br>
+     * 8bit<br>
      * 成功テスト<br>
      * <p>
      * 8ビット以下の場合、OS/2しか対応されていない。<br>
