@@ -16,7 +16,7 @@ import file.test.Settings;
 
 /**
  * <b>BMPの内部結合テスト</b><br>
- * date: 2017/10/13 last_date 2017/10/27
+ * date: 2017/10/13 last_date 2017/11/14
  * 
  * @author ソウルP
  */
