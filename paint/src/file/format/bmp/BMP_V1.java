@@ -457,7 +457,7 @@ public class BMP_V1 implements BMPable {
         int imageSize = 0;
         for (byte[] b : image)
             imageSize += b.length;
-        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V1 + colors.size() * 4 + imageSize);
+        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V1 + colors.size() * 3 + imageSize);
         buff.put(getBitmapHeader());
         colors.forEach(color -> {
             buff.put(color);
