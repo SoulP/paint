@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +56,84 @@ public class BMP_V5_UT extends Basic {
         bmp = setupBmpV5(width, height, bitCount, colors, image);
 
         out = new FileOutputStream(addr + "test000_1bit.bmp");
+        out.write(bmp.get());
+        out.flush();
+        out.close();
+    }
+
+    /**
+     * 出力<br>
+     * 1bit<br>
+     * GAP1<br>
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test001_1bit_output() throws IOException {
+        int width = 3;
+        int height = 3;
+        short bitCount = 1;
+        List<byte[]> colors = new ArrayList<>();
+        colors.add(new byte[] { (byte) 0xff, 0x00, (byte) 0xff, 0x00 }); // 紫色
+        colors.add(new byte[] { (byte) 0xff, (byte) 0xff, 0x00, 0x00 }); // アクア色
+        List<byte[]> image = image_1bit;
+
+        bmp = setupBmpV5(width, height, bitCount, colors, image, "生麦生米生卵");
+
+        out = new FileOutputStream(addr + "test001_1bit_GAP1.bmp");
+        out.write(bmp.get());
+        out.flush();
+        out.close();
+    }
+
+    /**
+     * 出力<br>
+     * 1bit<br>
+     * GAP2<br>
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test002_1bit_output() throws IOException {
+        int width = 3;
+        int height = 3;
+        short bitCount = 1;
+        List<byte[]> colors = new ArrayList<>();
+        colors.add(new byte[] { (byte) 0xff, 0x00, (byte) 0xff, 0x00 }); // 紫色
+        colors.add(new byte[] { (byte) 0xff, (byte) 0xff, 0x00, 0x00 }); // アクア色
+        List<byte[]> image = image_1bit;
+
+        bmp = setupBmpV5(width, height, bitCount, colors, image, null, "HelloWorld");
+
+        out = new FileOutputStream(addr + "test002_1bit_GAP2.bmp");
+        out.write(bmp.get());
+        out.flush();
+        out.close();
+    }
+
+    /**
+     * 出力<br>
+     * 1bit<br>
+     * GAP1と2<br>
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test003_1bit_output() throws IOException {
+        int width = 3;
+        int height = 3;
+        short bitCount = 1;
+        List<byte[]> colors = new ArrayList<>();
+        colors.add(new byte[] { (byte) 0xff, 0x00, (byte) 0xff, 0x00 }); // 紫色
+        colors.add(new byte[] { (byte) 0xff, (byte) 0xff, 0x00, 0x00 }); // アクア色
+        List<byte[]> image = image_1bit;
+
+        bmp = setupBmpV5(width, height, bitCount, colors, image, "やっぱEclipseは最高だぜ！", "Java");
+
+        out = new FileOutputStream(addr + "test003_1bit_GAP.bmp");
         out.write(bmp.get());
         out.flush();
         out.close();
@@ -319,6 +398,66 @@ public class BMP_V5_UT extends Basic {
 
     /**
      * 入力<br>
+     * 1bit<br>
+     * GAP1<br>
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test101_1bit_input() throws IOException {
+        in = new FileInputStream(addr + "test001_1bit_GAP1.bmp");
+        byte[] data = new byte[in.available()];
+        in.read(data);
+        in.close();
+
+        bmp = new BMP_V5(data);
+
+        System.out.println(bmp);
+    }
+
+    /**
+     * 入力<br>
+     * 1bit<br>
+     * GAP2<br>
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test102_1bit_input() throws IOException {
+        in = new FileInputStream(addr + "test002_1bit_GAP2.bmp");
+        byte[] data = new byte[in.available()];
+        in.read(data);
+        in.close();
+
+        bmp = new BMP_V5(data);
+
+        System.out.println(bmp);
+    }
+
+    /**
+     * 入力<br>
+     * 1bit<br>
+     * GAP1と2<br>
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test103_1bit_input() throws IOException {
+        in = new FileInputStream(addr + "test003_1bit_GAP.bmp");
+        byte[] data = new byte[in.available()];
+        in.read(data);
+        in.close();
+
+        bmp = new BMP_V5(data);
+
+        System.out.println(bmp);
+    }
+
+    /**
+     * 入力<br>
      * 4bit<br>
      * 成功テスト
      * 
@@ -491,7 +630,8 @@ public class BMP_V5_UT extends Basic {
         System.out.println(bmp);
     }
 
-    private BMP_V5 setupBmpV5(int width, int height, short bitCount, List<byte[]> colors, List<byte[]> image) {
+    private BMP_V5 setupBmpV5(int width, int height, short bitCount, List<byte[]> colors, List<byte[]> image,
+            String... gap) throws UnsupportedEncodingException {
         bmp = new BMP_V5();
 
         bmp.setWidth(width); // 幅
@@ -503,11 +643,21 @@ public class BMP_V5_UT extends Basic {
         for (byte[] i : image)
             imageSize += i.length;
 
+        if (gap.length != 0) {
+            if (!(gap[0] == null || gap[0].isEmpty() || gap[0].equals(""))) {
+                bmp.setGap1(gap[0].getBytes("UTF-8"));
+            }
+            if (gap.length > 1) {
+                if (!(gap[1] == null || gap[1].isEmpty() || gap[1].equals(""))) {
+                    bmp.setGap2(gap[1].getBytes("UTF-8"));
+                }
+            }
+        }
         if (bitCount <= 8 && colors != null) bmp.setColors(colors);
         int optSize = (bitCount <= 8) ? colors.size() * 4 : 0;
         int gap1Size = (!bmp.isEmptyGap1()) ? bmp.getGap1().length : 0;
         int gap2Size = (!bmp.isEmptyGap2()) ? bmp.getGap2().length : 0;
-        bmp.setProfileSize((bmp.isEmptyProfile()) ? bmp.getProfile().length : 0);
+        //bmp.setProfileSize((bmp.isEmptyProfile()) ? bmp.getProfile().length : 0);
         bmp.setOffset(BMPable.FILE_HEADER_SIZE + bmp.getInfoHeaderSize() + optSize + gap1Size);
         bmp.setProfileData(bmp.getOffset() + imageSize + gap2Size - BMPable.FILE_HEADER_SIZE);
         bmp.setFileSize(bmp.getOffset() + imageSize + gap2Size + bmp.getProfile().length);

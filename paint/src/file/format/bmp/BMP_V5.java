@@ -555,6 +555,7 @@ public class BMP_V5 extends BMP_V4 {
                 if (++i % 8 == 0) buff.append(STR_NEW_LINE);
             }
         }
+        buff.append(STR_NEW_LINE);
 
         return buff.toString();
     }
