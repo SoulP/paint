@@ -334,7 +334,7 @@ public class BMP_V2_UT extends Basic {
         }
 
         int imageSize = 0;
-        for (byte[] i : image_8bit)
+        for (byte[] i : image)
             imageSize += i.length;
 
         bmp.setOffset(fileSize);

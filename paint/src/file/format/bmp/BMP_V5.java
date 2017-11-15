@@ -392,34 +392,46 @@ public class BMP_V5 extends BMP_V4 {
         setInfoHeader(infoHeader);
         int bitcount = getBitCount();
         int compression = getCompression();
+        gap1 = null;
         if (bitcount <= 8) {
             int endColorOffset = endHeaderOffset + getClrUsed() * 4;
             byte[] bColors = Arrays.copyOfRange(data, endHeaderOffset, endColorOffset);
             setColors(bColors);
-            gap1 = Arrays.copyOfRange(data, endColorOffset, getOffset());
+            if (endColorOffset < getOffset()) {
+                gap1 = Arrays.copyOfRange(data, endColorOffset, getOffset());
+            }
         } else {
             clearColors();
             if ((bitcount == 16 || bitcount == 32)) {
                 if (compression == 3) {
                     int endBitFieldsOffset = endHeaderOffset + 12;
                     biBitFields = Arrays.copyOfRange(data, endHeaderOffset, endBitFieldsOffset);
-                    gap1 = Arrays.copyOfRange(data, endBitFieldsOffset, getOffset());
+                    if (endBitFieldsOffset < getOffset()) {
+                        gap1 = Arrays.copyOfRange(data, endBitFieldsOffset, getOffset());
+                    }
                 } else if (compression == 6) {
                     int endBitFieldsOffset = endHeaderOffset + 16;
                     biBitFields = Arrays.copyOfRange(data, endHeaderOffset, endBitFieldsOffset);
-                    gap1 = Arrays.copyOfRange(data, endBitFieldsOffset, getOffset());
+                    if (endBitFieldsOffset < getOffset()) {
+                        gap1 = Arrays.copyOfRange(data, endBitFieldsOffset, getOffset());
+                    }
                 } else {
                     biBitFields = null;
-                    gap1 = Arrays.copyOfRange(data, endHeaderOffset, getOffset());
+                    if (endHeaderOffset < getOffset()) {
+                        gap1 = Arrays.copyOfRange(data, endHeaderOffset, getOffset());
+                    }
                 }
             } else {
                 biBitFields = null;
-                gap1 = Arrays.copyOfRange(data, endHeaderOffset, getOffset());
+                if (endHeaderOffset < getOffset()) {
+                    gap1 = Arrays.copyOfRange(data, endHeaderOffset, getOffset());
+                }
             }
         }
         int imageSize = getSizeImage();
         byte[] imgData;
         int profileOffset = FILE_HEADER_SIZE + getProfileData();
+        gap2 = null;
         if (imageSize == 0) {
             imgData = Arrays.copyOfRange(data, getOffset(), profileOffset);
         } else {
@@ -427,8 +439,6 @@ public class BMP_V5 extends BMP_V4 {
             imgData = Arrays.copyOfRange(data, getOffset(), endImageOffset);
             if (endImageOffset < profileOffset) {
                 gap2 = Arrays.copyOfRange(data, endImageOffset, profileOffset);
-            } else {
-                gap2 = null;
             }
         }
         setImage(imgData);
@@ -479,8 +489,6 @@ public class BMP_V5 extends BMP_V4 {
             colors.forEach(color -> {
                 buff.put(color);
             });
-        } else if ((compression == 3 || compression == 6) && (bitcount == 16 || bitcount == 32)) {
-            if (!isEmptyBitFields()) buff.put(biBitFields);
         }
 
         if (!isEmptyGap1()) buff.put(gap1);
@@ -515,30 +523,6 @@ public class BMP_V5 extends BMP_V4 {
     @Override
     public String toString() {
         StringBuffer buff = new StringBuffer(toStr());
-        buff.append(STR_NEW_LINE);
-        buff.append(STR_BITFIELDS);
-        if (!isEmptyBitFields()) {
-            buff.append(STR_BITFIELDS_RED);
-            buff.append(STR_0X);
-            byte[] bF = Tools.endian(biBitFields);
-            for (int i = 0; i < 4; i++)
-                buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
-            buff.append(STR_NEW_LINE);
-            buff.append(STR_BITFIELDS_GREEN);
-            for (int i = 4; i < 8; i++)
-                buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
-            buff.append(STR_NEW_LINE);
-            buff.append(STR_BITFIELDS_BLUE);
-            for (int i = 8; i < 12; i++)
-                buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
-            if (getCompression() == 6) {
-                buff.append(STR_NEW_LINE);
-                buff.append(STR_BITFIELDS_ALPHA);
-                for (int i = 12; i < 16; i++)
-                    buff.append(String.format(STR_16BIT_FORMAT_NO_SPACE, bF[i]));
-            }
-        }
-        buff.append(STR_NEW_LINE);
         buff.append(STR_NEW_LINE);
         buff.append(toStrColorImage());
         buff.append(STR_NEW_LINE);

@@ -310,6 +310,15 @@ public class BMP_V4 extends BMP_V3 {
     }
 
     /**
+     * @deprecated
+     */
+    @Deprecated
+    @Override
+    public boolean isEmptyBitFields() {
+        return true;
+    }
+
+    /**
      * @return 赤成分のカラーマスク
      */
     public byte[] getRedMask() {

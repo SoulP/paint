@@ -383,7 +383,7 @@ public class BMP_V5_UT extends Basic {
      * @throws IOException
      */
     @Test
-    public void test122_8bit_input() throws IOException {
+    public void test121_8bit_input() throws IOException {
         in = new FileInputStream(addr + "test021_8bit_BI_RLE8.bmp");
         byte[] data = new byte[in.available()];
         in.read(data);
@@ -500,9 +500,10 @@ public class BMP_V5_UT extends Basic {
         bmp.setImage(image); // イメージ
 
         int imageSize = 0;
-        for (byte[] i : image_8bit)
+        for (byte[] i : image)
             imageSize += i.length;
 
+        if (bitCount <= 8 && colors != null) bmp.setColors(colors);
         int optSize = (bitCount <= 8) ? colors.size() * 4 : 0;
         int gap1Size = (!bmp.isEmptyGap1()) ? bmp.getGap1().length : 0;
         int gap2Size = (!bmp.isEmptyGap2()) ? bmp.getGap2().length : 0;
@@ -510,6 +511,7 @@ public class BMP_V5_UT extends Basic {
         bmp.setOffset(BMPable.FILE_HEADER_SIZE + bmp.getInfoHeaderSize() + optSize + gap1Size);
         bmp.setProfileData(bmp.getOffset() + imageSize + gap2Size - BMPable.FILE_HEADER_SIZE);
         bmp.setFileSize(bmp.getOffset() + imageSize + gap2Size + bmp.getProfile().length);
+        bmp.setSizeImage(imageSize);
 
         return bmp;
     }
