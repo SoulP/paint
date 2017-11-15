@@ -1,4 +1,4 @@
-package file.test.ut;
+package file.test.ut.format.bmp;
 
 import java.io.File;
 import java.io.FileInputStream;

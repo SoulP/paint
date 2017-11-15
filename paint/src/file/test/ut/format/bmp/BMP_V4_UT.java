@@ -1,4 +1,4 @@
-package file.test.ut;
+package file.test.ut.format.bmp;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,21 +13,21 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import file.Tools;
-import file.format.bmp.BMP_V3;
+import file.format.bmp.BMP_V4;
 import file.test.Basic;
 
 /**
- * <b>BMP V3 の単体テスト</b><br>
+ * <b>BMP V4 の単体テスト</b><br>
  * date: 2017/10/27 last_date 2017/11/15
  * 
  * @author ソウルP
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class BMP_V3_UT extends Basic {
-    final String     addr = BASIC_ADDR + "BMP\\BMP_V3_UT\\";
+public class BMP_V4_UT extends Basic {
+    final String     addr = BASIC_ADDR + "BMP\\BMP_V4_UT\\";
     FileOutputStream out;
     FileInputStream  in;
-    BMP_V3           bmp;
+    BMP_V4           bmp;
 
     @Before
     public void before() {
@@ -51,7 +51,7 @@ public class BMP_V3_UT extends Basic {
         colors.add(new byte[] { (byte) 0xff, (byte) 0xff, 0x00, 0x00 }); // アクア色
         List<byte[]> image = image_1bit;
 
-        bmp = setupBmpV3(width, height, bitCount, colors, null, image);
+        bmp = setupBmpV4(width, height, bitCount, colors, image);
 
         out = new FileOutputStream(addr + "test000_1bit.bmp");
         out.write(bmp.get());
@@ -76,7 +76,7 @@ public class BMP_V3_UT extends Basic {
         colors.add(new byte[] { (byte) 0xff, (byte) 0xff, 0x00, 0x00 }); // アクア色
         List<byte[]> image = image_4bit;
 
-        bmp = setupBmpV3(width, height, bitCount, colors, null, image);
+        bmp = setupBmpV4(width, height, bitCount, colors, image);
 
         out = new FileOutputStream(addr + "test010_4bit.bmp");
         out.write(bmp.get());
@@ -101,12 +101,12 @@ public class BMP_V3_UT extends Basic {
         for (byte[] img : image_4bit_BI_RLE4)
             image.add(img);
 
-        bmp = new BMP_V3();
+        bmp = new BMP_V4();
         for (int i = 255; i >= 21; i -= 18) {
             bmp.addColor(0, i, i); // アクア色
         }
 
-        bmp = setupBmpV3(width, height, bitCount, bmp.getColors(), null, image);
+        bmp = setupBmpV4(width, height, bitCount, bmp.getColors(), image);
         bmp.setCompression(2);
 
         out = new FileOutputStream(addr + "test011_4bit_BI_RLE4.bmp");
@@ -132,7 +132,7 @@ public class BMP_V3_UT extends Basic {
         colors.add(new byte[] { (byte) 0xff, (byte) 0xff, 0x00, 0x00 }); // アクア色
         List<byte[]> image = image_8bit;
 
-        bmp = setupBmpV3(width, height, bitCount, colors, null, image);
+        bmp = setupBmpV4(width, height, bitCount, colors, image);
 
         out = new FileOutputStream(addr + "test020_8bit.bmp");
         out.write(bmp.get());
@@ -157,7 +157,7 @@ public class BMP_V3_UT extends Basic {
         for (byte[] img : image_8bit_BI_RLE8)
             image.add(img);
 
-        bmp = new BMP_V3();
+        bmp = new BMP_V4();
         for (int i = 255; i >= 27; i -= 19) {
             bmp.addColor(i, 0, 0); // 赤色
             bmp.addColor(0, i, 0); // 緑色
@@ -168,7 +168,7 @@ public class BMP_V3_UT extends Basic {
         bmp.addColor(0, 0, 0); // 黒色
         bmp.addColor(255, 255, 255); // 白色
 
-        bmp = setupBmpV3(width, height, bitCount, bmp.getColors(), null, image);
+        bmp = setupBmpV4(width, height, bitCount, bmp.getColors(), image);
         bmp.setCompression(1);
 
         out = new FileOutputStream(addr + "test021_8bit_BI_RLE8.bmp");
@@ -191,7 +191,7 @@ public class BMP_V3_UT extends Basic {
         short bitCount = 16;
         List<byte[]> image = image_16bit;
 
-        bmp = setupBmpV3(width, height, bitCount, null, null, image);
+        bmp = setupBmpV4(width, height, bitCount, null, image);
 
         out = new FileOutputStream(addr + "test030_16bit.bmp");
         out.write(bmp.get());
@@ -214,8 +214,11 @@ public class BMP_V3_UT extends Basic {
         short bitCount = 16;
         List<byte[]> image = image_16bit_BitFields;
 
-        bmp = setupBmpV3(width, height, bitCount, null, r5g5b5MaskV3, image);
+        bmp = setupBmpV4(width, height, bitCount, null, image);
         bmp.setCompression(3);
+        bmp.setRedMask(Tools.endian(r5g5b5MaskV4[0]));
+        bmp.setGreenMask(Tools.endian(r5g5b5MaskV4[1]));
+        bmp.setBlueMask(Tools.endian(r5g5b5MaskV4[2]));
 
         out = new FileOutputStream(addr + "test031_16bit_BitFields.bmp");
         out.write(bmp.get());
@@ -237,7 +240,7 @@ public class BMP_V3_UT extends Basic {
         short bitCount = 24;
         List<byte[]> image = image_24bit;
 
-        bmp = setupBmpV3(width, height, bitCount, null, null, image);
+        bmp = setupBmpV4(width, height, bitCount, null, image);
 
         out = new FileOutputStream(addr + "test040_24bit.bmp");
         out.write(bmp.get());
@@ -259,7 +262,7 @@ public class BMP_V3_UT extends Basic {
         short bitCount = 32;
         List<byte[]> image = image_32bit;
 
-        bmp = setupBmpV3(width, height, bitCount, null, null, image);
+        bmp = setupBmpV4(width, height, bitCount, null, image);
 
         out = new FileOutputStream(addr + "test050_32bit.bmp");
         out.write(bmp.get());
@@ -282,8 +285,11 @@ public class BMP_V3_UT extends Basic {
         short bitCount = 32;
         List<byte[]> image = image_32bit_BitFields;
 
-        bmp = setupBmpV3(width, height, bitCount, null, bitFields32bitMaskV3, image);
+        bmp = setupBmpV4(width, height, bitCount, null, image);
         bmp.setCompression(3);
+        bmp.setRedMask(bitFields32bitMaskV4[0]);
+        bmp.setGreenMask(bitFields32bitMaskV4[1]);
+        bmp.setBlueMask(bitFields32bitMaskV4[2]);
 
         out = new FileOutputStream(addr + "test051_32bit_BitFields.bmp");
         out.write(bmp.get());
@@ -305,7 +311,7 @@ public class BMP_V3_UT extends Basic {
         in.read(data);
         in.close();
 
-        bmp = new BMP_V3(data);
+        bmp = new BMP_V4(data);
 
         System.out.println(bmp);
     }
@@ -324,7 +330,7 @@ public class BMP_V3_UT extends Basic {
         in.read(data);
         in.close();
 
-        bmp = new BMP_V3(data);
+        bmp = new BMP_V4(data);
 
         System.out.println(bmp);
     }
@@ -344,7 +350,7 @@ public class BMP_V3_UT extends Basic {
         in.read(data);
         in.close();
 
-        bmp = new BMP_V3(data);
+        bmp = new BMP_V4(data);
 
         System.out.println(bmp);
     }
@@ -363,7 +369,7 @@ public class BMP_V3_UT extends Basic {
         in.read(data);
         in.close();
 
-        bmp = new BMP_V3(data);
+        bmp = new BMP_V4(data);
 
         System.out.println(bmp);
     }
@@ -382,7 +388,7 @@ public class BMP_V3_UT extends Basic {
         in.read(data);
         in.close();
 
-        bmp = new BMP_V3(data);
+        bmp = new BMP_V4(data);
 
         System.out.println(bmp);
     }
@@ -401,7 +407,7 @@ public class BMP_V3_UT extends Basic {
         in.read(data);
         in.close();
 
-        bmp = new BMP_V3(data);
+        bmp = new BMP_V4(data);
 
         System.out.println(bmp);
     }
@@ -421,7 +427,7 @@ public class BMP_V3_UT extends Basic {
         in.read(data);
         in.close();
 
-        bmp = new BMP_V3(data);
+        bmp = new BMP_V4(data);
 
         System.out.println(bmp);
     }
@@ -440,7 +446,7 @@ public class BMP_V3_UT extends Basic {
         in.read(data);
         in.close();
 
-        bmp = new BMP_V3(data);
+        bmp = new BMP_V4(data);
 
         System.out.println(bmp);
     }
@@ -459,7 +465,7 @@ public class BMP_V3_UT extends Basic {
         in.read(data);
         in.close();
 
-        bmp = new BMP_V3(data);
+        bmp = new BMP_V4(data);
 
         System.out.println(bmp);
     }
@@ -479,14 +485,13 @@ public class BMP_V3_UT extends Basic {
         in.read(data);
         in.close();
 
-        bmp = new BMP_V3(data);
+        bmp = new BMP_V4(data);
 
         System.out.println(bmp);
     }
 
-    private BMP_V3 setupBmpV3(int width, int height, short bitCount, List<byte[]> colors, byte[][] bitfields,
-            List<byte[]> image) {
-        bmp = new BMP_V3();
+    private BMP_V4 setupBmpV4(int width, int height, short bitCount, List<byte[]> colors, List<byte[]> image) {
+        bmp = new BMP_V4();
 
         bmp.setWidth(width); // 幅
         bmp.setHeight(height); // 高さ
@@ -503,12 +508,6 @@ public class BMP_V3_UT extends Basic {
             fileSize += colorSize;
         }
 
-        if (bitfields != null) {
-            byte[] temp = Tools.bytes2D2bytes1D(bitfields);
-            bmp.setBitFields(temp);
-            fileSize += temp.length;
-        }
-
         int imageSize = 0;
         for (byte[] i : image)
             imageSize += i.length;
@@ -516,6 +515,7 @@ public class BMP_V3_UT extends Basic {
         bmp.setOffset(fileSize);
         fileSize += imageSize;
         bmp.setFileSize(fileSize);
+        bmp.setSizeImage(imageSize);
 
         return bmp;
     }
