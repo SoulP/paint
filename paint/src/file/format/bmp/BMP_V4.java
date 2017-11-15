@@ -9,7 +9,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP Windows V4</b><br>
- * date: 2017/10/18 last_date: 2017/11/14<br>
+ * date: 2017/10/18 last_date: 2017/11/15<br>
  * <style> table, th, td { border: 1px solid; } table { border-collapse:
  * collapse; } </style>
  * <table>

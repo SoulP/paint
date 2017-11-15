@@ -18,7 +18,7 @@ import file.test.Basic;
 
 /**
  * <b>BMP V3 の単体テスト</b><br>
- * date: 2017/10/27 last_date 2017/10/27
+ * date: 2017/10/27 last_date 2017/11/15
  * 
  * @author ソウルP
  */
