@@ -14,7 +14,8 @@ import org.junit.runners.MethodSorters;
 import file.Tools;
 
 /**
- * Toolsの単体テスト
+ * Toolsの単体テスト<br>
+ * date: 2017/11/15 last_date: 2017/11/15
  * 
  * @author ソウルP
  *
