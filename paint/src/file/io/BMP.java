@@ -19,7 +19,7 @@ import file.format.bmp.BMPable;
 
 /**
  * <b>BMP入出力</b><br>
- * date: 2017/10/12 last_date: 2017/10/27
+ * date: 2017/10/12 last_date: 2017/11/15
  * 
  * @author ソウルP
  * @version 1.0 2017/10/12 BMP作成
@@ -967,13 +967,7 @@ public class BMP {
         int fileSize = in.available();
         byte[] data = new byte[fileSize];
         in.read(data);
-        if (in != null) {
-            try {
-                in.close();
-            } catch (IOException e) {
-                in = null;
-            }
-        }
+        in.close();
 
         int infoHeaderSize = Tools.bytes2int(Arrays.copyOfRange(data, 0x000E, 0x000E + 4));
         switch (infoHeaderSize) {
@@ -1137,13 +1131,7 @@ public class BMP {
         out = new FileOutputStream(file);
         out.write(bmp.get());
         out.flush();
-        if (out != null) {
-            try {
-                out.close();
-            } catch (IOException e) {
-                out = null;
-            }
-        }
+        out.close();
     }
 
     /**
