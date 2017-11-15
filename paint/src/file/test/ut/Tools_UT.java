@@ -1,6 +1,8 @@
 package file.test.ut;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -101,7 +103,7 @@ public class Tools_UT {
         byte[] before = { (byte) 0xd1, 0x22, (byte) 0x92, 0x41 };
         float after = 18.267f;
         float temp = Tools.bytes2float(before);
-        assertTrue(after == temp);
+        assertThat(after, is(temp));
     }
 
     /**
@@ -125,7 +127,7 @@ public class Tools_UT {
         byte[] before = { 0x64, 0x5d, (byte) 0xdc, 0x46, 0x6a, (byte) 0x91, (byte) 0xe4, 0x40 };
         double after = 42123.32115d;
         double temp = Tools.bytes2double(before);
-        assertTrue(after == temp);
+        assertThat(after, is(temp));
     }
 
     /**
