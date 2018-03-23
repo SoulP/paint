@@ -584,6 +584,9 @@ public class BMP {
      * @return ファイルヘッダと情報ヘッダの合計サイズ
      */
     public int getHeaderSize() {
+    	if(headerSize < (BMPable.FILE_HEADER_SIZE + BMPable.INFO_HEADER_SIZE_V2_MIN)) {
+    		headerSize = BMPable.FILE_HEADER_SIZE + infoHeaderSize;
+    	}
         return headerSize;
     }
 
@@ -1100,7 +1103,7 @@ public class BMP {
         int gap1Size = (!isEmptyGap1() && version >= 3) ? gap1.length : 0;
         int gap2Size = (!isEmptyGap2() && version >= 3) ? gap2.length : 0;
         profileSize = (isEmptyProfile() && version == 5) ? profile.length : 0;
-        imageOffset = BMPable.FILE_HEADER_SIZE + infoHeaderSize + optSize + gap1Size;
+        imageOffset = getHeaderSize() + optSize + gap1Size;
         profileOffset = imageOffset + imageSize + gap2Size - BMPable.FILE_HEADER_SIZE;
         fileSize = imageOffset + imageSize + gap2Size + profileSize;
 

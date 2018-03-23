@@ -401,7 +401,9 @@ public class BMP_V1 implements BMPable {
         setWidth((short) bmp.getWidth());
         setHeight((short) bmp.getHeight());
         setBitCount((short) bmp.getBitCount());
-        setColors(bmp.getColors());
+        bmp.getColors().forEach(color -> {
+        	addColor(color[0], color[1], color[2]);
+        });
         setImage(bmp.getImage());
     }
 
@@ -605,7 +607,7 @@ public class BMP_V1 implements BMPable {
         int imageSize = 0;
         for (byte[] b : image)
             imageSize += b.length;
-        int fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V1 + imageSize + colors.size() * 4;
+        int fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V1 + imageSize + colors.size() * 3;
         bfSize = Tools.int2bytes(fileSize);
     }
 }

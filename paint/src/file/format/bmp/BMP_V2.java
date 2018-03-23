@@ -570,6 +570,7 @@ public class BMP_V2 extends BMP_V3 {
         setHeaderSize(bmp.getHeaderSize());
         setHotspotX((short) bmp.getHotspotX());
         setHotspotY((short) bmp.getHotspotY());
+        setInfoHeaderSize(bmp.getInfoHeaderSize());
         setResolution((short) bmp.getResolution());
         setFormat((short) bmp.getFormat());
         setHalftone((short) bmp.getHaltone());
