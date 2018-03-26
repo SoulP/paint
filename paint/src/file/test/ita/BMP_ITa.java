@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import file.Tools;
-import file.format.bmp.BMPable;
 import file.io.BMP;
 import file.test.Basic;
 
@@ -761,6 +760,99 @@ public class BMP_ITa extends Basic {
 
 		System.out.println(bmp);
 		System.out.println();
+	}
+
+	/**
+	 * バージョン2 入出力<br>
+	 * 成功テスト
+	 */
+	@Test
+	public void test600() throws IOException {
+		String file = addr + "java_bmpV2.bmp";
+
+		// イメージ情報
+		int width = 3;
+		int height = 3;
+
+		BMP bmp = new BMP(2);
+		bmp.setInfoHeaderSize(40);
+		bmp.setWidth(width);// 幅
+		bmp.setHeight(height); // 高さ
+		bmp.setBitCount(16); // ビットの深さ
+		bmp.setImage(image_16bit); // イメージ
+
+		bmp.output(file);// 出力
+
+		bmp.setInfoHeaderSize(100);
+
+		bmp.output(file);// 出力
+
+		bmp = new BMP(file);// 入力
+		System.out.println(bmp);
+	}
+
+	/**
+	 * 出力失敗テスト
+	 */
+	@Test(expected = IOException.class)
+	public void test800_failed() throws IOException {
+		String file = addr + "test800_failed.bmp";
+
+		// イメージ情報
+		int width = 3;
+		int height = 3;
+
+		BMP bmp = new BMP(5);
+		bmp.setWidth(width);// 幅
+		bmp.setHeight(height); // 高さ
+		bmp.setBitCount(16); // ビットの深さ
+		bmp.setImage(image_16bit); // イメージ
+
+		bmp.output(file, 8);// 出力
+	}
+
+	/**
+	 * 入力失敗テスト<br>
+	 * 空ファイル必須
+	 */
+	@Test(expected = IOException.class)
+	public void test801_failed() throws IOException {
+		String file = addr + "test801_failed.bmp";
+
+		new BMP(file);
+	}
+
+	/**
+	 * 入力失敗テスト<br>
+	 * 存在しないファイル
+	 */
+	@Test(expected = IOException.class)
+	public void test802_failed() throws IOException {
+		String file = addr + "test802_failed.bmp";
+
+		new BMP(file);
+	}
+
+	/**
+	 * 入力失敗テスト<br>
+	 * 破損したファイル（情報ヘッダサイズ不正）必要
+	 */
+	@Test(expected = IOException.class)
+	public void test803_failed() throws IOException {
+		String file = addr + "test803_failed.bmp";
+
+		new BMP(file);
+	}
+
+	/**
+	 * 入力失敗テスト<br>
+	 * 破損したファイル（情報ヘッダサイズ不正）必要
+	 */
+	@Test(expected = IOException.class)
+	public void test804_failed() throws IOException {
+		String file = addr + "test804_failed.bmp";
+
+		new BMP(file);
 	}
 
 	/**
