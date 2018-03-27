@@ -11,99 +11,84 @@ import file.io.BMP;
 /**
  * <b>BMP - OS/2 V1</b><br>
  * date: 2017/10/18 last_date: 2018/03/27<br>
- * <style> table, th, td { border: 1px solid; } table { border-collapse:
- * collapse; } </style>
- * <table>
- * <caption>ファイルヘッダ</caption>
- * <tr>
- * <th>オフセット</th>
- * <th>サイズ</th>
- * <th>格納する情報</th>
- * <th>値・備考</th>
- * <th>変数</th>
- * </tr>
- * <tr>
- * <td>0x0000</td>
- * <td>2 バイト</td>
- * <td>ファイルタイプ</td>
- * <td>常にBM (0x42, 0x4d)</td>
- * <td>bfType</td>
- * </tr>
- * <tr>
- * <td>0x0002</td>
- * <td>4 バイト</td>
- * <td>ファイルサイズ</td>
- * <td>ビットマップファイルのサイズを格納する（単位はバイト）</td>
- * <td>bfSize</td>
- * </tr>
- * <tr>
- * <td>0x0006</td>
- * <td>2 バイト</td>
- * <td>予約領域1</td>
- * <td>常に0</td>
- * <td>BF_RESERVED_1</td>
- * </tr>
- * <tr>
- * <td>0x0008</td>
- * <td>2 バイト</td>
- * <td>予約領域2</td>
- * <td>常に0</td>
- * <td>BF_RESERVED_2</td>
- * </tr>
- * <tr>
- * <td>0x000A</td>
- * <td>4 バイト</td>
- * <td>オフセット</td>
- * <td>ファイルヘッダの先頭アドレスからビットマップデータの先頭アドレスまでのオフセット（単位はバイト）</td>
- * <td>bfOffBits</td>
- * </tr>
- * </table>
- * <br>
- * <table>
- * <caption>情報ヘッダ</caption>
- * <tr>
- * <th>オフセット</th>
- * <th>サイズ</th>
- * <th>格納する情報</th>
- * <th>値・備考</th>
- * <th>変数</th>
- * </tr>
- * <tr>
- * <td>0x000E</td>
- * <td>4 バイト</td>
- * <td>ヘッダサイズ</td>
- * <td>12</td>
- * <td>bcSize</td>
- * </tr>
- * <tr>
- * <td>0x0012</td>
- * <td>2 バイト</td>
- * <td>ビットマップの横幅</td>
- * <td>単位はピクセル</td>
- * <td>bcWidth</td>
- * </tr>
- * <tr>
- * <td>0x0014</td>
- * <td>2 バイト</td>
- * <td>ビットマップの縦幅</td>
- * <td>単位はピクセル</td>
- * <td>bcHeight</td>
- * </tr>
- * <tr>
- * <td>0x0016</td>
- * <td>2 バイト</td>
- * <td>プレーン数</td>
- * <td>常に1</td>
- * <td>BC_PLANES</td>
- * </tr>
- * <tr>
- * <td>0x0018</td>
- * <td>2 バイト</td>
- * <td>1ピクセルあたりのビット数</td>
- * <td>1, 4, 8, 24</td>
- * <td>bcBitCount</td>
- * </tr>
- * </table>
+ * <dl>
+ * <h1>ファイルヘッダ</h1>
+ * 
+ * <dt>変数</dt>
+ * <dd>オフセット</dd>
+ * <dd>サイズ</dd>
+ * <dd>格納する情報</dd>
+ * <dd>値・備考</dd>
+ * 
+ * <dt>bfType</dt>
+ * <dd>0x0000</dd>
+ * <dd>2 バイト</dd>
+ * <dd>ファイルタイプ</dd>
+ * <dd>常にBM (0x42, 0x4d)</dd>
+ * 
+ * <dt>bfSize</dt>
+ * <dd>0x0002</dd>
+ * <dd>4 バイト</dd>
+ * <dd>ファイルサイズ</dd>
+ * <dd>ビットマップファイルのサイズを格納する（単位はバイト）</dd>
+ * 
+ * <dt>BF_RESERVED_1</dt>
+ * <dd>0x0006</dd>
+ * <dd>2 バイト</dd>
+ * <dd>予約領域1</dd>
+ * <dd>常に0</dd>
+ * 
+ * <dt>BF_RESERVED_2</dt>
+ * <dd>0x0008</dd>
+ * <dd>2 バイト</dd>
+ * <dd>予約領域2</dd>
+ * <dd>常に0</dd>
+ * 
+ * <dt>bfOffBits</dt>
+ * <dd>0x000A</dd>
+ * <dd>4 バイト</dd>
+ * <dd>オフセット</dd>
+ * <dd>ファイルヘッダの先頭アドレスからビットマップデータの先頭アドレスまでのオフセット（単位はバイト）</dd>
+ * </dl>
+ * <dl>
+ * <h1>情報ヘッダ</h1>
+ * 
+ * <dt>変数</dt>
+ * <dd>オフセット</dd>
+ * <dd>サイズ</dd>
+ * <dd>格納する情報</dd>
+ * <dd>値・備考</dd>
+ * 
+ * <dt>bcSize</dt>
+ * <dd>0x000E</dd>
+ * <dd>4 バイト</dd>
+ * <dd>ヘッダサイズ</dd>
+ * <dd>12</dd>
+ * 
+ * <dt>bcWidth</dt>
+ * <dd>0x0012</dd>
+ * <dd>2 バイト</dd>
+ * <dd>ビットマップの横幅</dd>
+ * <dd>単位はピクセル</dd>
+ * 
+ * <dt>bcHeight</dt>
+ * <dd>0x0014</dd>
+ * <dd>2 バイト</dd>
+ * <dd>ビットマップの縦幅</dd>
+ * <dd>単位はピクセル</dd>
+ * 
+ * <dt>BC_PLANES</dt>
+ * <dd>0x0016</dd>
+ * <dd>2 バイト</dd>
+ * <dd>プレーン数</dd>
+ * <dd>常に1</dd>
+ * 
+ * <dt>bcBitCount</dt>
+ * <dd>0x0018</dd>
+ * <dd>2 バイト</dd>
+ * <dd>1ピクセルあたりのビット数</dd>
+ * <dd>1, 4, 8, 24</dd>
+ * </dl>
  * 
  * @author ソウルP
  * @version 1.0 2017/10/18 BMP_V1作成

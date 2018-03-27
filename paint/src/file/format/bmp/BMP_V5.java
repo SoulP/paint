@@ -10,237 +10,202 @@ import file.io.BMP;
 /**
  * <b>BMP Windows V5</b><br>
  * date: 2017/10/19 last_date: 2018/03/27<br>
- * <style> table, th, td { border: 1px solid; } table { border-collapse:
- * collapse; } </style>
- * <table>
- * <caption>ファイルヘッダ</caption>
- * <tr>
- * <th>オフセット</th>
- * <th>サイズ</th>
- * <th>格納する情報</th>
- * <th>値・備考</th>
- * <th>変数</th>
- * </tr>
- * <tr>
- * <td>0x0000</td>
- * <td>2 バイト</td>
- * <td>ファイルタイプ</td>
- * <td>常にBM (0x42, 0x4d)</td>
- * <td>bfType</td>
- * </tr>
- * <tr>
- * <td>0x0002</td>
- * <td>4 バイト</td>
- * <td>ファイルサイズ</td>
- * <td>ビットマップファイルのサイズを格納する（単位はバイト）</td>
- * <td>bfSize</td>
- * </tr>
- * <tr>
- * <td>0x0006</td>
- * <td>2 バイト</td>
- * <td>予約領域1</td>
- * <td>常に0</td>
- * <td>BF_RESERVED_1</td>
- * </tr>
- * <tr>
- * <td>0x0008</td>
- * <td>2 バイト</td>
- * <td>予約領域2</td>
- * <td>常に0</td>
- * <td>BF_RESERVED_2</td>
- * </tr>
- * <tr>
- * <td>0x000A</td>
- * <td>4 バイト</td>
- * <td>オフセット</td>
- * <td>ファイルヘッダの先頭アドレスからビットマップデータの先頭アドレスまでのオフセット（単位はバイト）</td>
- * <td>bfOffBits</td>
- * </tr>
- * </table>
- * <br>
- * <table>
- * <caption>情報ヘッダ</caption>
- * <tr>
- * <th>オフセット</th>
- * <th>サイズ</th>
- * <th>格納する情報</th>
- * <th>値・備考</th>
- * <th>変数</th>
- * </tr>
- * <tr>
- * <td>0x000E</td>
- * <td>4 バイト</td>
- * <td>ヘッダサイズ</td>
- * <td>124</td>
- * <td>bcSize</td>
- * </tr>
- * <tr>
- * <td>0x0012</td>
- * <td>4 バイト</td>
- * <td>ビットマップの横幅</td>
- * <td>単位はピクセル</td>
- * <td>bcWidth</td>
- * </tr>
- * <tr>
- * <td>0x0016</td>
- * <td>4 バイト</td>
- * <td>ビットマップの縦幅</td>
- * <td>単位はピクセル</td>
- * <td>bcHeight</td>
- * </tr>
- * <tr>
- * <td>0x001A</td>
- * <td>2 バイト</td>
- * <td>プレーン数</td>
- * <td>常に1</td>
- * <td>BC_PLANES</td>
- * </tr>
- * <tr>
- * <td>0x001C</td>
- * <td>2 バイト</td>
- * <td>1ピクセルあたりのビット数</td>
- * <td>0, 1, 4, 8, 16, 24, 32</td>
- * <td>bcBitCount</td>
- * </tr>
- * <tr>
- * <td>0x001E</td>
- * <td>4 バイト</td>
- * <td>圧縮形式</td>
- * <td>0 - BI_RGB （非圧縮）<br>
- * 1 - BI_RLE8 （8ビット/ピクセル）<br>
- * 2 - BI_RLE4 （4ビット/ピクセル）<br>
- * 3 - BI_BITFIELDS （ビットフィールド）<br>
- * 4 - BI_JPEG<br>
- * 5 - BI_PNG</td>
- * <td>biCompression</td>
- * </tr>
- * <td>0x0022</td>
- * <td>4 バイト</td>
- * <td>画像データサイズ</td>
- * <td>単位はバイト</td>
- * <td>biSizeImage</td>
- * </tr>
- * <tr>
- * <td>0x0026</td>
- * <td>4 バイト</td>
- * <td>水平方向の解像度</td>
- * <td>単位はピクセル/m</td>
- * <td>biXPelsPerMeter</td>
- * </tr>
- * <td>0x002A</td>
- * <td>4 バイト</td>
- * <td>垂直方向の解像度</td>
- * <td>単位はピクセル/m</td>
- * <td>biYPelsPerMeter</td>
- * </tr>
- * <tr>
- * <td>0x002E</td>
- * <td>4 バイト</td>
- * <td>使用する色数</td>
- * <td>ビットマップで実際に使用するカラーパレット内のカラーインデックスの数</td>
- * <td>biClrUsed</td>
- * </tr>
- * <tr>
- * <td>0x0032</td>
- * <td>4 バイト</td>
- * <td>重要な色数</td>
- * <td>ビットマップを表示するために必要なカラーインデックスの数</td>
- * <td>biCirImportant</td>
- * </tr>
- * <tr>
- * <td>0x0036</td>
- * <td>4 バイト</td>
- * <td>赤成分のカラーマスク</td>
- * <td></td>
- * <td>bV4RedMask</td>
- * </tr>
- * <tr>
- * <td>0x003A</td>
- * <td>4 バイト</td>
- * <td>緑成分のカラーマスク</td>
- * <td></td>
- * <td>bV4GreenMask</td>
- * </tr>
- * <tr>
- * <td>0x003E</td>
- * <td>4 バイト</td>
- * <td>青成分のカラーマスク</td>
- * <td></td>
- * <td>bV4BlueMask</td>
- * </tr>
- * <tr>
- * <td>0x0042</td>
- * <td>4 バイト</td>
- * <td>α成分のカラーマスク</td>
- * <td></td>
- * <td>bV4AlphaMask</td>
- * </tr>
- * <tr>
- * <td>0x0046</td>
- * <td>4 バイト</td>
- * <td>色空間</td>
- * <td>0 -ヘッダ内で定義<br>
- * 0x73524742 - sRGB<br>
- * 0x57696E20 - Win <br>
- * 0x4C494E4B - LINK<br>
- * 0x4D424544 - MBED</td>
- * <td>bV4CSType</td>
- * </tr>
- * <tr>
- * <td>0x004A</td>
- * <td>36 バイト</td>
- * <td>CIEXYZTRIPLE構造体</td>
- * <td>色空間が0の場合のみ有効</td>
- * <td>bV4Endpoints</td></td>
- * </tr>
- * <tr>
- * <td>0x006E</td>
- * <td>4 バイト</td>
- * <td>赤成分のガンマ値</td>
- * <td rowspan="3">色空間が0の場合のみ有効<br>
- * 16.16の固定小数点数</td>
- * <td>bV4GammaRed</td>
- * </tr>
- * <tr>
- * <td>0x0072</td>
- * <td>4 バイト</td>
- * <td>緑成分のガンマ値</td>
- * <td>bV4GammaGreen</td>
- * </tr>
- * <tr>
- * <td>0x0076</td>
- * <td>4 バイト</td>
- * <td>青成分のガンマ値</td>
- * <td>bV4GammaBlue</td>
- * </tr>
- * <tr>
- * <td>0x007A</td>
- * <td>4 バイト</td>
- * <td>レンダリングの意図</td>
- * <td>1, 2, 4, 8</td>
- * <td>bV5Intent</td>
- * </tr>
- * <tr>
- * <td>0x007E</td>
- * <td>4 バイト</td>
- * <td>プロファイルデータのオフセット</td>
- * <td>情報ヘッダの先頭アドレスからプロファイルデータの先頭アドレスまでのオフセット（単位はバイト）</td>
- * <td>bV5ProfileData</td>
- * </tr>
- * <tr>
- * <td>0x0082</td>
- * <td>4 バイト</td>
- * <td>プロファイルデータのサイズ</td>
- * <td>単位はバイト</td>
- * <td>bV5ProfileSize</td>
- * </tr>
- * <td>0x0086</td>
- * <td>4 バイト</td>
- * <td>予約領域</td>
- * <td>常に0</td>
- * <td>BV5_RESERVED</td>
- * </tr>
- * </table>
+ * <dl>
+ * <h1>ファイルヘッダ</h1>
+ * 
+ * <dt>変数</dt>
+ * <dd>オフセット</dd>
+ * <dd>サイズ</dd>
+ * <dd>格納する情報</dd>
+ * <dd>値・備考</dd>
+ * 
+ * <dt>bfType</dt>
+ * <dd>0x0000</dd>
+ * <dd>2 バイト</dd>
+ * <dd>ファイルタイプ</dd>
+ * <dd>常にBM (0x42, 0x4d)</dd>
+ * 
+ * <dt>bfSize</dt>
+ * <dd>0x0002</dd>
+ * <dd>4 バイト</dd>
+ * <dd>ファイルサイズ</dd>
+ * <dd>ビットマップファイルのサイズを格納する（単位はバイト）</dd>
+ * 
+ * <dt>BF_RESERVED_1</dt>
+ * <dd>0x0006</dd>
+ * <dd>2 バイト</dd>
+ * <dd>予約領域1</dd>
+ * <dd>常に0</dd>
+ * 
+ * <dt>BF_RESERVED_2</dt>
+ * <dd>0x0008</dd>
+ * <dd>2 バイト</dd>
+ * <dd>予約領域2</dd>
+ * <dd>常に0</dd>
+ * 
+ * <dt>bfOffBits</dt>
+ * <dd>0x000A</dd>
+ * <dd>4 バイト</dd>
+ * <dd>オフセット</dd>
+ * <dd>ファイルヘッダの先頭アドレスからビットマップデータの先頭アドレスまでのオフセット（単位はバイト）</dd>
+ * </dl>
+ * <dl>
+ * <h1>情報ヘッダ</h1>
+ * 
+ * <dt>変数</dt>
+ * <dd>オフセット</dd>
+ * <dd>サイズ</dd>
+ * <dd>格納する情報</dd>
+ * <dd>値・備考</dd>
+ * 
+ * <dt>bcSize</dt>
+ * <dd>0x000E</dd>
+ * <dd>4 バイト</dd>
+ * <dd>ヘッダサイズ</dd>
+ * <dd>40</dd>
+ * 
+ * <dt>bcWidth</dt>
+ * <dd>0x0012</dd>
+ * <dd>4 バイト</dd>
+ * <dd>ビットマップの横幅</dd>
+ * <dd>単位はピクセル</dd>
+ * 
+ * <dt>bcHeight</dt>
+ * <dd>0x0016</dd>
+ * <dd>4 バイト</dd>
+ * <dd>ビットマップの縦幅</dd>
+ * <dd>単位はピクセル</dd>
+ * 
+ * <dt>BC_PLANES</dt>
+ * <dd>0x001A</dd>
+ * <dd>2 バイト</dd>
+ * <dd>プレーン数</dd>
+ * <dd>常に1</dd>
+ * 
+ * <dt>bcBitCount</dt>
+ * <dd>0x001C</dd>
+ * <dd>2 バイト</dd>
+ * <dd>1ピクセルあたりのビット数</dd>
+ * <dd>0, 1, 4, 8, 16, 24, 32</dd>
+ * 
+ * <dt>biCompression</dt>
+ * <dd>0x001E</dd>
+ * <dd>4 バイト</dd>
+ * <dd>圧縮形式</dd>
+ * <dd>0 - BI_RGB （非圧縮）</dd>
+ * <dd>1 - BI_RLE8 （8ビット/ピクセル）</dd>
+ * <dd>2 - BI_RLE4 （4ビット/ピクセル）</dd>
+ * <dd>3 - BI_BITFIELDS （ビットフィールド）</dd>
+ * <dd>4 - BI_JPEG</dd>
+ * <dd>5 - BI_PNG</dd>
+ * 
+ * <dt>biSizeImage</dt>
+ * <dd>0x0022</dd>
+ * <dd>4 バイト</dd>
+ * <dd>画像データサイズ</dd>
+ * <dd>単位はバイト</dd>
+ * 
+ * <dt>biXPelsPerMeter</dt>
+ * <dd>0x0026</dd>
+ * <dd>4 バイト</dd>
+ * <dd>水平方向の解像度</dd>
+ * <dd>単位はピクセル/m</dd>
+ * 
+ * <dt>biYPelsPerMeter</dt>
+ * <dd>0x002A</dd>
+ * <dd>4 バイト</dd>
+ * <dd>垂直方向の解像度</dd>
+ * <dd>単位はピクセル/m</dd>
+ * 
+ * <dt>biClrUsed</dt>
+ * <dd>0x002E</dd>
+ * <dd>4 バイト</dd>
+ * <dd>使用する色数</dd>
+ * <dd>ビットマップで実際に使用するカラーパレット内のカラーインデックスの数</dd>
+ * 
+ * <dt>biCirImportant</dt>
+ * <dd>0x0032</dd>
+ * <dd>4 バイト</dd>
+ * <dd>重要な色数</dd>
+ * <dd>ビットマップを表示するために必要なカラーインデックスの数</dd>
+ * 
+ * <dt>bV4RedMask</dt>
+ * <dd>0x0036</dd>
+ * <dd>4 バイト</dd>
+ * <dd>赤成分のカラーマスク</dd>
+ * 
+ * <dt>bV4GreenMask</dt>
+ * <dd>0x003A</dd>
+ * <dd>4 バイト</dd>
+ * <dd>緑成分のカラーマスク</dd>
+ * 
+ * <dt>bV4BlueMask</dt>
+ * <dd>0x003E</dd>
+ * <dd>4 バイト</dd>
+ * <dd>青成分のカラーマスク</dd>
+ * 
+ * <dt>bV4AlphaMask</dt>
+ * <dd>0x0042</dd>
+ * <dd>4 バイト</dd>
+ * <dd>α成分のカラーマスク</dd>
+ * 
+ * <dt>bV4CSType</dt>
+ * <dd>0x0046</dd>
+ * <dd>4 バイト</dd>
+ * <dd>色空間</dd>
+ * <dd>0 -ヘッダ内で定義</dd>
+ * <dd>0x73524742 - sRGB</dd>
+ * <dd>0x57696E20 - Win</dd>
+ * <dd>0x4C494E4B - LINK</dd>
+ * <dd>0x4D424544 - MBED</dd>
+ * 
+ * <dt>bV4Endpoints</dt>
+ * <dd>0x004A</dd>
+ * <dd>36 バイト</dd>
+ * <dd>CIEXYZTRIPLE構造体</dd>
+ * <dd>色空間が0の場合のみ有効</dd>
+ * 
+ * <dt>bV4GammaRed</dt>
+ * <dd>0x006E</dd>
+ * <dd>4 バイト</dd>
+ * <dd>赤成分のガンマ値</dd>
+ * <dd>色空間が0の場合のみ有効</dd>
+ * <dd>16.16の固定小数点数</dd>
+ * 
+ * <dt>bV4GammaGreen</dt>
+ * <dd>0x0072</dd>
+ * <dd>4 バイト</dd>
+ * <dd>緑成分のガンマ値</dd>
+ * 
+ * <dt>bV4GammaBlue</dt>
+ * <dd>0x0076</dd>
+ * <dd>4 バイト</dd>
+ * <dd>青成分のガンマ値</dd>
+ * 
+ * <dt>bV5Intent</dt>
+ * <dd>0x007A</dd>
+ * <dd>4 バイト</dd>
+ * <dd>レンダリングの意図</dd>
+ * <dd>1, 2, 4, 8</dd>
+ * 
+ * <dt>bV5ProfileData</dt>
+ * <dd>0x007E</dd>
+ * <dd>4 バイト</dd>
+ * <dd>プロファイルデータのオフセット</dd>
+ * <dd>情報ヘッダの先頭アドレスからプロファイルデータの先頭アドレスまでのオフセット（単位はバイト）</dd>
+ * 
+ * <dt>bV5ProfileSize</dt>
+ * <dd>0x0082</dd>
+ * <dd>4 バイト</dd>
+ * <dd>プロファイルデータのサイズ</dd>
+ * <dd>単位はバイト</dd>
+ * 
+ * <dt>BV5_RESERVED</dt>
+ * <dd>0x0086</dd>
+ * <dd>4 バイト</dd>
+ * <dd>予約領域</dd>
+ * <dd>常に0</dd>
+ * </dl>
  * 
  * @author ソウルP
  * @version 1.0 2017/10/19 BMP_V5作成
