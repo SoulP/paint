@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Tools_UT.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">paint (2018/03/28 9:59:50)</a> &gt; <a href="../../index.html" class="el_group">paint</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">file.test.ut</a> &gt; <span class="el_source">Tools_UT.java</span></div><h1>Tools_UT.java</h1><pre class="source lang-java linenums">package file.test.ut;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+
+import file.Tools;
+
+/**
+ * Toolsの単体テスト&lt;br&gt;
+ * date: 2017/11/15 last_date: 2017/11/15
+ * 
+ * @author ソウルP
+ *
+ */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+<span class="fc" id="L24">public class Tools_UT {</span>
+
+    /**
+     * {@link Tools#endian(byte[])}&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test000_endian() {
+<span class="fc" id="L32">        byte[] before = { 0x00, 0x07, (byte) 0xe1, (byte) 0xff, 0x40 };</span>
+<span class="fc" id="L33">        byte[] after = { 0x40, (byte) 0xff, (byte) 0xe1, 0x07, 0x00 };</span>
+<span class="fc" id="L34">        byte[] temp = Tools.endian(before);</span>
+<span class="fc" id="L35">        assertTrue(Arrays.equals(after, temp));</span>
+<span class="fc" id="L36">    }</span>
+
+    /**
+     * {@link Tools#short2bytes(short)}&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test010_short2bytes() {
+<span class="fc" id="L44">        short before = 277;</span>
+<span class="fc" id="L45">        byte[] after = { 0x15, 0x01 };</span>
+<span class="fc" id="L46">        byte[] temp = Tools.short2bytes(before);</span>
+<span class="fc" id="L47">        assertTrue(Arrays.equals(after, temp));</span>
+<span class="fc" id="L48">    }</span>
+
+    /**
+     * {@link Tools#bytes2short(byte[])}&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test020_bytes2short() {
+<span class="fc" id="L56">        byte[] before = { 0x64, 0x01 };</span>
+<span class="fc" id="L57">        short after = 356;</span>
+<span class="fc" id="L58">        short temp = Tools.bytes2short(before);</span>
+<span class="fc" id="L59">        assertEquals(after, temp);</span>
+<span class="fc" id="L60">    }</span>
+
+    /**
+     * {@link Tools#long2bytes(long)}&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test030_long2bytes() {
+<span class="fc" id="L68">        long before = 5764607523034234880l;</span>
+<span class="fc" id="L69">        byte[] after = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50 };</span>
+<span class="fc" id="L70">        byte[] temp = Tools.long2bytes(before);</span>
+<span class="fc" id="L71">        assertTrue(Arrays.equals(after, temp));</span>
+<span class="fc" id="L72">    }</span>
+
+    /**
+     * {@link Tools#bytes2long(byte[])}&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test040_bytes2long() {
+<span class="fc" id="L80">        byte[] before = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0e, 0x06, 0x22 };</span>
+<span class="fc" id="L81">        long after = 2451662440312602624l;</span>
+<span class="fc" id="L82">        long temp = Tools.bytes2long(before);</span>
+<span class="fc" id="L83">        assertEquals(after, temp);</span>
+<span class="fc" id="L84">    }</span>
+
+    /**
+     * {@link Tools#float2bytes(float)}&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test050_float2bytes() {
+<span class="fc" id="L92">        float before = 3.14f;</span>
+<span class="fc" id="L93">        byte[] after = { (byte) 0xc3, (byte) 0xf5, 0x48, 0x40 };</span>
+<span class="fc" id="L94">        byte[] temp = Tools.float2bytes(before);</span>
+<span class="fc" id="L95">        assertTrue(Arrays.equals(after, temp));</span>
+<span class="fc" id="L96">    }</span>
+
+    /**
+     * {@link Tools#bytes2float(byte[])}&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test060_bytes2float() {
+<span class="fc" id="L104">        byte[] before = { (byte) 0xd1, 0x22, (byte) 0x92, 0x41 };</span>
+<span class="fc" id="L105">        float after = 18.267f;</span>
+<span class="fc" id="L106">        float temp = Tools.bytes2float(before);</span>
+<span class="fc" id="L107">        assertThat(after, is(temp));</span>
+<span class="fc" id="L108">    }</span>
+
+    /**
+     * {@link Tools#double2bytes(double)}&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test070_double2bytes() {
+<span class="fc" id="L116">        double before = 1725.2112d;</span>
+<span class="fc" id="L117">        byte[] after = { (byte) 0xa9, 0x13, (byte) 0xd0, 0x44, (byte) 0xd8, (byte) 0xf4, (byte) 0x9a, 0x40 };</span>
+<span class="fc" id="L118">        byte[] temp = Tools.double2bytes(before);</span>
+<span class="fc" id="L119">        assertTrue(Arrays.equals(after, temp));</span>
+<span class="fc" id="L120">    }</span>
+
+    /**
+     * {@link Tools#bytes2double(byte[])}&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test080_bytes2double() {
+<span class="fc" id="L128">        byte[] before = { 0x64, 0x5d, (byte) 0xdc, 0x46, 0x6a, (byte) 0x91, (byte) 0xe4, 0x40 };</span>
+<span class="fc" id="L129">        double after = 42123.32115d;</span>
+<span class="fc" id="L130">        double temp = Tools.bytes2double(before);</span>
+<span class="fc" id="L131">        assertThat(after, is(temp));</span>
+<span class="fc" id="L132">    }</span>
+
+    /**
+     * {@link Tools#bytes2primBytes(Byte[])}&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test090_bytes2primBytes() {
+<span class="fc" id="L140">        Byte[] bytes = { 0x00, 0x23, (byte) 0xfa, (byte) 0xe1 };</span>
+<span class="fc" id="L141">        byte[] primBytes = { 0x00, 0x23, (byte) 0xfa, (byte) 0xe1 };</span>
+<span class="fc" id="L142">        byte[] temp = Tools.bytes2primBytes(bytes);</span>
+<span class="fc" id="L143">        assertTrue(Arrays.equals(primBytes, temp));</span>
+<span class="fc" id="L144">    }</span>
+
+    /**
+     * {@link Tools#primBytes2Bytes(byte[])}&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test100_primBytes2bytes() {
+<span class="fc" id="L152">        byte[] primBytes = { 0x11, 0x63, 0x22, 0x37 };</span>
+<span class="fc" id="L153">        Byte[] bytes = { 0x11, 0x63, 0x22, 0x37 };</span>
+<span class="fc" id="L154">        Byte[] temp = Tools.primBytes2Bytes(primBytes);</span>
+<span class="fc" id="L155">        assertTrue(Arrays.equals(bytes, temp));</span>
+<span class="fc" id="L156">    }</span>
+
+    /**
+     * {@link Tools#bytes2D2bytes1D(byte[][])}&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test110_bytes2D2bytes1D() {
+<span class="fc" id="L164">        byte[][] before = { { 0x00, (byte) 0xff, 0x34, 0x42 }, { 0x21, 0x31 } };</span>
+<span class="fc" id="L165">        byte[] after = { 0x00, (byte) 0xff, 0x34, 0x42, 0x21, 0x31 };</span>
+<span class="fc" id="L166">        byte[] temp = Tools.bytes2D2bytes1D(before);</span>
+<span class="fc" id="L167">        assertTrue(Arrays.equals(after, temp));</span>
+<span class="fc" id="L168">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>paint (2018/03/28 9:59:50)</div></body></html>

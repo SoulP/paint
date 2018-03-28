@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>BMP_V2_UT.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">paint (2018/03/28 9:59:50)</a> &gt; <a href="../../index.html" class="el_group">paint</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">file.test.ut.format.bmp</a> &gt; <span class="el_source">BMP_V2_UT.java</span></div><h1>BMP_V2_UT.java</h1><pre class="source lang-java linenums">package file.test.ut.format.bmp;
+
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+
+import file.Tools;
+import file.format.bmp.BMP_V2;
+import file.test.Basic;
+
+/**
+ * &lt;b&gt;BMP V2 の単体テスト&lt;/b&gt;&lt;br&gt;
+ * date: 2017/10/27 last_date: 2018/03/27
+ * 
+ * @author ソウルP
+ */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+<span class="fc" id="L29">public class BMP_V2_UT extends Basic {</span>
+<span class="fc" id="L30">    final String     addr = BASIC_ADDR + &quot;BMP\\BMP_V2_UT\\&quot;;</span>
+    FileOutputStream out;
+    FileInputStream  in;
+    BMP_V2           bmp;
+
+    @Before
+    public void before() {
+<span class="fc" id="L37">        new File(addr).mkdirs();</span>
+<span class="fc" id="L38">    }</span>
+
+    /**
+     * 出力&lt;br&gt;
+     * 1ビット&lt;br&gt;
+     * 成功テスト&lt;br&gt;
+     * &lt;p&gt;
+     * OS/2は、情報ヘッダサイズ16～64ビット設定可能ですが、 Windowsの場合は、40ビットしかできない。
+     * &lt;/p&gt;
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test000_1bit_output() throws IOException {
+<span class="fc" id="L52">        int infoHeaderSize = 40;</span>
+<span class="fc" id="L53">        int width = 3;</span>
+<span class="fc" id="L54">        int height = 3;</span>
+<span class="fc" id="L55">        short bitCount = 1;</span>
+<span class="fc" id="L56">        List&lt;byte[]&gt; colors = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L57">        colors.add(new byte[] { (byte) 0xff, 0x00, (byte) 0xff, 0x00 }); // 紫色</span>
+<span class="fc" id="L58">        colors.add(new byte[] { (byte) 0xff, (byte) 0xff, 0x00, 0x00 }); // アクア色</span>
+<span class="fc" id="L59">        List&lt;byte[]&gt; image = image_1bit;</span>
+
+<span class="fc" id="L61">        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, colors, image);</span>
+
+<span class="fc" id="L63">        out = new FileOutputStream(addr + &quot;test000_1bit.bmp&quot;);</span>
+<span class="fc" id="L64">        out.write(bmp.get());</span>
+<span class="fc" id="L65">        out.flush();</span>
+<span class="fc" id="L66">        out.close();</span>
+<span class="fc" id="L67">    }</span>
+
+    /**
+     * 出力&lt;br&gt;
+     * 4ビット&lt;br&gt;
+     * 成功テスト&lt;br&gt;
+     * &lt;p&gt;
+     * OS/2は、情報ヘッダサイズ16～64ビット設定可能ですが、 Windowsの場合は、40ビットしかできない。
+     * &lt;/p&gt;
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test010_4bit_output() throws IOException {
+<span class="fc" id="L81">        int infoHeaderSize = 40;</span>
+<span class="fc" id="L82">        int width = 3;</span>
+<span class="fc" id="L83">        int height = 3;</span>
+<span class="fc" id="L84">        short bitCount = 4;</span>
+<span class="fc" id="L85">        List&lt;byte[]&gt; colors = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L86">        colors.add(new byte[] { (byte) 0xff, 0x00, (byte) 0xff, 0x00 }); // 紫色</span>
+<span class="fc" id="L87">        colors.add(new byte[] { (byte) 0xff, (byte) 0xff, 0x00, 0x00 }); // アクア色</span>
+<span class="fc" id="L88">        List&lt;byte[]&gt; image = image_4bit;</span>
+
+<span class="fc" id="L90">        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, colors, image);</span>
+
+<span class="fc" id="L92">        out = new FileOutputStream(addr + &quot;test010_4bit.bmp&quot;);</span>
+<span class="fc" id="L93">        out.write(bmp.get());</span>
+<span class="fc" id="L94">        out.flush();</span>
+<span class="fc" id="L95">        out.close();</span>
+<span class="fc" id="L96">    }</span>
+
+    /**
+     * 出力&lt;br&gt;
+     * 8ビット&lt;br&gt;
+     * 成功テスト&lt;br&gt;
+     * &lt;p&gt;
+     * OS/2は、情報ヘッダサイズ16～64ビット設定可能ですが、 Windowsの場合は、40ビットしかできない。
+     * &lt;/p&gt;
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test020_8bit_output() throws IOException {
+<span class="fc" id="L110">        int infoHeaderSize = 40;</span>
+<span class="fc" id="L111">        int width = 3;</span>
+<span class="fc" id="L112">        int height = 3;</span>
+<span class="fc" id="L113">        short bitCount = 8;</span>
+<span class="fc" id="L114">        List&lt;byte[]&gt; colors = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L115">        colors.add(new byte[] { (byte) 0xff, 0x00, (byte) 0xff, 0x00 }); // 紫色</span>
+<span class="fc" id="L116">        colors.add(new byte[] { (byte) 0xff, (byte) 0xff, 0x00, 0x00 }); // アクア色</span>
+<span class="fc" id="L117">        List&lt;byte[]&gt; image = image_8bit;</span>
+
+<span class="fc" id="L119">        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, colors, image);</span>
+
+<span class="fc" id="L121">        out = new FileOutputStream(addr + &quot;test020_8bit.bmp&quot;);</span>
+<span class="fc" id="L122">        out.write(bmp.get());</span>
+<span class="fc" id="L123">        out.flush();</span>
+<span class="fc" id="L124">        out.close();</span>
+<span class="fc" id="L125">    }</span>
+
+    /**
+     * 出力&lt;br&gt;
+     * 16bit&lt;br&gt;
+     * 成功テスト&lt;br&gt;
+     * &lt;p&gt;
+     * OS/2は、情報ヘッダサイズ16～64ビット設定可能ですが、 Windowsの場合は、40ビットしかできない。
+     * &lt;/p&gt;
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test030_16bit_output() throws IOException {
+<span class="fc" id="L139">        int infoHeaderSize = 40;</span>
+<span class="fc" id="L140">        int width = 3;</span>
+<span class="fc" id="L141">        int height = 3;</span>
+<span class="fc" id="L142">        short bitCount = 16;</span>
+<span class="fc" id="L143">        List&lt;byte[]&gt; image = image_16bit;</span>
+
+<span class="fc" id="L145">        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);</span>
+
+<span class="fc" id="L147">        out = new FileOutputStream(addr + &quot;test030_16bit.bmp&quot;);</span>
+<span class="fc" id="L148">        out.write(bmp.get());</span>
+<span class="fc" id="L149">        out.flush();</span>
+<span class="fc" id="L150">        out.close();</span>
+<span class="fc" id="L151">    }</span>
+
+    /**
+     * 出力&lt;br&gt;
+     * 24bit&lt;br&gt;
+     * 成功テスト&lt;br&gt;
+     * &lt;p&gt;
+     * OS/2は、情報ヘッダサイズ16～64ビット設定可能ですが、 Windowsの場合は、40ビットしかできない。
+     * &lt;/p&gt;
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test040_24bit_output() throws IOException {
+<span class="fc" id="L165">        int infoHeaderSize = 40;</span>
+<span class="fc" id="L166">        int width = 3;</span>
+<span class="fc" id="L167">        int height = 3;</span>
+<span class="fc" id="L168">        short bitCount = 24;</span>
+<span class="fc" id="L169">        List&lt;byte[]&gt; image = image_24bit;</span>
+
+<span class="fc" id="L171">        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);</span>
+
+<span class="fc" id="L173">        out = new FileOutputStream(addr + &quot;test040_24bit.bmp&quot;);</span>
+<span class="fc" id="L174">        out.write(bmp.get());</span>
+<span class="fc" id="L175">        out.flush();</span>
+<span class="fc" id="L176">        out.close();</span>
+<span class="fc" id="L177">    }</span>
+
+    /**
+     * 出力&lt;br&gt;
+     * 32bit&lt;br&gt;
+     * 成功テスト&lt;br&gt;
+     * &lt;p&gt;
+     * OS/2は、情報ヘッダサイズ16～64ビット設定可能ですが、 Windowsの場合は、40ビットしかできない。
+     * &lt;/p&gt;
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test050_32bit_output() throws IOException {
+<span class="fc" id="L191">        int infoHeaderSize = 40;</span>
+<span class="fc" id="L192">        int width = 3;</span>
+<span class="fc" id="L193">        int height = 3;</span>
+<span class="fc" id="L194">        short bitCount = 32;</span>
+<span class="fc" id="L195">        List&lt;byte[]&gt; image = image_32bit;</span>
+
+<span class="fc" id="L197">        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);</span>
+
+<span class="fc" id="L199">        out = new FileOutputStream(addr + &quot;test050_32bit.bmp&quot;);</span>
+<span class="fc" id="L200">        out.write(bmp.get());</span>
+<span class="fc" id="L201">        out.flush();</span>
+<span class="fc" id="L202">        out.close();</span>
+<span class="fc" id="L203">    }</span>
+
+    /**
+     * 出力&lt;br&gt;
+     * 32bit&lt;br&gt;
+     * 成功テスト&lt;br&gt;
+     * &lt;p&gt;
+     * OS/2は、情報ヘッダサイズ16～64ビット設定可能ですが、 Windowsの場合は、40ビットしかできない。
+     * &lt;/p&gt;
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test060_32bit_output() throws IOException {
+<span class="fc" id="L217">        int infoHeaderSize = 64;</span>
+<span class="fc" id="L218">        int width = 3;</span>
+<span class="fc" id="L219">        int height = 3;</span>
+<span class="fc" id="L220">        short bitCount = 32;</span>
+<span class="fc" id="L221">        List&lt;byte[]&gt; image = image_32bit;</span>
+
+<span class="fc" id="L223">        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);</span>
+
+<span class="fc" id="L225">        out = new FileOutputStream(addr + &quot;test060_32bit.bmp&quot;);</span>
+<span class="fc" id="L226">        out.write(bmp.get());</span>
+<span class="fc" id="L227">        out.flush();</span>
+<span class="fc" id="L228">        out.close();</span>
+<span class="fc" id="L229">    }</span>
+
+    /**
+     * 入力&lt;br&gt;
+     * 1bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test100_1bit_input() throws IOException {
+<span class="fc" id="L240">        in = new FileInputStream(addr + &quot;test000_1bit.bmp&quot;);</span>
+<span class="fc" id="L241">        byte[] data = new byte[in.available()];</span>
+<span class="fc" id="L242">        in.read(data);</span>
+<span class="fc" id="L243">        in.close();</span>
+
+<span class="fc" id="L245">        bmp = new BMP_V2(data);</span>
+
+<span class="fc" id="L247">        System.out.println(bmp);</span>
+<span class="fc" id="L248">    }</span>
+
+    /**
+     * 入力&lt;br&gt;
+     * 4bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test110_4bit_input() throws IOException {
+<span class="fc" id="L259">        in = new FileInputStream(addr + &quot;test010_4bit.bmp&quot;);</span>
+<span class="fc" id="L260">        byte[] data = new byte[in.available()];</span>
+<span class="fc" id="L261">        in.read(data);</span>
+<span class="fc" id="L262">        in.close();</span>
+
+<span class="fc" id="L264">        bmp = new BMP_V2(data);</span>
+
+<span class="fc" id="L266">        System.out.println(bmp);</span>
+<span class="fc" id="L267">    }</span>
+
+    /**
+     * 入力&lt;br&gt;
+     * 8bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test120_8bit_input() throws IOException {
+<span class="fc" id="L278">        in = new FileInputStream(addr + &quot;test020_8bit.bmp&quot;);</span>
+<span class="fc" id="L279">        byte[] data = new byte[in.available()];</span>
+<span class="fc" id="L280">        in.read(data);</span>
+<span class="fc" id="L281">        in.close();</span>
+
+<span class="fc" id="L283">        bmp = new BMP_V2(data);</span>
+
+<span class="fc" id="L285">        System.out.println(bmp);</span>
+<span class="fc" id="L286">    }</span>
+
+    /**
+     * 入力&lt;br&gt;
+     * 16bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test130_16bit_input() throws IOException {
+<span class="fc" id="L297">        in = new FileInputStream(addr + &quot;test030_16bit.bmp&quot;);</span>
+<span class="fc" id="L298">        byte[] data = new byte[in.available()];</span>
+<span class="fc" id="L299">        in.read(data);</span>
+<span class="fc" id="L300">        in.close();</span>
+
+<span class="fc" id="L302">        bmp = new BMP_V2(data);</span>
+
+<span class="fc" id="L304">        System.out.println(bmp);</span>
+<span class="fc" id="L305">    }</span>
+
+    /**
+     * 入力&lt;br&gt;
+     * 24bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test140_24bit_input() throws IOException {
+<span class="fc" id="L316">        in = new FileInputStream(addr + &quot;test040_24bit.bmp&quot;);</span>
+<span class="fc" id="L317">        byte[] data = new byte[in.available()];</span>
+<span class="fc" id="L318">        in.read(data);</span>
+<span class="fc" id="L319">        in.close();</span>
+
+<span class="fc" id="L321">        bmp = new BMP_V2(data);</span>
+
+<span class="fc" id="L323">        System.out.println(bmp);</span>
+<span class="fc" id="L324">    }</span>
+
+    /**
+     * 入力&lt;br&gt;
+     * 32bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test150_32bit_input() throws IOException {
+<span class="fc" id="L335">        in = new FileInputStream(addr + &quot;test050_32bit.bmp&quot;);</span>
+<span class="fc" id="L336">        byte[] data = new byte[in.available()];</span>
+<span class="fc" id="L337">        in.read(data);</span>
+<span class="fc" id="L338">        in.close();</span>
+
+<span class="fc" id="L340">        bmp = new BMP_V2(data);</span>
+
+<span class="fc" id="L342">        System.out.println(bmp);</span>
+<span class="fc" id="L343">    }</span>
+
+    /**
+     * 入力&lt;br&gt;
+     * 32bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test160_32bit_input() throws IOException {
+<span class="fc" id="L354">        in = new FileInputStream(addr + &quot;test060_32bit.bmp&quot;);</span>
+<span class="fc" id="L355">        byte[] data = new byte[in.available()];</span>
+<span class="fc" id="L356">        in.read(data);</span>
+<span class="fc" id="L357">        in.close();</span>
+
+<span class="fc" id="L359">        bmp = new BMP_V2(data);</span>
+
+<span class="fc" id="L361">        System.out.println(bmp);</span>
+<span class="fc" id="L362">    }</span>
+
+    /**
+     * 不正な情報ヘッダサイズ&lt;br&gt;
+     * 入出力なし&lt;br&gt;
+     * 失敗テスト
+     */
+    @Test(expected = NullPointerException.class)
+    public void test800_failed() throws IOException {
+<span class="fc" id="L371">        int infoHeaderSize = 21;</span>
+<span class="fc" id="L372">        int width = 3;</span>
+<span class="fc" id="L373">        int height = 3;</span>
+<span class="fc" id="L374">        short bitCount = 16;</span>
+<span class="fc" id="L375">        List&lt;byte[]&gt; image = image_16bit;</span>
+
+<span class="fc" id="L377">        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);</span>
+
+<span class="nc" id="L379">        bmp.get();</span>
+<span class="nc" id="L380">    }</span>
+
+    /**
+     * カバレッジ埋め (入出力なし)
+     */
+    @SuppressWarnings(&quot;deprecation&quot;)
+    @Test
+    public void test900() {
+<span class="fc" id="L388">        int infoHeaderSize = 64;</span>
+<span class="fc" id="L389">        int width = 3;</span>
+<span class="fc" id="L390">        int height = 3;</span>
+<span class="fc" id="L391">        short bitCount = 32;</span>
+<span class="fc" id="L392">        List&lt;byte[]&gt; image = image_32bit;</span>
+
+<span class="fc" id="L394">        bmp = setupBmpV2(infoHeaderSize, width, height, bitCount, null, image);</span>
+
+<span class="fc" id="L396">        assertNull(bmp.getGap1());</span>
+<span class="fc" id="L397">        bmp.setGap1(null);</span>
+
+<span class="fc" id="L399">        assertTrue(bmp.isEmptyGap1());</span>
+
+<span class="fc" id="L401">        bmp.setCompression(1);</span>
+<span class="fc" id="L402">        bmp.setImage(Tools.bytes2D2bytes1D(image_8bit_BI_RLE8));</span>
+
+<span class="fc" id="L404">        int length = 0;</span>
+<span class="fc bfc" id="L405" title="All 2 branches covered.">        for (byte[] row : image_32bit) {</span>
+<span class="fc" id="L406">            length += row.length;</span>
+        }
+
+<span class="fc" id="L409">        byte[] data = new byte[length];</span>
+<span class="fc" id="L410">        int index = 0;</span>
+<span class="fc bfc" id="L411" title="All 2 branches covered.">        for (byte[] row : image_32bit) {</span>
+<span class="fc bfc" id="L412" title="All 2 branches covered.">            for (byte b : row) {</span>
+<span class="fc" id="L413">                data[index++] = b;</span>
+            }
+        }
+
+<span class="fc" id="L417">        bmp.setCompression(0);</span>
+<span class="fc" id="L418">        bmp.setImage(data);</span>
+<span class="fc" id="L419">    }</span>
+
+    private BMP_V2 setupBmpV2(int infoHeaderSize, int width, int height, short bitCount, List&lt;byte[]&gt; colors,
+            List&lt;byte[]&gt; image) {
+<span class="fc" id="L423">        bmp = new BMP_V2();</span>
+
+<span class="fc" id="L425">        bmp.setHeaderSize(bmp.getFileHeaderSize() + infoHeaderSize);</span>
+<span class="fc" id="L426">        bmp.setInfoHeaderSize(infoHeaderSize);</span>
+<span class="fc" id="L427">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L428">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L429">        bmp.setBitCount(bitCount); // ビットの深さ</span>
+<span class="fc" id="L430">        bmp.setImage(image); // イメージ</span>
+
+<span class="fc" id="L432">        int fileSize = bmp.getFileHeaderSize() + bmp.getInfoHeaderSize();</span>
+
+<span class="pc bpc" id="L434" title="1 of 4 branches missed.">        if (!(colors == null || colors.isEmpty())) {</span>
+<span class="fc" id="L435">            bmp.setColors(colors); // 色</span>
+<span class="fc" id="L436">            int colorSize = 0;</span>
+<span class="fc bfc" id="L437" title="All 2 branches covered.">            for (byte[] c : bmp.getColors())</span>
+<span class="fc" id="L438">                colorSize += c.length;</span>
+<span class="fc" id="L439">            fileSize += colorSize;</span>
+        }
+
+<span class="fc" id="L442">        int imageSize = 0;</span>
+<span class="fc bfc" id="L443" title="All 2 branches covered.">        for (byte[] i : image)</span>
+<span class="fc" id="L444">            imageSize += i.length;</span>
+
+<span class="fc" id="L446">        bmp.setOffset(fileSize);</span>
+<span class="fc" id="L447">        fileSize += imageSize;</span>
+
+<span class="fc" id="L449">        return bmp;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>paint (2018/03/28 9:59:50)</div></body></html>
