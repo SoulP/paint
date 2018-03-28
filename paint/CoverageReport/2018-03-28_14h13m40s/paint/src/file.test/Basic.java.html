@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Basic.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">paint (2018/03/28 14:13:40)</a> &gt; <a href="../../index.html" class="el_group">paint</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">file.test</a> &gt; <span class="el_source">Basic.java</span></div><h1>Basic.java</h1><pre class="source lang-java linenums">package file.test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 共通化 (テスト用)&lt;br&gt;
+ * date: 2017/11/14 last_date: 2017/11/14
+ * 
+ * @author ソウルP
+ */
+<span class="fc" id="L12">public abstract class Basic extends Settings {</span>
+    // イメージ
+    public static List&lt;byte[]&gt; image_1bit;
+    public static List&lt;byte[]&gt; image_4bit;
+    public static List&lt;byte[]&gt; image_8bit;
+    public static List&lt;byte[]&gt; image_16bit;
+    public static List&lt;byte[]&gt; image_16bit_BitFields;
+    public static List&lt;byte[]&gt; image_24bit;
+    public static List&lt;byte[]&gt; image_32bit;
+    public static List&lt;byte[]&gt; image_32bit_BitFields;
+    public static byte[][]     image_4bit_BI_RLE4;
+    public static byte[][]     image_8bit_BI_RLE8;
+
+    // カラーマスク
+    public static byte[][]     r5g5b5MaskV3;
+    public static byte[][]     r5g5b5MaskV4;
+    public static byte[][]     bitFields32bitMaskV3;
+    public static byte[][]     bitFields32bitMaskV4;
+
+    static {
+<span class="fc" id="L32">        image_1bit = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L33">        image_1bit.add(new byte[] { (byte) 0xa0, 0x00, 0x00, 0x00 });</span>
+<span class="fc" id="L34">        image_1bit.add(new byte[] { 0x40, 0x00, 0x00, 0x00 });</span>
+<span class="fc" id="L35">        image_1bit.add(new byte[] { (byte) 0xa0, 0x00, 0x00, 0x00 });</span>
+    }
+
+    static {
+<span class="fc" id="L39">        image_4bit = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L40">        image_4bit.add(new byte[] { 0x10, 0x10, 0x00, 0x00 });</span>
+<span class="fc" id="L41">        image_4bit.add(new byte[] { 0x01, 0x00, 0x00, 0x00 });</span>
+<span class="fc" id="L42">        image_4bit.add(new byte[] { 0x10, 0x10, 0x00, 0x00 });</span>
+    }
+
+    static {
+<span class="fc" id="L46">        image_8bit = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L47">        image_8bit.add(new byte[] { 0x01, 0x00, 0x01, 0x00 });</span>
+<span class="fc" id="L48">        image_8bit.add(new byte[] { 0x00, 0x01, 0x00, 0x00 });</span>
+<span class="fc" id="L49">        image_8bit.add(new byte[] { 0x01, 0x00, 0x01, 0x00 });</span>
+    }
+
+    static {
+        // @formatter:off
+        // リトルエンディアン
+<span class="fc" id="L55">        image_16bit = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L56">        image_16bit.add(new byte[] {</span>
+<span class="fc" id="L57">                (byte) 0xff, 0x07,</span>
+<span class="fc" id="L58">                0x1f, (byte) 0xf8,</span>
+<span class="fc" id="L59">                (byte) 0xff, 0x07,</span>
+                0x00, 0x00
+            }
+        );
+<span class="fc" id="L63">        image_16bit.add(new byte[] {</span>
+<span class="fc" id="L64">                0x1f, 0x7c,</span>
+<span class="fc" id="L65">                (byte) 0xff, 0x07,</span>
+<span class="fc" id="L66">                0x1f, 0x7c,</span>
+                0x00, 0x00
+            }
+        );
+<span class="fc" id="L70">        image_16bit.add(new byte[] {</span>
+<span class="fc" id="L71">                (byte) 0xff, 0x07,</span>
+<span class="fc" id="L72">                0x1f, (byte) 0xf8,</span>
+<span class="fc" id="L73">                (byte) 0xff, 0x07,</span>
+                0x00, 0x00
+            }
+        );
+     // @formatter:on
+    }
+
+    static {
+        // @formatter:off
+        // リトルエンディアン
+<span class="fc" id="L83">        image_16bit_BitFields = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L84">        image_16bit_BitFields.add(new byte[] {</span>
+<span class="fc" id="L85">                (byte) 0xe0, (byte) 0x7f,</span>
+<span class="fc" id="L86">                (byte) 0x1f, 0x7c,</span>
+<span class="fc" id="L87">                (byte) 0xe0, (byte) 0x7f,</span>
+                0x00, 0x00
+            }
+        );
+<span class="fc" id="L91">        image_16bit_BitFields.add(new byte[] {</span>
+<span class="fc" id="L92">                (byte) 0x1f, 0x7c,</span>
+<span class="fc" id="L93">                (byte) 0xe0, (byte) 0x7f,</span>
+<span class="fc" id="L94">                (byte) 0x1f, 0x7c,</span>
+                0x00, 0x00
+            }
+        );
+<span class="fc" id="L98">        image_16bit_BitFields.add(new byte[] {</span>
+<span class="fc" id="L99">                (byte) 0xe0, (byte) 0x7f,</span>
+<span class="fc" id="L100">                (byte) 0x1f, 0x7c,</span>
+<span class="fc" id="L101">                (byte) 0xe0, (byte) 0x7f,</span>
+                0x00, 0x00
+            }
+        );
+        // @formatter:on
+    }
+
+    static {
+        // @formatter:off
+<span class="fc" id="L110">        image_24bit = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L111">        image_24bit.add(new byte[] {</span>
+<span class="fc" id="L112">                (byte) 0xff, (byte) 0xff, 0x00, (byte) 0xff,</span>
+<span class="fc" id="L113">                0x00, (byte) 0xff, (byte) 0xff, (byte) 0xff,</span>
+                0x00, 0x00, 0x00, 0x00
+            }
+        );
+<span class="fc" id="L117">        image_24bit.add(new byte[] {</span>
+<span class="fc" id="L118">                (byte) 0xff, 0x00, (byte) 0xff, (byte) 0xff,</span>
+<span class="fc" id="L119">                (byte) 0xff, 0x00, (byte) 0xff, 0x00,</span>
+<span class="fc" id="L120">                (byte) 0xff, 0x00, 0x00, 0x00</span>
+            }
+        );
+<span class="fc" id="L123">        image_24bit.add(new byte[] {</span>
+<span class="fc" id="L124">                (byte) 0xff, (byte) 0xff, 0x00, (byte) 0xff,</span>
+<span class="fc" id="L125">                0x00, (byte) 0xff, (byte) 0xff, (byte) 0xff,</span>
+                0x00, 0x00, 0x00, 0x00
+            }
+        );
+        // @formatter:on
+    }
+
+    static {
+        // @formatter:off
+<span class="fc" id="L134">        image_32bit = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L135">        image_32bit.add(new byte[] {</span>
+<span class="fc" id="L136">                (byte) 0xff, (byte) 0xff, 0x00, 0x00,</span>
+<span class="fc" id="L137">                (byte) 0xff, 0x00, (byte) 0xff, 0x00,</span>
+<span class="fc" id="L138">                (byte) 0xff, (byte) 0xff, 0x00, 0x00</span>
+            }
+        );
+<span class="fc" id="L141">        image_32bit.add(new byte[] {</span>
+<span class="fc" id="L142">                (byte) 0xff, 0x00, (byte) 0xff, 0x00,</span>
+<span class="fc" id="L143">                (byte) 0xff, (byte) 0xff, 0x00, 0x00,</span>
+<span class="fc" id="L144">                (byte) 0xff, 0x00, (byte) 0xff, 0x00</span>
+            }
+        );
+<span class="fc" id="L147">        image_32bit.add(new byte[] {</span>
+<span class="fc" id="L148">                (byte) 0xff, (byte) 0xff, 0x00, 0x00,</span>
+<span class="fc" id="L149">                (byte) 0xff, 0x00, (byte) 0xff, 0x00,</span>
+<span class="fc" id="L150">                (byte) 0xff, (byte) 0xff, 0x00, 0x00</span>
+            }
+        );
+        // @formatter:on
+    }
+
+    static {
+        // @formatter:off
+<span class="fc" id="L158">        image_32bit_BitFields = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L159">        image_32bit_BitFields.add(new byte[] {</span>
+<span class="fc" id="L160">                0x00, 0x0f, (byte) 0xf0, (byte) 0xff,</span>
+<span class="fc" id="L161">                (byte) 0xff, 0x00, 0x00, (byte) 0xff,</span>
+<span class="fc" id="L162">                0x00, 0x0f, (byte) 0xf0, (byte) 0xff</span>
+            }
+        );
+<span class="fc" id="L165">        image_32bit_BitFields.add(new byte[] {</span>
+<span class="fc" id="L166">                (byte) 0xff, 0x00, 0x00, (byte) 0xff,</span>
+<span class="fc" id="L167">                0x00, 0x0f, (byte) 0xf0, (byte) 0xff,</span>
+<span class="fc" id="L168">                (byte) 0xff, 0x00, 0x00, (byte) 0xff</span>
+            }
+        );
+<span class="fc" id="L171">        image_32bit_BitFields.add(new byte[] {</span>
+<span class="fc" id="L172">                0x00, 0x0f, (byte) 0xf0, (byte) 0xff,</span>
+<span class="fc" id="L173">                (byte) 0xff, 0x00, 0x00, (byte) 0xff,</span>
+<span class="fc" id="L174">                0x00, 0x0f, (byte) 0xf0, (byte) 0xff</span>
+            }
+        );
+        // @formatter:on
+    }
+
+    static {
+        // @formatter:off
+        // イメージ情報
+<span class="fc" id="L183">        image_4bit_BI_RLE4 = new byte[][]{</span>
+<span class="fc" id="L184">            { 0x0e, (byte) 0xdd, 0x00, 0x00 },</span>
+<span class="fc" id="L185">            { 0x0e, (byte) 0xcc, 0x00, 0x00 },</span>
+<span class="fc" id="L186">            { 0x02, (byte) 0xbb, 0x0a, 0x22, 0x02, (byte) 0xbb, 0x00, 0x00 },</span>
+<span class="fc" id="L187">            { 0x02, (byte) 0xaa, 0x01, 0x30, 0x08, (byte) 0xaa, 0x01, 0x30, 0x02, (byte) 0xaa, 0x00, 0x00 },</span>
+<span class="fc" id="L188">            { 0x02, (byte) 0x99, 0x02, 0x49, 0x06, 0x44, 0x02, (byte) 0x94, 0x02, (byte) 0x99, 0x00, 0x00 },</span>
+<span class="fc" id="L189">            { 0x02, (byte) 0x88, 0x03, 0x58, 0x04, (byte) 0x88, 0x03, 0x58, 0x02, (byte) 0x88, 0x00, 0x00 },</span>
+<span class="fc" id="L190">            { 0x02, 0x77, 0x04, 0x67, 0x02, 0x66, 0x04, 0x76, 0x02, 0x77, 0x00, 0x00 },</span>
+<span class="fc" id="L191">            { 0x02, 0x66, 0x04, (byte) 0x76, 0x02, (byte) 0x77, 0x04, 0x67, 0x02, 0x66, 0x00, 0x00 },</span>
+<span class="fc" id="L192">            { 0x02, 0x55, 0x03, (byte) 0x85, 0x04, 0x55, 0x03, (byte) 0x85, 0x02, 0x55, 0x00, 0x00 },</span>
+<span class="fc" id="L193">            { 0x02, 0x44, 0x02, (byte) 0x94, 0x06, (byte) 0x99, 0x02, 0x49, 0x02, 0x44, 0x00, 0x00 },</span>
+<span class="fc" id="L194">            { 0x02, 0x33, 0x01, (byte) 0xa0, 0x08, 0x33, 0x01, (byte) 0xa0, 0x02, 0x33, 0x00, 0x00 },</span>
+<span class="fc" id="L195">            { 0x02, 0x22, 0x0a, (byte) 0xbb, 0x02, 0x22, 0x00, 0x00 },</span>
+<span class="fc" id="L196">            { 0x0e, 0x11, 0x00, 0x00 },</span>
+<span class="fc" id="L197">            { 0x0e, 0x00, 0x00, 0x01 }</span>
+        };
+        // @formatter:on
+    }
+
+    static {
+        // @formatter:off
+<span class="fc" id="L204">        image_8bit_BI_RLE8 = new byte[][] {</span>
+<span class="fc" id="L205">            { 0x0d, 0x28, 0x00, 0x00 },</span>
+<span class="fc" id="L206">            { 0x03, 0x28, 0x0a, 0x00, 0x00, 0x00 },</span>
+<span class="fc" id="L207">            { 0x08, 0x00, 0x05, 0x27, 0x00, 0x00 },</span>
+<span class="fc" id="L208">            { 0x0d, 0x27, 0x00, 0x00 },</span>
+<span class="fc" id="L209">            { 0x00, 0x0d, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x00, 0x00, 0x00 },</span>
+<span class="fc" id="L210">            { 0x00, 0x0d, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x00, 0x00, 0x00 },</span>
+<span class="fc" id="L211">            { 0x00, 0x0d, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x00, 0x00, 0x00 },</span>
+<span class="fc" id="L212">            { 0x0d, 0x2a, 0x00, 0x00 },</span>
+<span class="fc" id="L213">            { 0x0d, 0x29, 0x00, 0x00 },</span>
+<span class="fc" id="L214">            { 0x06, 0x29, 0x01, 0x2a, 0x06, 0x29, 0x00, 0x00 },</span>
+<span class="fc" id="L215">            { 0x0d, 0x29, 0x00, 0x00 },</span>
+<span class="fc" id="L216">            { 0x02, 0x29, 0x01, 0x2a, 0x07, 0x29, 0x01, 0x2a, 0x02, 0x29, 0x00, 0x00 },</span>
+<span class="fc" id="L217">            { 0x0d, 0x29, 0x00, 0x01 }</span>
+        };
+        // @formatter:on
+    }
+
+    static {
+        // @formatter:off
+        // ビッグエンディアン （マスク入れる時はリトルエンディアン）
+<span class="fc" id="L225">        r5g5b5MaskV3 = new byte[][] {</span>
+<span class="fc" id="L226">                { 0x00, 0x00, 0x7c, 0x00 },         // 赤マスク</span>
+<span class="fc" id="L227">                { 0x00, 0x00, 0x03, (byte) 0xe0 },  // 緑マスク</span>
+<span class="fc" id="L228">                { 0x00, 0x00, 0x00, 0x1f }          // 青マスク</span>
+        };
+        // @formatter:on
+    }
+
+    static {
+        // @formatter:off
+        /*
+         * ビッグエンディアン （マスク入れる時はリトルエンディアン）
+         * V3は青から赤へ処理されるが、V4以上は情報ヘッダに各色マスクがあるので、
+         * 赤から青へ処理される
+         * V3 = BGRA
+         * V4以上 = RGBA
+         */
+<span class="fc" id="L242">        r5g5b5MaskV4 = new byte[][] {</span>
+<span class="fc" id="L243">                { 0x00, 0x00, 0x00, 0x1f },         // 赤マスク</span>
+<span class="fc" id="L244">                { 0x00, 0x00, 0x03, (byte) 0xe0 },  // 緑マスク</span>
+<span class="fc" id="L245">                { 0x00, 0x00, 0x7c, 0x00 }          // 青マスク</span>
+        };
+        // @formatter:on
+    }
+
+    static {
+        // @formatter:off
+        // ビッグエンディアン （マスク入れる時はリトルエンディアン）
+        // ビットフィールドのカラーマスク
+        /*
+         * ビッグエンディアンだが、緑マスクの0x000FF000の場合、
+         * ビッグエンディアンからリトルエンディアン変換でバイト毎として 0f f0 と分かれる為、
+         * リトルエンディアンに変換される時は、 f0 0f となってしまい、
+         * 正しくない緑マスクに設定されので、予め、その一部だけリトルエンディアンにしておくと良い。
+         * 
+         * 要するに、バイト単位はビッグエンディアン、ビット単位はリトルエンディアンとして値を入れると良い
+         * 【例え】
+         * 0xff000000 → 0xff000000
+         * 0x0ff00000 → 0xf00f0000 と カラーマスク値を入れる
+         */
+<span class="fc" id="L265">        bitFields32bitMaskV3 = new byte[][] {</span>
+<span class="fc" id="L266">                { (byte) 0xff, 0x00, 0x00, 0x00 },  // 赤マスク</span>
+<span class="fc" id="L267">                { 0x00, (byte) 0xf0, 0x0f,  0x00 }, // 緑マスク</span>
+<span class="fc" id="L268">                { 0x00, 0x00, 0x00, (byte) 0xff }   // 青マスク</span>
+        };
+        // @formatter:on
+    }
+
+    static {
+        // @formatter:off
+        // ビッグエンディアン
+        // ビットフィールドのカラーマスク
+        /*
+         * 情報ヘッダの中に各色マスク格納できるので、
+         * ビッグエンディアンのままでOK
+         */
+<span class="fc" id="L281">        bitFields32bitMaskV4 = new byte[][] {</span>
+<span class="fc" id="L282">                { (byte) 0xff, 0x00, 0x00, 0x00 },  // 赤マスク</span>
+<span class="fc" id="L283">                { 0x00, 0x0f, (byte) 0xf0,  0x00 }, // 緑マスク</span>
+<span class="fc" id="L284">                { 0x00, 0x00, 0x00, (byte) 0xff }   // 青マスク</span>
+        };
+        // @formatter:on
+<span class="fc" id="L287">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>paint (2018/03/28 14:13:40)</div></body></html>

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>BMP_V1_UT.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">paint (2018/03/28 14:13:40)</a> &gt; <a href="../../index.html" class="el_group">paint</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">file.test.ut.format.bmp</a> &gt; <span class="el_source">BMP_V1_UT.java</span></div><h1>BMP_V1_UT.java</h1><pre class="source lang-java linenums">package file.test.ut.format.bmp;
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+
+import file.format.bmp.BMP_V1;
+import file.test.Basic;
+
+/**
+ * &lt;b&gt;BMP V1 の単体テスト&lt;/b&gt;&lt;br&gt;
+ * date: 2017/10/27 last_date: 2018/03/27
+ * 
+ * @author ソウルP
+ */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+<span class="fc" id="L27">public class BMP_V1_UT extends Basic {</span>
+<span class="fc" id="L28">    final String     addr = BASIC_ADDR + &quot;BMP\\BMP_V1_UT\\&quot;;</span>
+    FileOutputStream out;
+    FileInputStream  in;
+    BMP_V1           bmp;
+
+    @Before
+    public void before() {
+<span class="fc" id="L35">        new File(addr).mkdirs();</span>
+<span class="fc" id="L36">    }</span>
+
+    /**
+     * 出力&lt;br&gt;
+     * 8bit&lt;br&gt;
+     * 成功テスト&lt;br&gt;
+     * &lt;p&gt;
+     * 8ビット以下の場合、OS/2しか対応されていない。&lt;br&gt;
+     * 16ビット以上だと、Windowsでも問題なく開ける。
+     * &lt;/p&gt;
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test000_8bit_output() throws IOException {
+<span class="fc" id="L51">        short width = 3;</span>
+<span class="fc" id="L52">        short height = 3;</span>
+<span class="fc" id="L53">        short bitCount = 8;</span>
+<span class="fc" id="L54">        List&lt;byte[]&gt; colors = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L55">        colors.add(new byte[] { (byte) 0xff, 0x00, (byte) 0xff }); // 紫色</span>
+<span class="fc" id="L56">        colors.add(new byte[] { (byte) 0xff, (byte) 0xff, 0x00 }); // アクア色</span>
+<span class="fc" id="L57">        List&lt;byte[]&gt; image = image_8bit;</span>
+
+<span class="fc" id="L59">        bmp = setupBmpV1(width, height, bitCount, colors, image);</span>
+
+<span class="fc" id="L61">        out = new FileOutputStream(addr + &quot;test000_8bit.bmp&quot;);</span>
+<span class="fc" id="L62">        out.write(bmp.get());</span>
+<span class="fc" id="L63">        out.flush();</span>
+<span class="fc" id="L64">        out.close();</span>
+<span class="fc" id="L65">    }</span>
+
+    /**
+     * 出力&lt;br&gt;
+     * 16bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test010_16bit_output() throws IOException {
+<span class="fc" id="L76">        short width = 3;</span>
+<span class="fc" id="L77">        short height = 3;</span>
+<span class="fc" id="L78">        short bitCount = 16;</span>
+<span class="fc" id="L79">        List&lt;byte[]&gt; image = image_16bit;</span>
+
+<span class="fc" id="L81">        bmp = setupBmpV1(width, height, bitCount, null, image);</span>
+
+<span class="fc" id="L83">        out = new FileOutputStream(addr + &quot;test010_16bit.bmp&quot;);</span>
+<span class="fc" id="L84">        out.write(bmp.get());</span>
+<span class="fc" id="L85">        out.flush();</span>
+<span class="fc" id="L86">        out.close();</span>
+<span class="fc" id="L87">    }</span>
+
+    /**
+     * 出力&lt;br&gt;
+     * 24bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test020_24bit_output() throws IOException {
+<span class="fc" id="L98">        short width = 3;</span>
+<span class="fc" id="L99">        short height = 3;</span>
+<span class="fc" id="L100">        short bitCount = 24;</span>
+<span class="fc" id="L101">        List&lt;byte[]&gt; image = image_24bit;</span>
+
+<span class="fc" id="L103">        bmp = setupBmpV1(width, height, bitCount, null, image);</span>
+
+<span class="fc" id="L105">        out = new FileOutputStream(addr + &quot;test020_24bit.bmp&quot;);</span>
+<span class="fc" id="L106">        out.write(bmp.get());</span>
+<span class="fc" id="L107">        out.flush();</span>
+<span class="fc" id="L108">        out.close();</span>
+<span class="fc" id="L109">    }</span>
+
+    /**
+     * 出力&lt;br&gt;
+     * 32bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test030_32bit_output() throws IOException {
+<span class="fc" id="L120">        short width = 3;</span>
+<span class="fc" id="L121">        short height = 3;</span>
+<span class="fc" id="L122">        short bitCount = 32;</span>
+<span class="fc" id="L123">        List&lt;byte[]&gt; image = image_32bit;</span>
+
+<span class="fc" id="L125">        bmp = setupBmpV1(width, height, bitCount, null, image);</span>
+
+<span class="fc" id="L127">        out = new FileOutputStream(addr + &quot;test030_32bit.bmp&quot;);</span>
+<span class="fc" id="L128">        out.write(bmp.get());</span>
+<span class="fc" id="L129">        out.flush();</span>
+<span class="fc" id="L130">        out.close();</span>
+<span class="fc" id="L131">    }</span>
+
+    /**
+     * 入力&lt;br&gt;
+     * 8bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test100_8bit_input() throws IOException {
+<span class="fc" id="L142">        in = new FileInputStream(addr + &quot;test000_8bit.bmp&quot;);</span>
+<span class="fc" id="L143">        byte[] data = new byte[in.available()];</span>
+<span class="fc" id="L144">        in.read(data);</span>
+<span class="fc" id="L145">        in.close();</span>
+
+<span class="fc" id="L147">        bmp = new BMP_V1(data);</span>
+
+<span class="fc" id="L149">        System.out.println(bmp);</span>
+<span class="fc" id="L150">    }</span>
+
+    /**
+     * 入力&lt;br&gt;
+     * 16bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test110_16bit_input() throws IOException {
+<span class="fc" id="L161">        in = new FileInputStream(addr + &quot;test010_16bit.bmp&quot;);</span>
+<span class="fc" id="L162">        byte[] data = new byte[in.available()];</span>
+<span class="fc" id="L163">        in.read(data);</span>
+<span class="fc" id="L164">        in.close();</span>
+
+<span class="fc" id="L166">        bmp = new BMP_V1(data);</span>
+
+<span class="fc" id="L168">        System.out.println(bmp);</span>
+<span class="fc" id="L169">    }</span>
+
+    /**
+     * 入力&lt;br&gt;
+     * 24bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test120_24bit_input() throws IOException {
+<span class="fc" id="L180">        in = new FileInputStream(addr + &quot;test020_24bit.bmp&quot;);</span>
+<span class="fc" id="L181">        byte[] data = new byte[in.available()];</span>
+<span class="fc" id="L182">        in.read(data);</span>
+<span class="fc" id="L183">        in.close();</span>
+
+<span class="fc" id="L185">        bmp = new BMP_V1(data);</span>
+
+<span class="fc" id="L187">        System.out.println(bmp);</span>
+<span class="fc" id="L188">    }</span>
+
+    /**
+     * 入力&lt;br&gt;
+     * 32bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test130_32bit_input() throws IOException {
+<span class="fc" id="L199">        in = new FileInputStream(addr + &quot;test030_32bit.bmp&quot;);</span>
+<span class="fc" id="L200">        byte[] data = new byte[in.available()];</span>
+<span class="fc" id="L201">        in.read(data);</span>
+<span class="fc" id="L202">        in.close();</span>
+
+<span class="fc" id="L204">        bmp = new BMP_V1(data);</span>
+
+<span class="fc" id="L206">        System.out.println(bmp);</span>
+<span class="fc" id="L207">    }</span>
+
+    /**
+     * カバレッジ埋め (入出力なし)
+     */
+    @Test
+    public void test900() {
+<span class="fc" id="L214">        short width = 3;</span>
+<span class="fc" id="L215">        short height = 3;</span>
+<span class="fc" id="L216">        short bitCount = 32;</span>
+<span class="fc" id="L217">        List&lt;byte[]&gt; image = image_32bit;</span>
+
+<span class="fc" id="L219">        bmp = setupBmpV1(width, height, bitCount, null, image);</span>
+
+<span class="fc" id="L221">        bmp.clearColors();</span>
+
+<span class="fc" id="L223">        assertEquals(image, bmp.getImage());</span>
+<span class="fc" id="L224">    }</span>
+
+    private BMP_V1 setupBmpV1(short width, short height, short bitCount, List&lt;byte[]&gt; colors, List&lt;byte[]&gt; image) {
+<span class="fc" id="L227">        bmp = new BMP_V1();</span>
+
+<span class="fc" id="L229">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L230">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L231">        bmp.setBitCount(bitCount); // ビットの深さ</span>
+<span class="fc" id="L232">        bmp.setImage(image); // イメージ</span>
+
+<span class="fc" id="L234">        int fileSize = bmp.getFileHeaderSize() + bmp.getInfoHeaderSize();</span>
+
+<span class="pc bpc" id="L236" title="1 of 4 branches missed.">        if (!(colors == null || colors.isEmpty())) {</span>
+<span class="fc" id="L237">            bmp.setColors(colors); // 色</span>
+<span class="fc" id="L238">            int colorSize = 0;</span>
+<span class="fc bfc" id="L239" title="All 2 branches covered.">            for (byte[] c : bmp.getColors())</span>
+<span class="fc" id="L240">                colorSize += c.length;</span>
+<span class="fc" id="L241">            fileSize += colorSize;</span>
+        }
+
+<span class="fc" id="L244">        int imageSize = 0;</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        for (byte[] i : image)</span>
+<span class="fc" id="L246">            imageSize += i.length;</span>
+
+<span class="fc" id="L248">        bmp.setOffset(fileSize);</span>
+<span class="fc" id="L249">        fileSize += imageSize;</span>
+<span class="fc" id="L250">        bmp.setFileSize(fileSize);</span>
+
+<span class="fc" id="L252">        return bmp;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>paint (2018/03/28 14:13:40)</div></body></html>

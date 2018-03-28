@@ -1,0 +1,602 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>BMP_V1.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">paint (2018/03/28 14:13:40)</a> &gt; <a href="../../index.html" class="el_group">paint</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">file.format.bmp</a> &gt; <span class="el_source">BMP_V1.java</span></div><h1>BMP_V1.java</h1><pre class="source lang-java linenums">package file.format.bmp;
+
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import file.Tools;
+import file.io.BMP;
+
+/**
+ * &lt;b&gt;BMP - OS/2 V1&lt;/b&gt;&lt;br&gt;
+ * date: 2017/10/18 last_date: 2018/03/27&lt;br&gt;
+ * &lt;dl&gt;
+ * &lt;h1&gt;ファイルヘッダ&lt;/h1&gt;
+ * 
+ * &lt;dt&gt;変数&lt;/dt&gt;
+ * &lt;dd&gt;オフセット&lt;/dd&gt;
+ * &lt;dd&gt;サイズ&lt;/dd&gt;
+ * &lt;dd&gt;格納する情報&lt;/dd&gt;
+ * &lt;dd&gt;値・備考&lt;/dd&gt;
+ * 
+ * &lt;dt&gt;bfType&lt;/dt&gt;
+ * &lt;dd&gt;0x0000&lt;/dd&gt;
+ * &lt;dd&gt;2 バイト&lt;/dd&gt;
+ * &lt;dd&gt;ファイルタイプ&lt;/dd&gt;
+ * &lt;dd&gt;常にBM (0x42, 0x4d)&lt;/dd&gt;
+ * 
+ * &lt;dt&gt;bfSize&lt;/dt&gt;
+ * &lt;dd&gt;0x0002&lt;/dd&gt;
+ * &lt;dd&gt;4 バイト&lt;/dd&gt;
+ * &lt;dd&gt;ファイルサイズ&lt;/dd&gt;
+ * &lt;dd&gt;ビットマップファイルのサイズを格納する（単位はバイト）&lt;/dd&gt;
+ * 
+ * &lt;dt&gt;BF_RESERVED_1&lt;/dt&gt;
+ * &lt;dd&gt;0x0006&lt;/dd&gt;
+ * &lt;dd&gt;2 バイト&lt;/dd&gt;
+ * &lt;dd&gt;予約領域1&lt;/dd&gt;
+ * &lt;dd&gt;常に0&lt;/dd&gt;
+ * 
+ * &lt;dt&gt;BF_RESERVED_2&lt;/dt&gt;
+ * &lt;dd&gt;0x0008&lt;/dd&gt;
+ * &lt;dd&gt;2 バイト&lt;/dd&gt;
+ * &lt;dd&gt;予約領域2&lt;/dd&gt;
+ * &lt;dd&gt;常に0&lt;/dd&gt;
+ * 
+ * &lt;dt&gt;bfOffBits&lt;/dt&gt;
+ * &lt;dd&gt;0x000A&lt;/dd&gt;
+ * &lt;dd&gt;4 バイト&lt;/dd&gt;
+ * &lt;dd&gt;オフセット&lt;/dd&gt;
+ * &lt;dd&gt;ファイルヘッダの先頭アドレスからビットマップデータの先頭アドレスまでのオフセット（単位はバイト）&lt;/dd&gt;
+ * &lt;/dl&gt;
+ * &lt;dl&gt;
+ * &lt;h1&gt;情報ヘッダ&lt;/h1&gt;
+ * 
+ * &lt;dt&gt;変数&lt;/dt&gt;
+ * &lt;dd&gt;オフセット&lt;/dd&gt;
+ * &lt;dd&gt;サイズ&lt;/dd&gt;
+ * &lt;dd&gt;格納する情報&lt;/dd&gt;
+ * &lt;dd&gt;値・備考&lt;/dd&gt;
+ * 
+ * &lt;dt&gt;bcSize&lt;/dt&gt;
+ * &lt;dd&gt;0x000E&lt;/dd&gt;
+ * &lt;dd&gt;4 バイト&lt;/dd&gt;
+ * &lt;dd&gt;ヘッダサイズ&lt;/dd&gt;
+ * &lt;dd&gt;12&lt;/dd&gt;
+ * 
+ * &lt;dt&gt;bcWidth&lt;/dt&gt;
+ * &lt;dd&gt;0x0012&lt;/dd&gt;
+ * &lt;dd&gt;2 バイト&lt;/dd&gt;
+ * &lt;dd&gt;ビットマップの横幅&lt;/dd&gt;
+ * &lt;dd&gt;単位はピクセル&lt;/dd&gt;
+ * 
+ * &lt;dt&gt;bcHeight&lt;/dt&gt;
+ * &lt;dd&gt;0x0014&lt;/dd&gt;
+ * &lt;dd&gt;2 バイト&lt;/dd&gt;
+ * &lt;dd&gt;ビットマップの縦幅&lt;/dd&gt;
+ * &lt;dd&gt;単位はピクセル&lt;/dd&gt;
+ * 
+ * &lt;dt&gt;BC_PLANES&lt;/dt&gt;
+ * &lt;dd&gt;0x0016&lt;/dd&gt;
+ * &lt;dd&gt;2 バイト&lt;/dd&gt;
+ * &lt;dd&gt;プレーン数&lt;/dd&gt;
+ * &lt;dd&gt;常に1&lt;/dd&gt;
+ * 
+ * &lt;dt&gt;bcBitCount&lt;/dt&gt;
+ * &lt;dd&gt;0x0018&lt;/dd&gt;
+ * &lt;dd&gt;2 バイト&lt;/dd&gt;
+ * &lt;dd&gt;1ピクセルあたりのビット数&lt;/dd&gt;
+ * &lt;dd&gt;1, 4, 8, 24&lt;/dd&gt;
+ * &lt;/dl&gt;
+ * 
+ * @author ソウルP
+ * @version 1.0 2017/10/18 BMP_V1作成
+ */
+public class BMP_V1 implements BMPable {
+    // ファイルヘッダ
+    protected byte[]              bfType;                         // ファイルタイプ 通常は'BM'
+    protected byte[]              bfSize;                         // ファイルサイズ (byte)
+<span class="fc" id="L100">    protected static final byte[] BF_RESERVED_1 = { 0x00, 0x00 }; // 予約領域 常に 0</span>
+<span class="fc" id="L101">    protected static final byte[] BF_RESERVED_2 = { 0x00, 0x00 }; // 予約領域 常に 0</span>
+    protected byte[]              bfOffBits;                      // ファイル先頭から画像データまでのオフセット (byte)
+
+    // 情報ヘッダ
+    protected byte[]              bcSize;                         // ヘッダサイズ (byte)
+    protected byte[]              bcWidth;                        // ビットマップの横幅 (ピクセル)
+    protected byte[]              bcHeight;                       // ビットマップの縦幅 (ピクセル)
+<span class="fc" id="L108">    protected static final byte[] BC_PLANES     = { 0x01, 0x00 }; // プレーン数 常に 1</span>
+    protected byte[]              bcBitCount;                     // 1ピクセルあたりのビット数 (bit)
+
+    protected List&lt;byte[]&gt;        colors;                         // カラーパレット
+    protected List&lt;byte[]&gt;        image;                          // イメージ
+
+    /**
+     * &lt;b&gt;BMP - OS/2 V1&lt;/b&gt;
+     */
+<span class="fc" id="L117">    public BMP_V1() {</span>
+<span class="fc" id="L118">        colors = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L119">        image = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L120">        clear();</span>
+<span class="fc" id="L121">    }</span>
+
+    /**
+     * &lt;b&gt;BMP - OS/2 V1&lt;/b&gt;
+     * 
+     * @param bmp
+     *            BMPのデータ
+     */
+    public BMP_V1(byte[] data) {
+<span class="fc" id="L130">        this();</span>
+<span class="fc" id="L131">        set(data);</span>
+<span class="fc" id="L132">    }</span>
+
+    /**
+     * &lt;b&gt;BMP - OS/2 V1&lt;/b&gt;
+     * 
+     * @param data
+     *            BMPのオブジェクト
+     */
+    public BMP_V1(BMP bmp) {
+<span class="fc" id="L141">        this();</span>
+<span class="fc" id="L142">        set(bmp);</span>
+<span class="fc" id="L143">    }</span>
+
+    @Override
+    public void clear() {
+<span class="fc" id="L147">        setType(new byte[] { 0x42, 0x4D });</span>
+<span class="fc" id="L148">        setFileSize(0);</span>
+<span class="fc" id="L149">        setOffset(0);</span>
+<span class="fc" id="L150">        setInfoHeaderSize(INFO_HEADER_SIZE_V1);</span>
+<span class="fc" id="L151">        setWidth((short) 0);</span>
+<span class="fc" id="L152">        setHeight((short) 0);</span>
+<span class="fc" id="L153">        setBitCount((short) 0);</span>
+<span class="fc" id="L154">    }</span>
+
+    /**
+     * @return ファイルタイプ
+     */
+    public byte[] getType() {
+<span class="fc" id="L160">        return bfType;</span>
+    }
+
+    /**
+     * @param bfType
+     *            ファイルタイプ
+     */
+    public void setType(byte[] bfType) {
+<span class="fc" id="L168">        this.bfType = bfType;</span>
+<span class="fc" id="L169">    }</span>
+
+    /**
+     * 単位はバイト
+     * 
+     * @return ファイルサイズ
+     */
+    public int getFileSize() {
+<span class="fc" id="L177">        return Tools.bytes2int(bfSize);</span>
+    }
+
+    /**
+     * 単位はバイト
+     * 
+     * @param bfSize
+     *            ファイルサイズ
+     */
+    public void setFileSize(int bfSize) {
+<span class="fc" id="L187">        this.bfSize = Tools.int2bytes(bfSize);</span>
+<span class="fc" id="L188">    }</span>
+
+    /**
+     * 単位はバイト
+     * 
+     * @return オフセット
+     */
+    public int getOffset() {
+<span class="fc" id="L196">        return Tools.bytes2int(bfOffBits);</span>
+    }
+
+    /**
+     * 単位はバイト
+     * 
+     * @param bfOffBits
+     *            オフセット
+     */
+    public void setOffset(int bfOffBits) {
+<span class="fc" id="L206">        this.bfOffBits = Tools.int2bytes(bfOffBits);</span>
+<span class="fc" id="L207">    }</span>
+
+    /**
+     * 単位はバイト
+     * 
+     * @return ファイルヘッダサイズ
+     */
+    public int getFileHeaderSize() {
+<span class="fc" id="L215">        return FILE_HEADER_SIZE;</span>
+    }
+
+    /**
+     * 単位はバイト
+     * 
+     * @return 情報ヘッダサイズ
+     */
+    public int getInfoHeaderSize() {
+<span class="fc" id="L224">        return Tools.bytes2int(bcSize);</span>
+    }
+
+    /**
+     * 単位はバイト
+     * 
+     * @param bcSize
+     *            情報ヘッダサイズ
+     */
+    public void setInfoHeaderSize(int bcSize) {
+<span class="fc" id="L234">        this.bcSize = Tools.int2bytes(bcSize);</span>
+<span class="fc" id="L235">    }</span>
+
+    /**
+     * 単位はピクセル
+     * 
+     * @return ビットマップの横幅
+     */
+    public short getWidthV1() {
+<span class="fc" id="L243">        return Tools.bytes2short(bcWidth);</span>
+    }
+
+    /**
+     * 単位はピクセル
+     * 
+     * @param bcWidth
+     *            ビットマップの横幅
+     */
+    public void setWidth(short bcWidth) {
+<span class="fc" id="L253">        this.bcWidth = Tools.short2bytes(bcWidth);</span>
+<span class="fc" id="L254">    }</span>
+
+    /**
+     * 単位はピクセル
+     * 
+     * @return ビットマップの縦幅
+     */
+    public short getHeightV1() {
+<span class="fc" id="L262">        return Tools.bytes2short(bcHeight);</span>
+    }
+
+    /**
+     * 単位はピクセル
+     * 
+     * @param bcHeight
+     *            ビットマップの縦幅
+     */
+    public void setHeight(short bcHeight) {
+<span class="fc" id="L272">        this.bcHeight = Tools.short2bytes(bcHeight);</span>
+<span class="fc" id="L273">    }</span>
+
+    /**
+     * @return プレーン数
+     */
+    public short getPlanes() {
+<span class="fc" id="L279">        return Tools.bytes2short(BC_PLANES);</span>
+    }
+
+    /**
+     * 単位はビット
+     * 
+     * @return 1ピクセルあたりのビット数
+     */
+    public short getBitCount() {
+<span class="fc" id="L288">        return Tools.bytes2short(bcBitCount);</span>
+    }
+
+    /**
+     * 単位はビット
+     * 
+     * @param bcBitCount
+     *            1ピクセルあたりのビット数
+     */
+    public void setBitCount(short bcBitCount) {
+<span class="fc" id="L298">        this.bcBitCount = Tools.short2bytes(bcBitCount);</span>
+<span class="fc" id="L299">    }</span>
+
+    /**
+     * @param colors
+     *            カラーパレット
+     */
+    public void setColors(List&lt;byte[]&gt; colors) {
+<span class="fc" id="L306">        this.colors = colors;</span>
+<span class="fc" id="L307">    }</span>
+
+    /**
+     * @return カラーパレット
+     */
+    public List&lt;byte[]&gt; getColors() {
+<span class="fc" id="L313">        return colors;</span>
+    }
+
+    /**
+     * &lt;b&gt;カラーパレットに色追加&lt;/b&gt;
+     * 
+     * @param r
+     *            赤 0 - 255
+     * @param g
+     *            緑 0 - 255
+     * @param b
+     *            青 0 - 255
+     */
+    public void addColor(int r, int g, int b) {
+<span class="fc" id="L327">        byte[] color = { (byte) b, (byte) g, (byte) r };</span>
+<span class="fc" id="L328">        colors.add(color);</span>
+<span class="fc" id="L329">    }</span>
+
+    /**
+     * カラーパレット 全消去
+     */
+    public void clearColors() {
+<span class="fc" id="L335">        colors.clear();</span>
+<span class="fc" id="L336">    }</span>
+
+    /**
+     * Listが縦、byte[]が横
+     * 
+     * @return ビットマップデータ
+     */
+    public List&lt;byte[]&gt; getImage() {
+<span class="fc" id="L344">        return image;</span>
+    }
+
+    /**
+     * Listが縦、byte[]が横
+     * 
+     * @param image
+     *            ビットマップデータ
+     */
+    public void setImage(List&lt;byte[]&gt; image) {
+<span class="fc" id="L354">        this.image = image;</span>
+<span class="fc" id="L355">    }</span>
+
+    @Override
+    public byte[] getBitmapHeader() {
+<span class="fc" id="L359">        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V1);</span>
+<span class="fc" id="L360">        buff.put(getFileHeader());</span>
+<span class="fc" id="L361">        buff.put(getInfoHeader());</span>
+<span class="fc" id="L362">        return buff.array();</span>
+    }
+
+    @Override
+    public void set(byte[] data) {
+<span class="fc" id="L367">        int endHeaderOffset = FILE_HEADER_SIZE + INFO_HEADER_SIZE_V1;</span>
+<span class="fc" id="L368">        byte[] fileHeader = Arrays.copyOfRange(data, 0, FILE_HEADER_SIZE);</span>
+<span class="fc" id="L369">        byte[] infoHeader = Arrays.copyOfRange(data, FILE_HEADER_SIZE, endHeaderOffset);</span>
+<span class="fc" id="L370">        setFileHeader(fileHeader);</span>
+<span class="fc" id="L371">        setInfoHeader(infoHeader);</span>
+<span class="fc" id="L372">        int bitCount = getBitCount();</span>
+<span class="fc bfc" id="L373" title="All 2 branches covered.">        if (bitCount &lt;= 8) {</span>
+<span class="fc" id="L374">            byte[] bColors = Arrays.copyOfRange(data, endHeaderOffset, getOffset());</span>
+<span class="fc" id="L375">            setColors(bColors);</span>
+        }
+<span class="fc" id="L377">        byte[] imgData = Arrays.copyOfRange(data, getOffset(), getFileSize());</span>
+<span class="fc" id="L378">        setImage(imgData);</span>
+<span class="fc" id="L379">    }</span>
+
+    @Override
+    public void set(BMP bmp) {
+<span class="fc" id="L383">        setType(bmp.getType());</span>
+<span class="fc" id="L384">        setFileSize(bmp.getFileSize());</span>
+<span class="fc" id="L385">        setOffset(bmp.getImageOffset());</span>
+<span class="fc" id="L386">        setWidth((short) bmp.getWidth());</span>
+<span class="fc" id="L387">        setHeight((short) bmp.getHeight());</span>
+<span class="fc" id="L388">        setBitCount((short) bmp.getBitCount());</span>
+<span class="fc" id="L389">        bmp.getColors().forEach(color -&gt; {</span>
+<span class="fc" id="L390">            addColor(color[0], color[1], color[2]);</span>
+<span class="fc" id="L391">        });</span>
+<span class="fc" id="L392">        setImage(bmp.getImage());</span>
+<span class="fc" id="L393">    }</span>
+
+    @Override
+    public int setFileHeader(byte[] data) {
+<span class="fc" id="L397">        int offset = 0;</span>
+<span class="fc" id="L398">        bfType = Arrays.copyOfRange(data, offset, offset += 2);</span>
+<span class="fc" id="L399">        bfSize = Arrays.copyOfRange(data, offset, offset += 4);</span>
+<span class="fc" id="L400">        bfOffBits = Arrays.copyOfRange(data, offset += 4, offset + 4);</span>
+<span class="fc" id="L401">        return offset;</span>
+    }
+
+    @Override
+    public int setInfoHeader(byte[] data) {
+<span class="fc" id="L406">        int offset = 4;</span>
+<span class="fc" id="L407">        bcWidth = Arrays.copyOfRange(data, offset, offset += 2);</span>
+<span class="fc" id="L408">        bcHeight = Arrays.copyOfRange(data, offset, offset += 2);</span>
+<span class="fc" id="L409">        bcBitCount = Arrays.copyOfRange(data, offset += 2, offset += 2);</span>
+<span class="fc" id="L410">        return offset;</span>
+    }
+
+    @Override
+    public void setColors(byte[] data) {
+<span class="fc bfc" id="L415" title="All 2 branches covered.">        for (int i = 0; i &lt; data.length; i += 3) {</span>
+<span class="fc" id="L416">            int r = Byte.toUnsignedInt(data[i + 2]);</span>
+<span class="fc" id="L417">            int g = Byte.toUnsignedInt(data[i + 1]);</span>
+<span class="fc" id="L418">            int b = Byte.toUnsignedInt(data[i]);</span>
+<span class="fc" id="L419">            addColor(r, g, b);</span>
+        }
+<span class="fc" id="L421">    }</span>
+
+    @Override
+    public void setImage(byte[] data) {
+<span class="fc" id="L425">        int tempW = 0;</span>
+<span class="fc" id="L426">        int bitCount = getBitCount();</span>
+<span class="fc" id="L427">        short width = getWidthV1();</span>
+<span class="fc bfc" id="L428" title="All 2 branches covered.">        if (bitCount == 1) {</span>
+<span class="pc bpc" id="L429" title="1 of 2 branches missed.">            tempW = (width % 32 == 0) ? width : (32 - width % 32 + width) / 8;</span>
+        }
+<span class="fc bfc" id="L431" title="All 2 branches covered.">        if (bitCount == 4) {</span>
+<span class="pc bpc" id="L432" title="1 of 2 branches missed.">            tempW = (width % 8 == 0) ? width : (8 - width % 8 + width) / 2;</span>
+        }
+<span class="fc bfc" id="L434" title="All 4 branches covered.">        if (bitCount == 8 || bitCount == 16) {</span>
+<span class="pc bpc" id="L435" title="1 of 2 branches missed.">            tempW = (width % 4 == 0) ? width : (4 - width % 4 + width);</span>
+        }
+<span class="fc bfc" id="L437" title="All 2 branches covered.">        if (bitCount == 24) {</span>
+<span class="pc bpc" id="L438" title="1 of 2 branches missed.">            tempW = (width * 3 % 4 == 0) ? width : 4 - width * 3 % 4 + width * 3;</span>
+        }
+<span class="fc bfc" id="L440" title="All 2 branches covered.">        if (bitCount == 32) {</span>
+<span class="fc" id="L441">            tempW = width * 4;</span>
+        }
+<span class="fc bfc" id="L443" title="All 2 branches covered.">        for (int i = 0; i &lt; data.length; i += tempW) {</span>
+<span class="fc" id="L444">            byte[] img = new byte[tempW];</span>
+<span class="fc bfc" id="L445" title="All 2 branches covered.">            for (int w = 0; w &lt; tempW; w++) {</span>
+<span class="fc" id="L446">                img[w] = data[i + w];</span>
+            }
+<span class="fc" id="L448">            image.add(img);</span>
+        }
+<span class="fc" id="L450">    }</span>
+
+    @Override
+    public byte[] get() {
+<span class="fc" id="L454">        int imageSize = 0;</span>
+<span class="fc bfc" id="L455" title="All 2 branches covered.">        for (byte[] b : image) {</span>
+<span class="fc" id="L456">            imageSize += b.length;</span>
+        }
+<span class="fc" id="L458">        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE_V1 + colors.size() * 3 + imageSize);</span>
+<span class="fc" id="L459">        buff.put(getBitmapHeader());</span>
+<span class="fc" id="L460">        colors.forEach(color -&gt; {</span>
+<span class="fc" id="L461">            buff.put(color);</span>
+<span class="fc" id="L462">        });</span>
+<span class="fc" id="L463">        image.forEach(img -&gt; {</span>
+<span class="fc" id="L464">            buff.put(img);</span>
+<span class="fc" id="L465">        });</span>
+<span class="fc" id="L466">        return buff.array();</span>
+    }
+
+    @Override
+    public byte[] getFileHeader() {
+<span class="fc" id="L471">        ByteBuffer buff = ByteBuffer.allocate(FILE_HEADER_SIZE);</span>
+<span class="fc" id="L472">        buff.put(bfType);</span>
+<span class="fc" id="L473">        buff.put(bfSize);</span>
+<span class="fc" id="L474">        buff.put(BF_RESERVED_1);</span>
+<span class="fc" id="L475">        buff.put(BF_RESERVED_2);</span>
+<span class="fc" id="L476">        buff.put(bfOffBits);</span>
+<span class="fc" id="L477">        return buff.array();</span>
+    }
+
+    @Override
+    public byte[] getInfoHeader() {
+<span class="fc" id="L482">        ByteBuffer buff = ByteBuffer.allocate(INFO_HEADER_SIZE_V1);</span>
+<span class="fc" id="L483">        buff.put(bcSize);</span>
+<span class="fc" id="L484">        buff.put(bcWidth);</span>
+<span class="fc" id="L485">        buff.put(bcHeight);</span>
+<span class="fc" id="L486">        buff.put(BC_PLANES);</span>
+<span class="fc" id="L487">        buff.put(bcBitCount);</span>
+<span class="fc" id="L488">        return buff.array();</span>
+    }
+
+    @Override
+    public int getVersion() {
+<span class="fc" id="L493">        return 1;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L498">        byte[] t = getType();</span>
+<span class="fc" id="L499">        StringBuffer buff = new StringBuffer();</span>
+<span class="fc" id="L500">        buff.append(STR_BMP_V);</span>
+<span class="fc" id="L501">        buff.append(getVersion());</span>
+<span class="fc" id="L502">        buff.append(STR_NEW_LINE);</span>
+
+<span class="fc" id="L504">        buff.append(STR_FILE_TYPE);</span>
+<span class="fc" id="L505">        buff.append((char) t[0]);</span>
+<span class="fc" id="L506">        buff.append((char) t[1]);</span>
+<span class="fc" id="L507">        buff.append(STR_SPACE);</span>
+
+<span class="fc" id="L509">        buff.append(STR_BRACKET_LEFT);</span>
+<span class="pc bpc" id="L510" title="1 of 2 branches missed.">        buff.append(Arrays.equals(t, new byte[] { 0x42, 0x4D }) ? STR_BMP : STR_UNKNOWN);</span>
+<span class="fc" id="L511">        buff.append(STR_BRACKET_RIGHT);</span>
+<span class="fc" id="L512">        buff.append(STR_NEW_LINE);</span>
+
+<span class="fc" id="L514">        buff.append(STR_FILE_SIZE);</span>
+<span class="fc" id="L515">        buff.append(getFileSize());</span>
+<span class="fc" id="L516">        buff.append(STR_BYTE);</span>
+<span class="fc" id="L517">        buff.append(STR_NEW_LINE);</span>
+
+<span class="fc" id="L519">        buff.append(STR_INFO_HEADER_SIZE);</span>
+<span class="fc" id="L520">        buff.append(getInfoHeaderSize());</span>
+<span class="fc" id="L521">        buff.append(STR_BYTE);</span>
+<span class="fc" id="L522">        buff.append(STR_NEW_LINE);</span>
+
+<span class="fc" id="L524">        buff.append(STR_WIDTH);</span>
+<span class="fc" id="L525">        buff.append(getWidthV1());</span>
+<span class="fc" id="L526">        buff.append(STR_PIXEL);</span>
+<span class="fc" id="L527">        buff.append(STR_NEW_LINE);</span>
+
+<span class="fc" id="L529">        buff.append(STR_HEIGHT);</span>
+<span class="fc" id="L530">        buff.append(getHeightV1());</span>
+<span class="fc" id="L531">        buff.append(STR_PIXEL);</span>
+<span class="fc" id="L532">        buff.append(STR_NEW_LINE);</span>
+
+<span class="fc" id="L534">        buff.append(STR_PLANES);</span>
+<span class="fc" id="L535">        buff.append(getPlanes());</span>
+<span class="fc" id="L536">        buff.append(STR_NEW_LINE);</span>
+
+<span class="fc" id="L538">        buff.append(STR_BITCOUNT);</span>
+<span class="fc" id="L539">        buff.append(getBitCount());</span>
+<span class="fc" id="L540">        buff.append(STR_BIT);</span>
+<span class="fc" id="L541">        buff.append(STR_NEW_LINE);</span>
+<span class="fc" id="L542">        buff.append(STR_NEW_LINE);</span>
+
+<span class="fc" id="L544">        buff.append(STR_COLOR_PALLET);</span>
+<span class="fc" id="L545">        buff.append(STR_NEW_LINE);</span>
+<span class="fc" id="L546">        colors.forEach(color -&gt; {</span>
+<span class="fc" id="L547">            buff.append(STR_RGB_R);</span>
+<span class="fc" id="L548">            buff.append(String.format(STR_COLOR_FORMAT, Byte.toUnsignedInt(color[2])));</span>
+<span class="fc" id="L549">            buff.append(STR_COMMA_SPACE);</span>
+
+<span class="fc" id="L551">            buff.append(STR_RGB_G);</span>
+<span class="fc" id="L552">            buff.append(String.format(STR_COLOR_FORMAT, Byte.toUnsignedInt(color[1])));</span>
+<span class="fc" id="L553">            buff.append(STR_COMMA_SPACE);</span>
+
+<span class="fc" id="L555">            buff.append(STR_RGB_B);</span>
+<span class="fc" id="L556">            buff.append(String.format(STR_COLOR_FORMAT, Byte.toUnsignedInt(color[0])));</span>
+<span class="fc" id="L557">            buff.append(STR_NEW_LINE);</span>
+<span class="fc" id="L558">        });</span>
+<span class="fc" id="L559">        buff.append(STR_NEW_LINE);</span>
+
+<span class="fc" id="L561">        buff.append(STR_IMAGE_DATA);</span>
+<span class="fc" id="L562">        buff.append(STR_NEW_LINE);</span>
+<span class="fc" id="L563">        image.forEach(bA -&gt; {</span>
+<span class="fc bfc" id="L564" title="All 2 branches covered.">            for (byte b : bA)</span>
+<span class="fc" id="L565">                buff.append(String.format(STR_16BIT_FORMAT, b));</span>
+<span class="fc" id="L566">            buff.append(STR_NEW_LINE);</span>
+<span class="fc" id="L567">        });</span>
+
+<span class="fc" id="L569">        return buff.toString();</span>
+    }
+
+    protected String toStrColorImage() {
+<span class="fc" id="L573">        StringBuffer buff = new StringBuffer();</span>
+<span class="fc" id="L574">        buff.append(STR_COLOR_PALLET);</span>
+<span class="fc" id="L575">        buff.append(STR_NEW_LINE);</span>
+<span class="fc" id="L576">        colors.forEach(color -&gt; {</span>
+<span class="fc" id="L577">            buff.append(STR_RGB_R);</span>
+<span class="fc" id="L578">            buff.append(String.format(STR_COLOR_FORMAT, Byte.toUnsignedInt(color[2])));</span>
+<span class="fc" id="L579">            buff.append(STR_COMMA_SPACE);</span>
+
+<span class="fc" id="L581">            buff.append(STR_RGB_G);</span>
+<span class="fc" id="L582">            buff.append(String.format(STR_COLOR_FORMAT, Byte.toUnsignedInt(color[1])));</span>
+<span class="fc" id="L583">            buff.append(STR_COMMA_SPACE);</span>
+
+<span class="fc" id="L585">            buff.append(STR_RGB_B);</span>
+<span class="fc" id="L586">            buff.append(String.format(STR_COLOR_FORMAT, Byte.toUnsignedInt(color[0])));</span>
+<span class="fc" id="L587">            buff.append(STR_NEW_LINE);</span>
+<span class="fc" id="L588">        });</span>
+<span class="fc" id="L589">        buff.append(STR_NEW_LINE);</span>
+
+<span class="fc" id="L591">        buff.append(STR_IMAGE_DATA);</span>
+<span class="fc" id="L592">        buff.append(STR_NEW_LINE);</span>
+<span class="fc" id="L593">        image.forEach(bA -&gt; {</span>
+<span class="fc bfc" id="L594" title="All 2 branches covered.">            for (byte b : bA)</span>
+<span class="fc" id="L595">                buff.append(String.format(STR_16BIT_FORMAT, b));</span>
+<span class="fc" id="L596">            buff.append(STR_NEW_LINE);</span>
+<span class="fc" id="L597">        });</span>
+
+<span class="fc" id="L599">        return buff.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>paint (2018/03/28 14:13:40)</div></body></html>

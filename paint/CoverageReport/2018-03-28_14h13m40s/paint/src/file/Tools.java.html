@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Tools.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">paint (2018/03/28 14:13:40)</a> &gt; <a href="../../index.html" class="el_group">paint</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">file</a> &gt; <span class="el_source">Tools.java</span></div><h1>Tools.java</h1><pre class="source lang-java linenums">package file;
+
+import java.nio.ByteBuffer;
+
+/**
+ * &lt;b&gt;ツール&lt;/b&gt;&lt;br&gt;
+ * 変換など&lt;br&gt;
+ * date: 2017/10/13 last_date: 2017/10/27
+ * 
+ * @author ソウルP
+ * @version 1.0 2017/10/13 Tools作成
+ * @version 1.1 2017/10/19 byte[] と Byte[] の変換追加
+ * @version 1.2 2017/10/25 バイト配列の2次元から１次元に変換追加
+ * @version 1.3 2017/10/27 subbytes削除
+ */
+public interface Tools {
+    /**
+     * &lt;b&gt;エンディアン変換&lt;/b&gt;&lt;br&gt;
+     * ビッグエンディアン → リトルエンディアン&lt;br&gt;
+     * リトルエンディアン → ビッグエンディアン
+     * 
+     * @param bytes
+     *            バイト配列
+     * @return 変換された後のバイト配列
+     */
+    public static byte[] endian(byte[] bytes) {
+<span class="fc" id="L27">        byte[] b = new byte[bytes.length];</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        for (int i = 0; i &lt; bytes.length; i++)</span>
+<span class="fc" id="L29">            b[i] = bytes[bytes.length - 1 - i];</span>
+<span class="fc" id="L30">        return b;</span>
+    }
+
+    /**
+     * &lt;b&gt;short → リトルエンディアンのバイト配列&lt;/b&gt;
+     * 
+     * @param bytes
+     *            バイト配列
+     * @param value
+     *            値
+     * @return リトルエンディアンのバイト配列
+     */
+    public static byte[] short2bytes(short value) {
+<span class="fc" id="L43">        return endian(ByteBuffer.allocate(2).putShort(value).array());</span>
+    }
+
+    /**
+     * &lt;b&gt;int → リトルエンディアンのバイト配列&lt;/b&gt;
+     * 
+     * @param bytes
+     *            バイト配列
+     * @param value
+     *            値
+     * @return リトルエンディアンのバイト配列
+     */
+    public static byte[] int2bytes(int value) {
+<span class="fc" id="L56">        return endian(ByteBuffer.allocate(4).putInt(value).array());</span>
+    }
+
+    /**
+     * &lt;b&gt;long → リトルエンディアンのバイト配列&lt;/b&gt;
+     * 
+     * @param bytes
+     *            バイト配列
+     * @param value
+     *            値
+     * @return リトルエンディアンのバイト配列
+     */
+    public static byte[] long2bytes(long value) {
+<span class="fc" id="L69">        return endian(ByteBuffer.allocate(8).putLong(value).array());</span>
+    }
+
+    /**
+     * &lt;b&gt;float → リトルエンディアンのバイト配列&lt;/b&gt;
+     * 
+     * @param bytes
+     *            バイト配列
+     * @param value
+     *            値
+     * @return リトルエンディアンのバイト配列
+     */
+    public static byte[] float2bytes(float value) {
+<span class="fc" id="L82">        return endian(ByteBuffer.allocate(4).putFloat(value).array());</span>
+    }
+
+    /**
+     * &lt;b&gt;double → リトルエンディアンのバイト配列&lt;/b&gt;
+     * 
+     * @param bytes
+     *            バイト配列
+     * @param value
+     *            値
+     * @return リトルエンディアンのバイト配列
+     */
+    public static byte[] double2bytes(double value) {
+<span class="fc" id="L95">        return endian(ByteBuffer.allocate(8).putDouble(value).array());</span>
+    }
+
+    /**
+     * &lt;b&gt;リトルエンディアンのバイト配列 → short&lt;/b&gt;
+     * 
+     * @param bytes
+     *            リトルエンディアンのバイト配列
+     * @return 値
+     */
+    public static short bytes2short(byte[] bytes) {
+<span class="fc" id="L106">        return ByteBuffer.wrap(endian(bytes)).getShort();</span>
+    }
+
+    /**
+     * &lt;b&gt;リトルエンディアンのバイト配列 → int&lt;/b&gt;
+     * 
+     * @param bytes
+     *            リトルエンディアンのバイト配列
+     * @return 値
+     */
+    public static int bytes2int(byte[] bytes) {
+<span class="fc" id="L117">        return ByteBuffer.wrap(endian(bytes)).getInt();</span>
+    }
+
+    /**
+     * &lt;b&gt;リトルエンディアンのバイト配列 → long&lt;/b&gt;
+     * 
+     * @param bytes
+     *            リトルエンディアンのバイト配列
+     * @return 値
+     */
+    public static long bytes2long(byte[] bytes) {
+<span class="fc" id="L128">        return ByteBuffer.wrap(endian(bytes)).getLong();</span>
+    }
+
+    /**
+     * &lt;b&gt;リトルエンディアンのバイト配列 → float&lt;/b&gt;
+     * 
+     * @param bytes
+     *            リトルエンディアンのバイト配列
+     * @return 値
+     */
+    public static float bytes2float(byte[] bytes) {
+<span class="fc" id="L139">        return ByteBuffer.wrap(endian(bytes)).getFloat();</span>
+    }
+
+    /**
+     * &lt;b&gt;リトルエンディアンのバイト配列 → double&lt;/b&gt;
+     * 
+     * @param bytes
+     *            リトルエンディアンのバイト配列
+     * @return 値
+     */
+    public static double bytes2double(byte[] bytes) {
+<span class="fc" id="L150">        return ByteBuffer.wrap(endian(bytes)).getDouble();</span>
+    }
+
+    /**
+     * Byte[] から byte[] に変換
+     * 
+     * @param bytes
+     *            Byte[]
+     * @return byte[]
+     */
+    public static byte[] bytes2primBytes(Byte[] bytes) {
+<span class="fc" id="L161">        byte[] primBytes = new byte[bytes.length];</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">        for (int i = 0; i &lt; primBytes.length; i++)</span>
+<span class="fc" id="L163">            primBytes[i] = bytes[i];</span>
+<span class="fc" id="L164">        return primBytes;</span>
+    }
+
+    /**
+     * byte[] から Byte[] に変換
+     * 
+     * @param primBytes
+     *            byte[]
+     * @return Byte[]
+     */
+    public static Byte[] primBytes2Bytes(byte[] primBytes) {
+<span class="fc" id="L175">        Byte[] bytes = new Byte[primBytes.length];</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">        for (int i = 0; i &lt; bytes.length; i++)</span>
+<span class="fc" id="L177">            bytes[i] = primBytes[i];</span>
+<span class="fc" id="L178">        return bytes;</span>
+    }
+
+    /**
+     * 2次元バイト配列 → 1次元バイト配列に変換
+     * 
+     * @param bytes2D
+     *            2次元バイト配列
+     * @return １次元バイト配列
+     */
+    public static byte[] bytes2D2bytes1D(byte[][] bytes2D) {
+<span class="fc" id="L189">        int length = 0;</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">        for (byte[] b : bytes2D)</span>
+<span class="fc" id="L191">            length += b.length;</span>
+<span class="fc" id="L192">        byte[] bytes1D = new byte[length];</span>
+<span class="fc" id="L193">        int b2d = 0;</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        for (int i = 0; i &lt; bytes2D.length; i++) {</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">            for (int a = 0; a &lt; bytes2D[i].length; a++) {</span>
+<span class="fc" id="L196">                bytes1D[b2d + a] = bytes2D[i][a];</span>
+            }
+<span class="fc" id="L198">            b2d += bytes2D[i].length;</span>
+        }
+<span class="fc" id="L200">        return bytes1D;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>paint (2018/03/28 14:13:40)</div></body></html>

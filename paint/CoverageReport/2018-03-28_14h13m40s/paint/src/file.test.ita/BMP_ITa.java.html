@@ -1,0 +1,971 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>BMP_ITa.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">paint (2018/03/28 14:13:40)</a> &gt; <a href="../../index.html" class="el_group">paint</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">file.test.ita</a> &gt; <span class="el_source">BMP_ITa.java</span></div><h1>BMP_ITa.java</h1><pre class="source lang-java linenums">package file.test.ita;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+
+import file.Tools;
+import file.io.BMP;
+import file.test.Basic;
+
+/**
+ * &lt;b&gt;BMPの内部結合テスト&lt;/b&gt;&lt;br&gt;
+ * date: 2017/10/13 last_date: 2018/03/27
+ * 
+ * @author ソウルP
+ */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+<span class="fc" id="L26">public class BMP_ITa extends Basic {</span>
+<span class="fc" id="L27">    public final String addr = BASIC_ADDR + &quot;BMP\\BMP_ITa\\&quot;;</span>
+
+    /**
+     * &lt;b&gt;BMP 出力&lt;/b&gt;&lt;br&gt;
+     * 1bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test000_bmpOutput_1bit() throws IOException {
+<span class="fc" id="L38">        String file = addr + &quot;java_1bit.bmp&quot;;</span>
+<span class="fc" id="L39">        int width = 3;</span>
+<span class="fc" id="L40">        int height = 3;</span>
+
+<span class="fc" id="L42">        BMP bmp = new BMP();</span>
+<span class="fc" id="L43">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L44">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L45">        bmp.setBitCount(1); // ビットの深さ</span>
+<span class="fc" id="L46">        bmp.addColor(255, 0, 255); // 紫色</span>
+<span class="fc" id="L47">        bmp.addColor(0, 255, 255); // アクア色</span>
+<span class="fc" id="L48">        bmp.setImage(image_1bit);// イメージ</span>
+
+<span class="fc" id="L50">        bmp.output(file);// 出力</span>
+<span class="fc" id="L51">    }</span>
+
+    /**
+     * &lt;b&gt;BMP 出力&lt;/b&gt;&lt;br&gt;
+     * 4bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test010_bmpOutput_4bit() throws IOException {
+<span class="fc" id="L62">        String file = addr + &quot;java_4bit.bmp&quot;;</span>
+<span class="fc" id="L63">        int width = 3;</span>
+<span class="fc" id="L64">        int height = 3;</span>
+
+<span class="fc" id="L66">        BMP bmp = new BMP();</span>
+<span class="fc" id="L67">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L68">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L69">        bmp.setBitCount(4); // ビットの深さ</span>
+<span class="fc" id="L70">        bmp.addColor(255, 0, 255); // 紫色</span>
+<span class="fc" id="L71">        bmp.addColor(0, 255, 255); // アクア色</span>
+<span class="fc" id="L72">        bmp.setImage(image_4bit);// イメージ</span>
+
+<span class="fc" id="L74">        bmp.output(file);// 出力</span>
+<span class="fc" id="L75">    }</span>
+
+    /**
+     * &lt;b&gt;BMP 出力&lt;/b&gt;&lt;br&gt;
+     * 4bit&lt;br&gt;
+     * 圧縮形式: BI_RLE4&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test011_bmpOutput_4bit_BI_RLE4() throws IOException {
+<span class="fc" id="L87">        String file = addr + &quot;java_4bit_BI_RLE4.bmp&quot;;</span>
+<span class="fc" id="L88">        int width = 14;</span>
+<span class="fc" id="L89">        int height = 14;</span>
+
+<span class="fc" id="L91">        BMP bmp = new BMP();</span>
+<span class="fc" id="L92">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L93">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L94">        bmp.setBitCount((short) 4); // ビットの深さ</span>
+<span class="fc" id="L95">        bmp.setCompression(2); // 圧縮形式</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        for (int i = 255; i &gt;= 21; i -= 18) {</span>
+<span class="fc" id="L97">            bmp.addColor(0, i, i); // アクア色</span>
+        }
+<span class="fc" id="L99">        bmp.setImage(image_4bit_BI_RLE4);// イメージ</span>
+
+<span class="fc" id="L101">        bmp.output(file);// 出力</span>
+<span class="fc" id="L102">    }</span>
+
+    /**
+     * &lt;b&gt;BMP 出力&lt;/b&gt;&lt;br&gt;
+     * 8bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test020_bmpOutput_8bit() throws IOException {
+<span class="fc" id="L113">        String file = addr + &quot;java_8bit.bmp&quot;;</span>
+<span class="fc" id="L114">        int width = 3;</span>
+<span class="fc" id="L115">        int height = 3;</span>
+
+<span class="fc" id="L117">        BMP bmp = new BMP();</span>
+<span class="fc" id="L118">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L119">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L120">        bmp.setBitCount(8); // ビットの深さ</span>
+<span class="fc" id="L121">        bmp.addColor(255, 0, 255); // 紫色</span>
+<span class="fc" id="L122">        bmp.addColor(0, 255, 255); // アクア色</span>
+<span class="fc" id="L123">        bmp.setImage(image_8bit);// イメージ</span>
+
+<span class="fc" id="L125">        bmp.output(file);// 出力</span>
+<span class="fc" id="L126">    }</span>
+
+    /**
+     * &lt;b&gt;BMP 出力&lt;/b&gt;&lt;br&gt;
+     * 8bit&lt;br&gt;
+     * 圧縮形式: BI_RLE8&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test021_bmpOutput_8bit_BI_RLE8() throws IOException {
+<span class="fc" id="L138">        String file = addr + &quot;java_8bit_BI_RLE8.bmp&quot;;</span>
+<span class="fc" id="L139">        int width = 13;</span>
+<span class="fc" id="L140">        int height = 13;</span>
+
+<span class="fc" id="L142">        BMP bmp = new BMP();</span>
+<span class="fc" id="L143">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L144">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L145">        bmp.setBitCount((short) 8); // ビットの深さ</span>
+<span class="fc" id="L146">        bmp.setCompression(1); // 圧縮形式</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        for (int i = 255; i &gt;= 27; i -= 19) {</span>
+<span class="fc" id="L148">            bmp.addColor(i, 0, 0); // 赤色</span>
+<span class="fc" id="L149">            bmp.addColor(0, i, 0); // 緑色</span>
+<span class="fc" id="L150">            bmp.addColor(0, 0, i); // 青色</span>
+        }
+<span class="fc" id="L152">        bmp.addColor(255, 255, 0); // 黄色</span>
+<span class="fc" id="L153">        bmp.addColor(0, 255, 255); // アクア色</span>
+<span class="fc" id="L154">        bmp.addColor(0, 0, 0); // 黒色</span>
+<span class="fc" id="L155">        bmp.addColor(255, 255, 255); // 白色</span>
+<span class="fc" id="L156">        bmp.setImage(image_8bit_BI_RLE8);// イメージ</span>
+
+<span class="fc" id="L158">        bmp.output(file);// 出力</span>
+<span class="fc" id="L159">    }</span>
+
+    /**
+     * &lt;b&gt;BMP 出力&lt;/b&gt;&lt;br&gt;
+     * 16 bit&lt;br&gt;
+     * 16 bit の場合、画像データの１ピクセルのデータに対してリトルエンディアンになる&lt;br&gt;
+     * デフォルト: R5 G6 B5&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test030_bmpOutput_16bit() throws IOException {
+<span class="fc" id="L172">        String file = addr + &quot;java_16bit.bmp&quot;;</span>
+<span class="fc" id="L173">        int width = 3;</span>
+<span class="fc" id="L174">        int height = 3;</span>
+
+<span class="fc" id="L176">        BMP bmp = new BMP();</span>
+<span class="fc" id="L177">        bmp.setWidth(width);// 幅</span>
+<span class="fc" id="L178">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L179">        bmp.setBitCount(16); // ビットの深さ</span>
+<span class="fc" id="L180">        bmp.setImage(image_16bit); // イメージ</span>
+
+<span class="fc" id="L182">        bmp.output(file);// 出力</span>
+<span class="fc" id="L183">    }</span>
+
+    /**
+     * &lt;b&gt;BMP 出力&lt;/b&gt;&lt;br&gt;
+     * 16 bit&lt;br&gt;
+     * 16 bit の場合、画像データの１ピクセルのデータに対してリトルエンディアンになる&lt;br&gt;
+     * 同じくBitFieldsのRGB順のデータをリトルエンディアンになる&lt;br&gt;
+     * ビットフィールドで設定: R5 G5 B5&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test031_bmpOutput_16bit_BitFields() throws IOException {
+<span class="fc" id="L197">        String file = addr + &quot;java_16bit_BitFields.bmp&quot;;</span>
+<span class="fc" id="L198">        int width = 3;</span>
+<span class="fc" id="L199">        int height = 3;</span>
+
+<span class="fc" id="L201">        byte[] bitfields = Tools.bytes2D2bytes1D(r5g5b5MaskV3); // ビットフィールド</span>
+
+<span class="fc" id="L203">        BMP bmp = new BMP();</span>
+<span class="fc" id="L204">        bmp.setWidth(width);// 幅</span>
+<span class="fc" id="L205">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L206">        bmp.setBitCount(16); // ビットの深さ</span>
+<span class="fc" id="L207">        bmp.setCompression(3); // 圧縮形式</span>
+<span class="fc" id="L208">        bmp.setBitFields(bitfields); // ビットフィールド</span>
+<span class="fc" id="L209">        bmp.setImage(image_16bit_BitFields); // イメージ</span>
+
+<span class="fc" id="L211">        bmp.output(file);// 出力</span>
+<span class="fc" id="L212">    }</span>
+
+    /**
+     * &lt;b&gt;BMP 出力&lt;/b&gt;&lt;br&gt;
+     * 24bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test040_bmpOutput_24bit() throws IOException {
+<span class="fc" id="L223">        String file = addr + &quot;java_24bit.bmp&quot;;</span>
+<span class="fc" id="L224">        int width = 3;</span>
+<span class="fc" id="L225">        int height = 3;</span>
+
+<span class="fc" id="L227">        BMP bmp = new BMP();</span>
+<span class="fc" id="L228">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L229">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L230">        bmp.setBitCount(24); // ビットの深さ</span>
+<span class="fc" id="L231">        bmp.setImage(image_24bit);// イメージ</span>
+
+<span class="fc" id="L233">        bmp.output(file);// 出力</span>
+<span class="fc" id="L234">    }</span>
+
+    /**
+     * &lt;b&gt;BMP 出力&lt;/b&gt;&lt;br&gt;
+     * 32bit&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test050_bmpOutput_32bit() throws IOException {
+<span class="fc" id="L245">        String file = addr + &quot;java_32bit.bmp&quot;;</span>
+<span class="fc" id="L246">        int width = 3;</span>
+<span class="fc" id="L247">        int height = 3;</span>
+
+<span class="fc" id="L249">        BMP bmp = new BMP();</span>
+<span class="fc" id="L250">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L251">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L252">        bmp.setBitCount(32); // ビットの深さ</span>
+<span class="fc" id="L253">        bmp.setImage(image_32bit);// イメージ</span>
+
+<span class="fc" id="L255">        bmp.output(file);// 出力</span>
+<span class="fc" id="L256">    }</span>
+
+    /**
+     * &lt;b&gt;BMP 出力&lt;/b&gt;&lt;br&gt;
+     * 16 bit&lt;br&gt;
+     * 16 bit の場合、画像データの１ピクセルのデータに対してリトルエンディアンになる&lt;br&gt;
+     * 同じくBitFieldsのRGB順のデータをリトルエンディアンになる&lt;br&gt;
+     * ビットフィールドで設定: R5 G5 B5&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test051_bmpOutput_32bit_BitFields() throws IOException {
+<span class="fc" id="L270">        String file = addr + &quot;java_32bit_BitFields.bmp&quot;;</span>
+<span class="fc" id="L271">        int width = 3;</span>
+<span class="fc" id="L272">        int height = 3;</span>
+
+<span class="fc" id="L274">        byte[] bitfields = Tools.bytes2D2bytes1D(bitFields32bitMaskV3); // ビットフィールド</span>
+
+<span class="fc" id="L276">        BMP bmp = new BMP();</span>
+<span class="fc" id="L277">        bmp.setWidth(width);// 幅</span>
+<span class="fc" id="L278">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L279">        bmp.setBitCount(32); // ビットの深さ</span>
+<span class="fc" id="L280">        bmp.setCompression(3); // 圧縮形式</span>
+<span class="fc" id="L281">        bmp.setBitFields(bitfields); // ビットフィールド</span>
+<span class="fc" id="L282">        bmp.setImage(image_32bit_BitFields); // イメージ</span>
+
+<span class="fc" id="L284">        bmp.output(file);// 出力</span>
+<span class="fc" id="L285">    }</span>
+
+    /**
+     * &lt;b&gt;BMP 入力&lt;/b&gt;&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test100_bmpInput() throws IOException {
+<span class="fc" id="L295">        String file = addr + &quot;java_4bit_BI_RLE4.bmp&quot;;</span>
+
+<span class="fc" id="L297">        BMP bmp = new BMP();</span>
+<span class="fc" id="L298">        bmp.input(file);</span>
+
+<span class="fc" id="L300">        System.out.println(file);</span>
+<span class="fc" id="L301">        System.out.println(&quot;BMP V&quot; + bmp.getVersion());</span>
+<span class="fc" id="L302">        System.out.println(&quot;ファイルサイズ: &quot; + bmp.getFileSize());</span>
+<span class="fc" id="L303">        System.out.println(&quot;幅: &quot; + bmp.getWidth());</span>
+<span class="fc" id="L304">        System.out.println(&quot;高さ: &quot; + bmp.getHeight());</span>
+<span class="fc" id="L305">        System.out.println(&quot;ビットの深さ: &quot; + bmp.getBitCount() + &quot;bit&quot;);</span>
+<span class="fc" id="L306">        System.out.println(&quot;圧縮形式: &quot; + bmp.getCompression());</span>
+<span class="fc" id="L307">        System.out.println(&quot;画像データサイズ: &quot; + bmp.getImageSize());</span>
+<span class="fc" id="L308">        System.out.println(&quot;水平方向の解像度: &quot; + bmp.getPixPerMeterX());</span>
+<span class="fc" id="L309">        System.out.println(&quot;垂直方向の解像度: &quot; + bmp.getPixPerMeterY());</span>
+<span class="fc" id="L310">        System.out.println(&quot;使用する色数: &quot; + bmp.getColors().size());</span>
+<span class="fc" id="L311">        System.out.println(&quot;重要な色数: &quot; + bmp.getCirImportant());</span>
+<span class="fc" id="L312">        System.out.println();</span>
+<span class="fc" id="L313">        System.out.println(&quot;【カラーパレット】&quot;);</span>
+<span class="fc" id="L314">        bmp.getColors().forEach(color -&gt; {</span>
+<span class="fc" id="L315">            System.out.print(&quot;R = &quot; + String.format(&quot;%3s&quot;, Byte.toUnsignedInt(color[2])) + &quot;, &quot;);</span>
+<span class="fc" id="L316">            System.out.print(&quot;G = &quot; + String.format(&quot;%3s&quot;, Byte.toUnsignedInt(color[1])) + &quot;, &quot;);</span>
+<span class="fc" id="L317">            System.out.print(&quot;B = &quot; + String.format(&quot;%3s&quot;, Byte.toUnsignedInt(color[0])));</span>
+<span class="fc" id="L318">            System.out.println();</span>
+<span class="fc" id="L319">        });</span>
+<span class="fc" id="L320">        System.out.println();</span>
+<span class="fc" id="L321">        System.out.println(&quot;【イメージ】&quot;);</span>
+<span class="fc" id="L322">        bmp.getImage().forEach(bA -&gt; {</span>
+<span class="fc bfc" id="L323" title="All 2 branches covered.">            for (byte b : bA)</span>
+<span class="fc" id="L324">                System.out.print(String.format(&quot;%02X &quot;, b));</span>
+<span class="fc" id="L325">            System.out.println();</span>
+<span class="fc" id="L326">        });</span>
+<span class="fc" id="L327">    }</span>
+
+    /**
+     * &lt;b&gt;BMP 入力&lt;/b&gt;&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test110_bmpInput() throws IOException {
+<span class="fc" id="L337">        String file = addr + &quot;java_8bit_BI_RLE8.bmp&quot;;</span>
+
+<span class="fc" id="L339">        BMP bmp = new BMP();</span>
+<span class="fc" id="L340">        bmp.input(file);</span>
+
+<span class="fc" id="L342">        System.out.println(file);</span>
+<span class="fc" id="L343">        System.out.println(bmp);</span>
+<span class="fc" id="L344">    }</span>
+
+    /**
+     * &lt;b&gt;BMP バージョン変更&lt;/b&gt;&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test200_bmpChangeVersion() {
+<span class="fc" id="L352">        BMP bmp = new BMP();</span>
+<span class="fc" id="L353">        System.out.println(&quot;変更前: V&quot; + bmp.getVersion());</span>
+<span class="fc" id="L354">        assertEquals(bmp.getVersion(), 3);</span>
+
+<span class="fc" id="L356">        bmp.setVersion(5);</span>
+<span class="fc" id="L357">        System.out.println(&quot;変更後: V&quot; + bmp.getVersion());</span>
+<span class="fc" id="L358">        assertEquals(bmp.getVersion(), 5);</span>
+<span class="fc" id="L359">    }</span>
+
+    /**
+     * &lt;b&gt;BMP バージョン変更&lt;/b&gt;&lt;br&gt;
+     * 存在しないバージョンに変更し、デフォルトでバージョンが 3 なのか値を確認&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test210_bmpChangeVersion_out_of_version() {
+<span class="fc" id="L368">        BMP bmp = new BMP();</span>
+<span class="fc" id="L369">        System.out.println(&quot;変更前: V&quot; + bmp.getVersion());</span>
+<span class="fc" id="L370">        assertEquals(bmp.getVersion(), 3);</span>
+
+<span class="fc" id="L372">        bmp.setVersion(6);</span>
+<span class="fc" id="L373">        System.out.println(&quot;変更後: V&quot; + bmp.getVersion());</span>
+<span class="fc" id="L374">        assertEquals(bmp.getVersion(), 3);</span>
+<span class="fc" id="L375">    }</span>
+
+    /**
+     * &lt;b&gt;BMP バージョン変更&lt;/b&gt;&lt;br&gt;
+     * 存在しないバージョンに変更し、デフォルトでバージョンが 3 なのか値を確認&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test300_bmpChangeVersion_out_of_version() {
+<span class="fc" id="L384">        BMP bmp = new BMP();</span>
+<span class="fc" id="L385">        System.out.println(&quot;変更前: V&quot; + bmp.getVersion());</span>
+<span class="fc" id="L386">        assertEquals(bmp.getVersion(), 3);</span>
+
+<span class="fc" id="L388">        bmp.setVersion(0);</span>
+<span class="fc" id="L389">        System.out.println(&quot;変更後: V&quot; + bmp.getVersion());</span>
+<span class="fc" id="L390">        assertEquals(bmp.getVersion(), 3);</span>
+<span class="fc" id="L391">    }</span>
+
+    /**
+     * &lt;b&gt;BMP バージョン変更&lt;/b&gt;&lt;br&gt;
+     * 存在しないバージョンに変更し、デフォルトでバージョンが 3 なのか値を確認&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test301_bmpChangeVersion_out_of_version() {
+<span class="fc" id="L400">        BMP bmp = new BMP();</span>
+<span class="fc" id="L401">        System.out.println(&quot;変更前: V&quot; + bmp.getVersion());</span>
+<span class="fc" id="L402">        assertEquals(bmp.getVersion(), 3);</span>
+
+<span class="fc" id="L404">        bmp.setVersion(-1);</span>
+<span class="fc" id="L405">        System.out.println(&quot;変更後: V&quot; + bmp.getVersion());</span>
+<span class="fc" id="L406">        assertEquals(bmp.getVersion(), 3);</span>
+<span class="fc" id="L407">    }</span>
+
+    /**
+     * &lt;b&gt;オプショナルデータ 入出力確認&lt;/b&gt;&lt;br&gt;
+     * GAP1だけ&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test400_bmpV3Gap1() throws IOException {
+<span class="fc" id="L418">        String file = addr + &quot;java_bmpV3Gap1.bmp&quot;;</span>
+<span class="fc" id="L419">        String str = &quot;生麦生米生卵&quot;;</span>
+
+        // 出力
+<span class="fc" id="L422">        byte[] gap1 = null;</span>
+<span class="fc" id="L423">        gap1 = str.getBytes(&quot;UTF-8&quot;);</span>
+<span class="fc" id="L424">        int width = 3;</span>
+<span class="fc" id="L425">        int height = 3;</span>
+
+        // イメージ情報
+<span class="fc" id="L428">        byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };</span>
+<span class="fc" id="L429">        byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };</span>
+<span class="fc" id="L430">        byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };</span>
+<span class="fc" id="L431">        List&lt;byte[]&gt; image = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L432">        image.add(img01);</span>
+<span class="fc" id="L433">        image.add(img02);</span>
+<span class="fc" id="L434">        image.add(img03);</span>
+
+<span class="fc" id="L436">        BMP bmp = new BMP();</span>
+<span class="fc" id="L437">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L438">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L439">        bmp.setBitCount(8); // ビットの深さ</span>
+<span class="fc" id="L440">        bmp.addColor(255, 0, 255); // 紫色</span>
+<span class="fc" id="L441">        bmp.addColor(0, 255, 255); // アクア色</span>
+<span class="fc" id="L442">        bmp.setGap1(gap1); // オプショナル</span>
+<span class="fc" id="L443">        bmp.setImage(image);// イメージ</span>
+<span class="fc" id="L444">        bmp.output(file);// 出力</span>
+
+        // 入力
+<span class="fc" id="L447">        bmp = new BMP(file);</span>
+<span class="fc" id="L448">        String gap1Str = &quot;&quot;;</span>
+<span class="fc" id="L449">        gap1Str = new String(bmp.getGap1(), &quot;UTF-8&quot;);</span>
+
+<span class="fc" id="L451">        assertEquals(str, gap1Str);</span>
+
+<span class="fc" id="L453">        System.out.println(bmp);</span>
+<span class="fc" id="L454">        System.out.println();</span>
+<span class="fc" id="L455">        System.out.println(&quot;GAP1: &quot; + gap1Str);</span>
+<span class="fc" id="L456">        System.out.println();</span>
+<span class="fc" id="L457">    }</span>
+
+    /**
+     * &lt;b&gt;オプショナルデータ 入出力確認&lt;/b&gt;&lt;br&gt;
+     * GAP2だけ&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test401_bmpV3Gap2() throws IOException {
+<span class="fc" id="L468">        String file = addr + &quot;java_bmpV3Gap2.bmp&quot;;</span>
+<span class="fc" id="L469">        String str = &quot;赤巻紙青巻紙黄巻紙&quot;;</span>
+
+        // 出力
+<span class="fc" id="L472">        byte[] gap2 = null;</span>
+<span class="fc" id="L473">        gap2 = str.getBytes(&quot;UTF-8&quot;);</span>
+<span class="fc" id="L474">        int width = 3;</span>
+<span class="fc" id="L475">        int height = 3;</span>
+
+        // イメージ情報
+<span class="fc" id="L478">        byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };</span>
+<span class="fc" id="L479">        byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };</span>
+<span class="fc" id="L480">        byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };</span>
+<span class="fc" id="L481">        List&lt;byte[]&gt; image = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L482">        image.add(img01);</span>
+<span class="fc" id="L483">        image.add(img02);</span>
+<span class="fc" id="L484">        image.add(img03);</span>
+
+<span class="fc" id="L486">        BMP bmp = new BMP();</span>
+<span class="fc" id="L487">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L488">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L489">        bmp.setBitCount(8); // ビットの深さ</span>
+<span class="fc" id="L490">        bmp.addColor(255, 0, 255); // 紫色</span>
+<span class="fc" id="L491">        bmp.addColor(0, 255, 255); // アクア色</span>
+<span class="fc" id="L492">        bmp.setGap2(gap2); // オプショナル</span>
+<span class="fc" id="L493">        bmp.setImage(image);// イメージ</span>
+<span class="fc" id="L494">        bmp.output(file);// 出力</span>
+
+        // 入力
+<span class="fc" id="L497">        bmp = new BMP(file);</span>
+<span class="fc" id="L498">        String gap2Str = &quot;&quot;;</span>
+<span class="fc" id="L499">        gap2Str = new String(bmp.getGap2(), &quot;UTF-8&quot;);</span>
+
+<span class="fc" id="L501">        assertEquals(str, gap2Str);</span>
+
+<span class="fc" id="L503">        System.out.println(bmp);</span>
+<span class="fc" id="L504">        System.out.println();</span>
+<span class="fc" id="L505">        System.out.println(&quot;GAP2: &quot; + gap2Str);</span>
+<span class="fc" id="L506">        System.out.println();</span>
+<span class="fc" id="L507">    }</span>
+
+    /**
+     * &lt;b&gt;オプショナルデータ 入出力確認&lt;/b&gt;&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test402_bmpV3Gap() throws IOException {
+<span class="fc" id="L517">        String file = addr + &quot;java_bmpV3Gap.bmp&quot;;</span>
+<span class="fc" id="L518">        String str1 = &quot;生麦生米生卵&quot;;</span>
+<span class="fc" id="L519">        String str2 = &quot;YEAH!!&quot;;</span>
+
+        // 出力
+<span class="fc" id="L522">        byte[] gap1 = null;</span>
+<span class="fc" id="L523">        byte[] gap2 = null;</span>
+<span class="fc" id="L524">        gap1 = str1.getBytes(&quot;UTF-8&quot;);</span>
+<span class="fc" id="L525">        gap2 = str2.getBytes(&quot;UTF-8&quot;);</span>
+<span class="fc" id="L526">        int width = 3;</span>
+<span class="fc" id="L527">        int height = 3;</span>
+
+        // イメージ情報
+<span class="fc" id="L530">        byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };</span>
+<span class="fc" id="L531">        byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };</span>
+<span class="fc" id="L532">        byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };</span>
+<span class="fc" id="L533">        List&lt;byte[]&gt; image = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L534">        image.add(img01);</span>
+<span class="fc" id="L535">        image.add(img02);</span>
+<span class="fc" id="L536">        image.add(img03);</span>
+
+<span class="fc" id="L538">        BMP bmp = new BMP();</span>
+<span class="fc" id="L539">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L540">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L541">        bmp.setBitCount(8); // ビットの深さ</span>
+<span class="fc" id="L542">        bmp.addColor(255, 0, 255); // 紫色</span>
+<span class="fc" id="L543">        bmp.addColor(0, 255, 255); // アクア色</span>
+<span class="fc" id="L544">        bmp.setGap1(gap1); // オプショナル 1</span>
+<span class="fc" id="L545">        bmp.setGap2(gap2); // オプショナル 2</span>
+<span class="fc" id="L546">        bmp.setImage(image); // イメージ</span>
+<span class="fc" id="L547">        bmp.output(file); // 出力</span>
+
+        // 入力
+<span class="fc" id="L550">        bmp = new BMP(file);</span>
+<span class="fc" id="L551">        String gap1Str = &quot;&quot;;</span>
+<span class="fc" id="L552">        String gap2Str = &quot;&quot;;</span>
+<span class="fc" id="L553">        gap1Str = new String(bmp.getGap1(), &quot;UTF-8&quot;);</span>
+<span class="fc" id="L554">        gap2Str = new String(bmp.getGap2(), &quot;UTF-8&quot;);</span>
+
+<span class="fc" id="L556">        assertEquals(str1, gap1Str);</span>
+<span class="fc" id="L557">        assertEquals(str2, gap2Str);</span>
+
+<span class="fc" id="L559">        System.out.println(bmp);</span>
+<span class="fc" id="L560">        System.out.println();</span>
+<span class="fc" id="L561">        System.out.println(&quot;GAP1: &quot; + gap1Str);</span>
+<span class="fc" id="L562">        System.out.println(&quot;GAP2: &quot; + gap2Str);</span>
+<span class="fc" id="L563">        System.out.println();</span>
+<span class="fc" id="L564">    }</span>
+
+    /**
+     * &lt;b&gt;オプショナルデータ 入出力確認&lt;/b&gt;&lt;br&gt;
+     * プロファイルなし&lt;br&gt;
+     * 成功テスト
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void test403_bmpV5Gap() throws IOException {
+<span class="fc" id="L575">        String file = addr + &quot;bmpV5Gap.bmp&quot;;</span>
+<span class="fc" id="L576">        String str1 = &quot;生麦生米生卵&quot;;</span>
+<span class="fc" id="L577">        String str2 = &quot;Hello World!!&quot;;</span>
+
+        // 出力
+<span class="fc" id="L580">        byte[] gap1 = null;</span>
+<span class="fc" id="L581">        byte[] gap2 = null;</span>
+<span class="fc" id="L582">        gap1 = str1.getBytes(&quot;UTF-8&quot;);</span>
+<span class="fc" id="L583">        gap2 = str2.getBytes(&quot;UTF-8&quot;);</span>
+<span class="fc" id="L584">        int width = 3;</span>
+<span class="fc" id="L585">        int height = 3;</span>
+
+        // イメージ情報
+<span class="fc" id="L588">        byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };</span>
+<span class="fc" id="L589">        byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };</span>
+<span class="fc" id="L590">        byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };</span>
+<span class="fc" id="L591">        List&lt;byte[]&gt; image = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L592">        image.add(img01);</span>
+<span class="fc" id="L593">        image.add(img02);</span>
+<span class="fc" id="L594">        image.add(img03);</span>
+
+<span class="fc" id="L596">        BMP bmp = new BMP(5);</span>
+<span class="fc" id="L597">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L598">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L599">        bmp.setBitCount(8); // ビットの深さ</span>
+<span class="fc" id="L600">        bmp.addColor(255, 0, 255); // 紫色</span>
+<span class="fc" id="L601">        bmp.addColor(0, 255, 255); // アクア色</span>
+<span class="fc" id="L602">        bmp.setGap1(gap1);</span>
+<span class="fc" id="L603">        bmp.setGap2(gap2);</span>
+<span class="fc" id="L604">        bmp.setImage(image);// イメージ</span>
+<span class="fc" id="L605">        bmp.output(file);// 出力</span>
+
+        // 入力
+<span class="fc" id="L608">        bmp = new BMP(file);</span>
+<span class="fc" id="L609">        String gap1Str = &quot;&quot;;</span>
+<span class="fc" id="L610">        String gap2Str = &quot;&quot;;</span>
+
+<span class="fc" id="L612">        gap1Str = new String(bmp.getGap1(), &quot;UTF-8&quot;);</span>
+<span class="fc" id="L613">        gap2Str = new String(bmp.getGap2(), &quot;UTF-8&quot;);</span>
+<span class="fc" id="L614">        assertEquals(str1, gap1Str);</span>
+<span class="fc" id="L615">        assertEquals(str2, gap2Str);</span>
+
+<span class="fc" id="L617">        System.out.println(bmp);</span>
+<span class="fc" id="L618">        System.out.println();</span>
+<span class="fc" id="L619">        System.out.println(&quot;GAP1: &quot; + gap1Str);</span>
+<span class="fc" id="L620">        System.out.println(&quot;GAP2: &quot; + gap2Str);</span>
+<span class="fc" id="L621">        System.out.println();</span>
+<span class="fc" id="L622">    }</span>
+
+    /**
+     * 出力する際にバージョン指定&lt;br&gt;
+     * 出力: バージョン1&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test500() throws IOException {
+<span class="fc" id="L631">        String file = addr + &quot;bmpV3-V1.bmp&quot;;</span>
+
+        // イメージ情報
+<span class="fc" id="L634">        int width = 3;</span>
+<span class="fc" id="L635">        int height = 3;</span>
+
+<span class="fc" id="L637">        BMP bmp = new BMP();</span>
+<span class="fc" id="L638">        bmp.setWidth(width);// 幅</span>
+<span class="fc" id="L639">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L640">        bmp.setBitCount(16); // ビットの深さ</span>
+<span class="fc" id="L641">        bmp.setImage(image_16bit); // イメージ</span>
+
+<span class="fc" id="L643">        bmp.output(file, 1);// 出力</span>
+
+        // 入力
+<span class="fc" id="L646">        bmp = new BMP(file);</span>
+
+<span class="fc" id="L648">        System.out.println(bmp);</span>
+<span class="fc" id="L649">        System.out.println();</span>
+<span class="fc" id="L650">    }</span>
+
+    /**
+     * 出力する際にバージョン指定&lt;br&gt;
+     * 出力: バージョン2&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test501() throws IOException {
+<span class="fc" id="L659">        String file = addr + &quot;bmpV3-V2.bmp&quot;;</span>
+
+        // イメージ情報
+<span class="fc" id="L662">        int width = 3;</span>
+<span class="fc" id="L663">        int height = 3;</span>
+
+<span class="fc" id="L665">        BMP bmp = new BMP();</span>
+<span class="fc" id="L666">        bmp.setInfoHeaderSize(40);// 情報ヘッダサイズ</span>
+<span class="fc" id="L667">        bmp.setWidth(width);// 幅</span>
+<span class="fc" id="L668">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L669">        bmp.setBitCount(16); // ビットの深さ</span>
+<span class="fc" id="L670">        bmp.setImage(image_16bit); // イメージ</span>
+
+<span class="fc" id="L672">        bmp.output(file, 2);// 出力</span>
+
+        // 入力
+<span class="fc" id="L675">        bmp = new BMP(file);</span>
+
+<span class="fc" id="L677">        System.out.println(bmp);</span>
+<span class="fc" id="L678">        System.out.println();</span>
+<span class="fc" id="L679">    }</span>
+
+    /**
+     * 出力する際にバージョン指定&lt;br&gt;
+     * 出力: バージョン4&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test502() throws IOException {
+<span class="fc" id="L688">        String file = addr + &quot;bmpV3-V4.bmp&quot;;</span>
+
+        // イメージ情報
+<span class="fc" id="L691">        int width = 3;</span>
+<span class="fc" id="L692">        int height = 3;</span>
+
+<span class="fc" id="L694">        BMP bmp = new BMP();</span>
+<span class="fc" id="L695">        bmp.setWidth(width);// 幅</span>
+<span class="fc" id="L696">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L697">        bmp.setBitCount(16); // ビットの深さ</span>
+<span class="fc" id="L698">        bmp.setImage(image_16bit); // イメージ</span>
+
+<span class="fc" id="L700">        bmp.output(file, 4);// 出力</span>
+
+        // 入力
+<span class="fc" id="L703">        bmp = new BMP(file);</span>
+
+<span class="fc" id="L705">        System.out.println(bmp);</span>
+<span class="fc" id="L706">        System.out.println();</span>
+<span class="fc" id="L707">    }</span>
+
+    /**
+     * 出力する際にバージョン指定&lt;br&gt;
+     * 出力: バージョン5&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test503() throws IOException {
+<span class="fc" id="L716">        String file = addr + &quot;bmpV3-V5.bmp&quot;;</span>
+
+        // イメージ情報
+<span class="fc" id="L719">        int width = 3;</span>
+<span class="fc" id="L720">        int height = 3;</span>
+
+<span class="fc" id="L722">        BMP bmp = new BMP();</span>
+<span class="fc" id="L723">        bmp.setWidth(width);// 幅</span>
+<span class="fc" id="L724">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L725">        bmp.setBitCount(16); // ビットの深さ</span>
+<span class="fc" id="L726">        bmp.setImage(image_16bit); // イメージ</span>
+
+<span class="fc" id="L728">        bmp.output(file, 5);// 出力</span>
+
+        // 入力
+<span class="fc" id="L731">        bmp = new BMP(file);</span>
+
+<span class="fc" id="L733">        System.out.println(bmp);</span>
+<span class="fc" id="L734">        System.out.println();</span>
+<span class="fc" id="L735">    }</span>
+
+    /**
+     * 出力する際にバージョン指定&lt;br&gt;
+     * 出力: バージョン3&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test504() throws IOException {
+<span class="fc" id="L744">        String file = addr + &quot;bmpV5-V3.bmp&quot;;</span>
+
+        // イメージ情報
+<span class="fc" id="L747">        int width = 3;</span>
+<span class="fc" id="L748">        int height = 3;</span>
+
+<span class="fc" id="L750">        BMP bmp = new BMP(5);</span>
+<span class="fc" id="L751">        bmp.setWidth(width);// 幅</span>
+<span class="fc" id="L752">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L753">        bmp.setBitCount(16); // ビットの深さ</span>
+<span class="fc" id="L754">        bmp.setImage(image_16bit); // イメージ</span>
+
+<span class="fc" id="L756">        bmp.output(file, 3);// 出力</span>
+
+        // 入力
+<span class="fc" id="L759">        bmp = new BMP(file);</span>
+
+<span class="fc" id="L761">        System.out.println(bmp);</span>
+<span class="fc" id="L762">        System.out.println();</span>
+<span class="fc" id="L763">    }</span>
+
+    /**
+     * バージョン2 入出力&lt;br&gt;
+     * 成功テスト
+     */
+    @Test
+    public void test600() throws IOException {
+<span class="fc" id="L771">        String file = addr + &quot;java_bmpV2.bmp&quot;;</span>
+
+        // イメージ情報
+<span class="fc" id="L774">        int width = 3;</span>
+<span class="fc" id="L775">        int height = 3;</span>
+
+<span class="fc" id="L777">        BMP bmp = new BMP(2);</span>
+<span class="fc" id="L778">        bmp.setInfoHeaderSize(40);</span>
+<span class="fc" id="L779">        bmp.setWidth(width);// 幅</span>
+<span class="fc" id="L780">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L781">        bmp.setBitCount(16); // ビットの深さ</span>
+<span class="fc" id="L782">        bmp.setImage(image_16bit); // イメージ</span>
+
+<span class="fc" id="L784">        bmp.output(file);// 出力</span>
+
+<span class="fc" id="L786">        bmp.setInfoHeaderSize(100);</span>
+
+<span class="fc" id="L788">        bmp.output(file);// 出力</span>
+
+<span class="fc" id="L790">        bmp = new BMP(file);// 入力</span>
+<span class="fc" id="L791">        System.out.println(bmp);</span>
+<span class="fc" id="L792">    }</span>
+
+    /**
+     * 出力失敗テスト
+     */
+    @Test(expected = IOException.class)
+    public void test800_failed() throws IOException {
+<span class="fc" id="L799">        String file = addr + &quot;test800_failed.bmp&quot;;</span>
+
+        // イメージ情報
+<span class="fc" id="L802">        int width = 3;</span>
+<span class="fc" id="L803">        int height = 3;</span>
+
+<span class="fc" id="L805">        BMP bmp = new BMP(5);</span>
+<span class="fc" id="L806">        bmp.setWidth(width);// 幅</span>
+<span class="fc" id="L807">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L808">        bmp.setBitCount(16); // ビットの深さ</span>
+<span class="fc" id="L809">        bmp.setImage(image_16bit); // イメージ</span>
+
+<span class="nc" id="L811">        bmp.output(file, 8);// 出力</span>
+<span class="nc" id="L812">    }</span>
+
+    /**
+     * 入力失敗テスト&lt;br&gt;
+     * 空ファイル必須
+     */
+    @Test(expected = IOException.class)
+    public void test801_failed() throws IOException {
+<span class="fc" id="L820">        String file = addr + &quot;test801_failed.bmp&quot;;</span>
+
+<span class="nc" id="L822">        new BMP(file);</span>
+<span class="nc" id="L823">    }</span>
+
+    /**
+     * 入力失敗テスト&lt;br&gt;
+     * 存在しないファイル
+     */
+    @Test(expected = IOException.class)
+    public void test802_failed() throws IOException {
+<span class="fc" id="L831">        String file = addr + &quot;test802_failed.bmp&quot;;</span>
+
+<span class="nc" id="L833">        new BMP(file);</span>
+<span class="nc" id="L834">    }</span>
+
+    /**
+     * 入力失敗テスト&lt;br&gt;
+     * 破損したファイル（情報ヘッダサイズ不正）必要
+     */
+    @Test(expected = IOException.class)
+    public void test803_failed() throws IOException {
+<span class="fc" id="L842">        String file = addr + &quot;test803_failed.bmp&quot;;</span>
+
+<span class="nc" id="L844">        new BMP(file);</span>
+<span class="nc" id="L845">    }</span>
+
+    /**
+     * 入力失敗テスト&lt;br&gt;
+     * 破損したファイル（情報ヘッダサイズ不正）必要
+     */
+    @Test(expected = IOException.class)
+    public void test804_failed() throws IOException {
+<span class="fc" id="L853">        String file = addr + &quot;test804_failed.bmp&quot;;</span>
+
+<span class="nc" id="L855">        new BMP(file);</span>
+<span class="nc" id="L856">    }</span>
+
+    /**
+     * カバレッジ埋め (入出力なし)
+     */
+    @Test
+    public void test900() throws IOException {
+        // イメージ情報
+<span class="fc" id="L864">        int width = 3;</span>
+<span class="fc" id="L865">        int height = 3;</span>
+<span class="fc" id="L866">        byte[] img01 = { 0x01, 0x00, 0x01, 0x00 };</span>
+<span class="fc" id="L867">        byte[] img02 = { 0x00, 0x01, 0x00, 0x00 };</span>
+<span class="fc" id="L868">        byte[] img03 = { 0x01, 0x00, 0x01, 0x00 };</span>
+<span class="fc" id="L869">        List&lt;byte[]&gt; image = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L870">        image.add(img01);</span>
+<span class="fc" id="L871">        image.add(img02);</span>
+<span class="fc" id="L872">        image.add(img03);</span>
+
+<span class="fc" id="L874">        BMP bmp = new BMP(2);</span>
+<span class="fc" id="L875">        bmp.setWidth(width); // 幅</span>
+<span class="fc" id="L876">        bmp.setHeight(height); // 高さ</span>
+<span class="fc" id="L877">        bmp.setBitCount(8); // ビットの深さ</span>
+<span class="fc" id="L878">        bmp.clearColors();</span>
+<span class="fc" id="L879">        bmp.addColor(255, 0, 255); // 紫色</span>
+<span class="fc" id="L880">        bmp.addColor(0, 255, 255); // アクア色</span>
+<span class="fc" id="L881">        bmp.clearImage();</span>
+<span class="fc" id="L882">        bmp.setImage(image);// イメージ</span>
+
+<span class="fc" id="L884">        int testInfoHeaderSize = 32;</span>
+<span class="fc" id="L885">        int testHeaderSize = 64;</span>
+<span class="fc" id="L886">        int testHotspotX = 2;</span>
+<span class="fc" id="L887">        int testHotspotY = 3;</span>
+<span class="fc" id="L888">        int testResolution = 200;</span>
+<span class="fc" id="L889">        int testFormat = 1;</span>
+<span class="fc" id="L890">        int testHalftone = 1;</span>
+<span class="fc" id="L891">        int testHalftone1 = 1;</span>
+<span class="fc" id="L892">        int testHalftone2 = 1;</span>
+<span class="fc" id="L893">        int testEncoding = 1;</span>
+<span class="fc" id="L894">        int testId = 114514;</span>
+
+<span class="fc" id="L896">        System.out.println(&quot;--- BMP Test 900 ---&quot;);</span>
+<span class="fc" id="L897">        System.out.println(&quot;情報ヘッダサイズ: &quot; + bmp.getInfoHeaderSize() + &quot; byte&quot;);</span>
+<span class="fc" id="L898">        System.out.println(&quot;情報ヘッダサイズ = &quot; + testInfoHeaderSize);</span>
+<span class="fc" id="L899">        bmp.setInfoHeaderSize(testInfoHeaderSize);</span>
+<span class="fc" id="L900">        System.out.println(&quot;情報ヘッダサイズ: &quot; + bmp.getInfoHeaderSize() + &quot; byte&quot;);</span>
+<span class="fc" id="L901">        System.out.println(&quot;ヘッダサイズ: &quot; + bmp.getHeaderSize() + &quot; byte&quot;);</span>
+<span class="fc" id="L902">        System.out.println(&quot;ヘッダサイズ = &quot; + testHeaderSize);</span>
+<span class="fc" id="L903">        bmp.setHeaderSize(testHeaderSize);</span>
+<span class="fc" id="L904">        System.out.println(&quot;ヘッダサイズ: &quot; + bmp.getHeaderSize() + &quot; byte&quot;);</span>
+<span class="fc" id="L905">        System.out.println(&quot;Hotspot X: &quot; + bmp.getHotspotX());</span>
+<span class="fc" id="L906">        System.out.println(&quot;Hotspot X = &quot; + testHotspotX);</span>
+<span class="fc" id="L907">        bmp.setHotspotX(testHotspotX);</span>
+<span class="fc" id="L908">        System.out.println(&quot;Hotspot X: &quot; + bmp.getHotspotX());</span>
+<span class="fc" id="L909">        System.out.println(&quot;Hotspot Y: &quot; + bmp.getHotspotY());</span>
+<span class="fc" id="L910">        System.out.println(&quot;Hotspot Y = &quot; + testHotspotY);</span>
+<span class="fc" id="L911">        bmp.setHotspotY(testHotspotY);</span>
+<span class="fc" id="L912">        System.out.println(&quot;Hotspot Y: &quot; + bmp.getHotspotY());</span>
+<span class="fc" id="L913">        System.out.println(&quot;解像度: &quot; + bmp.getResolution());</span>
+<span class="fc" id="L914">        System.out.println(&quot;解像度 = &quot; + testResolution);</span>
+<span class="fc" id="L915">        bmp.setResolution(testResolution);</span>
+<span class="fc" id="L916">        System.out.println(&quot;解像度: &quot; + bmp.getResolution());</span>
+<span class="fc" id="L917">        System.out.println(&quot;フォーマット: &quot; + bmp.getFormat());</span>
+<span class="fc" id="L918">        System.out.println(&quot;フォーマット = &quot; + testFormat);</span>
+<span class="fc" id="L919">        bmp.setFormat(testFormat);</span>
+<span class="fc" id="L920">        System.out.println(&quot;フォーマット: &quot; + bmp.getFormat());</span>
+<span class="fc" id="L921">        System.out.println(&quot;ハーフトーンの方式: &quot; + bmp.getHaltone());</span>
+<span class="fc" id="L922">        System.out.println(&quot;ハーフトーンの方式 = &quot; + testHalftone);</span>
+<span class="fc" id="L923">        bmp.setHalftone(testHalftone);</span>
+<span class="fc" id="L924">        System.out.println(&quot;ハーフトーンの方式: &quot; + bmp.getHaltone());</span>
+<span class="fc" id="L925">        System.out.println(&quot;ハーフトーン1: &quot; + bmp.getHalftoneParam1());</span>
+<span class="fc" id="L926">        System.out.println(&quot;ハーフトーン1 = &quot; + testHalftone1);</span>
+<span class="fc" id="L927">        bmp.setHalftoneParam1(testHalftone1);</span>
+<span class="fc" id="L928">        System.out.println(&quot;ハーフトーン1: &quot; + bmp.getHalftoneParam1());</span>
+<span class="fc" id="L929">        System.out.println(&quot;ハーフトーン2: &quot; + bmp.getHalftoneParam2());</span>
+<span class="fc" id="L930">        System.out.println(&quot;ハーフトーン2 = &quot; + testHalftone2);</span>
+<span class="fc" id="L931">        bmp.setHalftoneParam2(testHalftone2);</span>
+<span class="fc" id="L932">        System.out.println(&quot;ハーフトーン2: &quot; + bmp.getHalftoneParam2());</span>
+<span class="fc" id="L933">        System.out.println(&quot;符号化方式: &quot; + bmp.getEncoding());</span>
+<span class="fc" id="L934">        System.out.println(&quot;符号化方式 = &quot; + testEncoding);</span>
+<span class="fc" id="L935">        bmp.setEncoding(testEncoding);</span>
+<span class="fc" id="L936">        System.out.println(&quot;符号化方式: &quot; + bmp.getEncoding());</span>
+<span class="fc" id="L937">        System.out.println(&quot;ID: &quot; + bmp.getId());</span>
+<span class="fc" id="L938">        System.out.println(&quot;ID = &quot; + testId);</span>
+<span class="fc" id="L939">        bmp.setId(testId);</span>
+<span class="fc" id="L940">        System.out.println(&quot;ID: &quot; + bmp.getId());</span>
+
+<span class="fc" id="L942">        assertEquals(bmp.getInfoHeaderSize(), testInfoHeaderSize);</span>
+<span class="fc" id="L943">        assertEquals(bmp.getHeaderSize(), testHeaderSize);</span>
+<span class="fc" id="L944">        assertEquals(bmp.getHotspotX(), testHotspotX);</span>
+<span class="fc" id="L945">        assertEquals(bmp.getHotspotY(), testHotspotY);</span>
+<span class="fc" id="L946">        assertEquals(bmp.getResolution(), testResolution);</span>
+<span class="fc" id="L947">        assertEquals(bmp.getFormat(), testFormat);</span>
+<span class="fc" id="L948">        assertEquals(bmp.getHaltone(), testHalftone);</span>
+<span class="fc" id="L949">        assertEquals(bmp.getHalftoneParam1(), testHalftone1);</span>
+<span class="fc" id="L950">        assertEquals(bmp.getHalftoneParam2(), testHalftone2);</span>
+<span class="fc" id="L951">        assertEquals(bmp.getEncoding(), testEncoding);</span>
+<span class="fc" id="L952">        assertEquals(bmp.getId(), testId);</span>
+<span class="fc" id="L953">        assertTrue(bmp.isEmptyBitFields());</span>
+<span class="fc" id="L954">        bmp.setBitFields(new byte[] {});</span>
+<span class="fc" id="L955">        assertTrue(bmp.isEmptyBitFields());</span>
+<span class="fc" id="L956">        bmp.setBitFields(new byte[] { 1 });</span>
+<span class="fc" id="L957">        assertFalse(bmp.isEmptyBitFields());</span>
+
+<span class="fc" id="L959">        bmp.setVersion(1);</span>
+<span class="fc" id="L960">        bmp.setVersion(4);</span>
+<span class="fc" id="L961">        bmp.setVersion(5);</span>
+<span class="fc" id="L962">        assertTrue(bmp.isEmptyProfile());</span>
+<span class="fc" id="L963">        bmp.setProfile(new byte[] {});</span>
+<span class="fc" id="L964">        assertTrue(bmp.isEmptyProfile());</span>
+<span class="fc" id="L965">        bmp.setProfile(new byte[] { 1 });</span>
+<span class="fc" id="L966">        assertFalse(bmp.isEmptyProfile());</span>
+<span class="fc" id="L967">        System.out.println(&quot;プロファイル: &quot; + bmp.getProfile()[0]);</span>
+<span class="fc" id="L968">        System.out.println();</span>
+<span class="fc" id="L969">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>paint (2018/03/28 14:13:40)</div></body></html>
