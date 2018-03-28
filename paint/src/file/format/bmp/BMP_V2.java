@@ -585,7 +585,7 @@ public class BMP_V2 extends BMP_V3 {
                     bV2Halftone = Arrays.copyOfRange(data, 46, 48); // 46 - 47 (2 バイト)
                 case 46:
                     bV2Format = Arrays.copyOfRange(data, 44, 46); // 44 - 45 (2 バイト)
-                case 44: // 42 - 44 (2バイト) 予約領域
+                case 44: // 42 - 43 (2バイト) 予約領域
                 case 42:
                     bV2Resolution = Arrays.copyOfRange(data, 40, 42); // 40 - 41 (2 バイト)
                 case 40:
