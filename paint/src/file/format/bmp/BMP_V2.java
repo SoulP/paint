@@ -681,36 +681,36 @@ public class BMP_V2 extends BMP_V3 {
             buff.put(bcHeight);
             buff.put(BC_PLANES);
             buff.put(bcBitCount);
-            data = buff.array();
+            data = buff.array(); // 0 - 15 (16 バイト)
             switch (infoHeaderSize) {
                 case 64:
-                    arrayInsert(data, bV2Id, 60); // 60 - 64 (4 バイト)
+                    arrayInsert(data, bV2Id, 60); // 60 - 63 (4 バイト)
                 case 60:
-                    arrayInsert(data, bV2Encoding, 56); // 56 - 60 (4 バイト)
+                    arrayInsert(data, bV2Encoding, 56); // 56 - 59 (4 バイト)
                 case 56:
-                    arrayInsert(data, bV2HalftoneParam2, 52); // 52 - 56 (4 バイト)
+                    arrayInsert(data, bV2HalftoneParam2, 52); // 52 - 55 (4 バイト)
                 case 52:
-                    arrayInsert(data, bV2HalftoneParam1, 48); // 48 - 52 (4 バイト)
+                    arrayInsert(data, bV2HalftoneParam1, 48); // 48 - 51 (4 バイト)
                 case 48:
-                    arrayInsert(data, bV2Halftone, 46); // 46 - 48 (2 バイト)
+                    arrayInsert(data, bV2Halftone, 46); // 46 - 47 (2 バイト)
                 case 46:
-                    arrayInsert(data, bV2Format, 44); // 44 - 46 (2 バイト)
+                    arrayInsert(data, bV2Format, 44); // 44 - 45 (2 バイト)
                 case 44:
-                    arrayInsert(data, BV2_RESERVED, 42); // 42 - 44 (2 バイト)
+                    arrayInsert(data, BV2_RESERVED, 42); // 42 - 43 (2 バイト)
                 case 42:
-                    arrayInsert(data, bV2Resolution, 40); // 40 - 42 (2 バイト)
+                    arrayInsert(data, bV2Resolution, 40); // 40 - 41 (2 バイト)
                 case 40:
-                    arrayInsert(data, biCirImportant, 36); // 36 - 40 (4 バイト)
+                    arrayInsert(data, biCirImportant, 36); // 36 - 39 (4 バイト)
                 case 36:
-                    arrayInsert(data, biClrUsed, 32); // 32 - 36 (4 バイト)
+                    arrayInsert(data, biClrUsed, 32); // 32 - 35 (4 バイト)
                 case 32:
-                    arrayInsert(data, biYPelsPerMeter, 28); // 28 - 32 (4 バイト)
+                    arrayInsert(data, biYPelsPerMeter, 28); // 28 - 31 (4 バイト)
                 case 28:
-                    arrayInsert(data, biXPelsPerMeter, 24); // 24 - 28 (4 バイト)
+                    arrayInsert(data, biXPelsPerMeter, 24); // 24 - 27 (4 バイト)
                 case 24:
-                    arrayInsert(data, biSizeImage, 20); // 20 - 24 (4 バイト)
+                    arrayInsert(data, biSizeImage, 20); // 20 - 23 (4 バイト)
                 case 20:
-                    arrayInsert(data, biCompression, 16); // 16 - 20 (4 バイト)
+                    arrayInsert(data, biCompression, 16); // 16 - 19 (4 バイト)
                     break;
                 default:
                     throw new Exception(ERROR_INVALID_HEADER_SIZE);
