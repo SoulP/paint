@@ -10,7 +10,7 @@ import file.io.BMP;
 
 /**
  * <b>BMP - OS/2 V2</b><br>
- * date: 2017/10/18 last_date: 2018/03/27<br>
+ * date: 2017/10/18 last_date: 2018/03/28<br>
  * <dl>
  * <h1>ファイルヘッダ</h1>
  * 
@@ -568,38 +568,38 @@ public class BMP_V2 extends BMP_V3 {
     public int setInfoHeader(byte[] data) {
         int offset = 0;
         try {
-            bcSize = Arrays.copyOfRange(data, offset, offset += 4);
-            bcWidth = Arrays.copyOfRange(data, offset, offset += 4);
-            bcHeight = Arrays.copyOfRange(data, offset, offset += 4);
-            bcBitCount = Arrays.copyOfRange(data, offset += 2, offset + 2);
+            bcSize = Arrays.copyOfRange(data, offset, offset += 4); // 0 - 3 (4 バイト)
+            bcWidth = Arrays.copyOfRange(data, offset, offset += 4); // 4 - 7 (4 バイト)
+            bcHeight = Arrays.copyOfRange(data, offset, offset += 4); // 8 - 11 (4 バイト)
+            bcBitCount = Arrays.copyOfRange(data, offset += 2, offset + 2); // 13 - 15 (2 バイト)
             switch (data.length) {
                 case 64:
-                    bV2Id = Arrays.copyOfRange(data, 60, 64); // 60 - 64 (4 バイト)
+                    bV2Id = Arrays.copyOfRange(data, 60, 64); // 60 - 63 (4 バイト)
                 case 60:
-                    bV2Encoding = Arrays.copyOfRange(data, 56, 60); // 56 - 60 (4 バイト)
+                    bV2Encoding = Arrays.copyOfRange(data, 56, 60); // 56 - 59 (4 バイト)
                 case 56:
-                    bV2HalftoneParam2 = Arrays.copyOfRange(data, 52, 56); // 52 - 56 (4 バイト)
+                    bV2HalftoneParam2 = Arrays.copyOfRange(data, 52, 56); // 52 - 55 (4 バイト)
                 case 52:
-                    bV2HalftoneParam1 = Arrays.copyOfRange(data, 48, 52); // 48 - 52 (4 バイト)
+                    bV2HalftoneParam1 = Arrays.copyOfRange(data, 48, 52); // 48 - 51 (4 バイト)
                 case 48:
-                    bV2Halftone = Arrays.copyOfRange(data, 46, 48); // 46 - 48 (2 バイト)
+                    bV2Halftone = Arrays.copyOfRange(data, 46, 48); // 46 - 47 (2 バイト)
                 case 46:
-                    bV2Format = Arrays.copyOfRange(data, 44, 46); // 44 - 46 (2 バイト)
+                    bV2Format = Arrays.copyOfRange(data, 44, 46); // 44 - 45 (2 バイト)
                 case 44: // 42 - 44 (2バイト) 予約領域
                 case 42:
-                    bV2Resolution = Arrays.copyOfRange(data, 40, 42); // 40 - 42 (2 バイト)
+                    bV2Resolution = Arrays.copyOfRange(data, 40, 42); // 40 - 41 (2 バイト)
                 case 40:
-                    biCirImportant = Arrays.copyOfRange(data, 36, 40); // 36 - 40 (4 バイト)
+                    biCirImportant = Arrays.copyOfRange(data, 36, 40); // 36 - 39 (4 バイト)
                 case 36:
-                    biClrUsed = Arrays.copyOfRange(data, 32, 36); // 32 - 36 (4 バイト)
+                    biClrUsed = Arrays.copyOfRange(data, 32, 36); // 32 - 35 (4 バイト)
                 case 32:
-                    biYPelsPerMeter = Arrays.copyOfRange(data, 28, 32); // 28 - 32 (4 バイト)
+                    biYPelsPerMeter = Arrays.copyOfRange(data, 28, 32); // 28 - 31 (4 バイト)
                 case 28:
-                    biXPelsPerMeter = Arrays.copyOfRange(data, 24, 28); // 24 - 28 (4 バイト)
+                    biXPelsPerMeter = Arrays.copyOfRange(data, 24, 28); // 24 - 27 (4 バイト)
                 case 24:
-                    biSizeImage = Arrays.copyOfRange(data, 20, 24); // 20 - 24 (4 バイト)
+                    biSizeImage = Arrays.copyOfRange(data, 20, 24); // 20 - 23 (4 バイト)
                 case 20:
-                    biCompression = Arrays.copyOfRange(data, 16, 20); // 16 - 20 (4 バイト)
+                    biCompression = Arrays.copyOfRange(data, 16, 20); // 16 - 19 (4 バイト)
                     break;
                 default:
                     throw new Exception(ERROR_INVALID_HEADER_SIZE);
